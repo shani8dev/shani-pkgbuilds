@@ -1,0 +1,25 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-keyring
+pkgver=20241020
+pkgrel=1
+pkgdesc='Shani PGP keyring'
+arch=('any')
+url='https://github.com/shani8dev/shani-keyring/'
+license=('GPL-3.0-or-later')
+install=$pkgname.install
+source=('https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani.gpg'
+        'https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani-revoked'
+        'https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani-trusted')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+validpgpkeys=('7B927BFFD4A9EAAA8B666B77DE217F3DA8014792') # Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+package() {
+    install -d "$pkgdir/usr/share/pacman/keyrings"
+
+    # Installing the Shani keyring files
+    for f in shani.gpg shani-trusted shani-revoked; do
+        install -m644 "$srcdir/$f" "$pkgdir/usr/share/pacman/keyrings/"
+    done
+}
+
