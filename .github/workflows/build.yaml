@@ -1,0 +1,25 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # Runs every day at midnight UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download build script
+        run: |
+          curl -L -o pkg-builder.sh https://raw.githubusercontent.com/shani8dev/shani-builder/refs/heads/main/pkg/pkg-builder.sh
+          chmod +x pkg-builder.sh  # Make sure your script is executable
+
+      - name: Run build script
+        run: ./pkg-builder.sh "${{ secrets.SSH_PRIVATE_KEY }}" "${{ secrets.GPG_PASSPHRASE }}" "${{ secrets.GPG_PRIVATE_KEY }}"
+
