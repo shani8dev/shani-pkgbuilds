@@ -12,7 +12,7 @@ license=('BSD')
 # Using a specific commit from GitHub as the source
 source=("git+https://https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum if desired
-
+makedepends=('git')
 package() {
   install -d "$pkgdir/etc/os-installer"
   cp -r "$srcdir/$pkgname"/* "$pkgdir/etc/os-installer"
