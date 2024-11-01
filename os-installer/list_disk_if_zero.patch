@@ -1,0 +1,40 @@
+From 74c0d6d2d71a5265bfd0915eb0a4ec0f478c992f Mon Sep 17 00:00:00 2001
+From: Dennis ten Hoove <dennistenhoove@protonmail.com>
+Date: Sat, 26 Oct 2024 17:09:40 +0200
+Subject: [PATCH] Backport disk: "Allow usage of disks that dont properly
+ report size"
+
+---
+ src/provider/disk_provider.py | 2 +-
+ src/ui/pages/disk.py          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/provider/disk_provider.py b/src/provider/disk_provider.py
+index 6cb12e0..e08a897 100644
+--- a/src/provider/disk_provider.py
++++ b/src/provider/disk_provider.py
+@@ -129,7 +129,7 @@ class DiskProvider(Preloadable):
+ 
+             partition_table = udisks_object.get_partition_table()
+             drive = self.udisks_client.get_drive_for_block(block)
+-            if drive and drive.props.size > 0 and not drive.props.optical:
++            if drive and not drive.props.optical:
+                 disk_info = self._get_disk_info(block, drive, partition_table)
+                 disks.append(disk_info)
+ 
+diff --git a/src/ui/pages/disk.py b/src/ui/pages/disk.py
+index 228acd7..cfef77a 100644
+--- a/src/ui/pages/disk.py
++++ b/src/ui/pages/disk.py
+@@ -46,7 +46,7 @@ class DiskPage(Gtk.Stack, Page):
+         self.partition_list.bind_model(self.partition_list_model, self._create_device_row)
+ 
+     def _create_device_row(self, info):
+-        if info.size >= self.minimum_disk_size:
++        if info.size <= 0 or info.size >= self.minimum_disk_size:
+             return DeviceRow(info)
+         else:
+             required_size_str = disk_provider.disk_size_to_str(self.minimum_disk_size)
+-- 
+2.47.0
+
