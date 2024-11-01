@@ -26,8 +26,8 @@ package() {
   install -d "$pkgdir/etc" "$pkgdir/usr"
 
   # Copy configuration files
-  cp -r "$srcdir/$pkgname/etc" "$pkgdir/etc"
-  cp -r "$srcdir/$pkgname/usr" "$pkgdir/usr"
+  cp -r "$srcdir/$pkgname-${_commit}/etc" "$pkgdir/"
+  cp -r "$srcdir/$pkgname-${_commit}/usr" "$pkgdir/"
 
   # Fix permissions for security
   chmod -R 750 "$pkgdir/etc/sudoers.d"
