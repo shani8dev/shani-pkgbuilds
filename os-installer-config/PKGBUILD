@@ -1,0 +1,20 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=os-installer-config
+pkgver=0.0.1
+pkgrel=1
+_commit='4004b48bbcc616c9f9e52c93dc09b76bd2bf0768'  # Replace with the specific commit hash
+pkgdesc="Default Shani OS configuration files for the os-installer"
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
+arch=('x86_64')
+license=('BSD')
+
+# Using a specific commit from GitHub as the source
+source=("git+https://https://github.com/shani8dev/$pkgname.git#commit=$_commit")
+sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum if desired
+
+package() {
+  install -d "$pkgdir/etc/os-installer"
+  cp -r "$srcdir/$pkgname"/* "$pkgdir/etc/os-installer"
+}
+

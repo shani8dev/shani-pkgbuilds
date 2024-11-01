@@ -1,0 +1,34 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-settings
+pkgver=0.0.1
+pkgrel=1
+arch=('any')
+url="https://github.com/shani8dev/$pkgname"
+license=('GPL')
+pkgdesc="Shani OS settings"
+
+_commit='463080eab951bbb289156b8e6c34c5de1217350e'
+source=("https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
+sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums if desired
+
+depends=(
+  'btrfsmaintenance'
+  'profile-sync-daemon'
+  'zram-generator'
+)
+makedepends=('polkit')
+backup=(etc/sudoers.d/{editor,insults,pwfeedback})
+install="$pkgname.install"
+
+package() {
+  install -d "$pkgdir/etc" "$pkgdir/usr"
+  cp -rf "$srcdir/$pkgname-$_commit/etc" "$pkgdir/etc"
+  cp -rf "$srcdir/$pkgname-$_commit/usr" "$pkgdir/usr"
+
+  # Fix permissions
+  chmod -R 750 "$pkgdir/etc/sudoers.d"
+  chmod -R 750 "$pkgdir/usr/share/polkit-1/rules.d"
+  chown -R root:polkitd "$pkgdir/usr/share/polkit-1/rules.d"
+}
+

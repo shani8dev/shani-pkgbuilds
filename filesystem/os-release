@@ -1,0 +1,11 @@
+NAME="Shani OS"
+PRETTY_NAME="Shani OS"
+ID=arch
+BUILD_ID=spinning
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://shani.dev/"
+DOCUMENTATION_URL="https://wiki.shani.dev/"
+SUPPORT_URL="https://forum.shani.dev/"
+BUG_REPORT_URL="https://github.com/shani8dev/shani-pkgbuilds/issues"
+PRIVACY_POLICY_URL="https://terms.archlinux.org/docs/privacy-policy/"
+LOGO=shani-logo
