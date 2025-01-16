@@ -17,6 +17,7 @@ depends=(
   'systemd-oomd-defaults'
   'profile-sync-daemon'
   'zram-generator'
+  'rng-tools'
 )
 makedepends=('polkit')
 backup=(etc/sudoers.d/{editor,insults,pwfeedback})

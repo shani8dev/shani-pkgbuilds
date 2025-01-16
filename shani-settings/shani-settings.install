@@ -23,7 +23,8 @@ post_install() {
 	systemctl enable btrfs-defrag.timer
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
-	systemctl enable garuda-pacman-lock
+	systemctl enable systemd-oomd
+	systemctl enable rng-tools
 	systemctl --global enable psd
 
 	post_upgrade
@@ -36,7 +37,8 @@ post_upgrade() {
 	systemctl enable btrfs-defrag.timer
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
-	systemctl enable garuda-pacman-lock
+	systemctl enable systemd-oomd
+	systemctl enable rng-tools
 	systemctl --global enable psd
 
 	echo "Performing misc postinstall operations..."
