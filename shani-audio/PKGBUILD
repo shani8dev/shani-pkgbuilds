@@ -1,0 +1,30 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-audio
+pkgver=1.0
+pkgrel=1
+pkgdesc="Audio related packages for Shani OS"
+arch=('any')
+depends=(
+	pipewire
+	pipewire-alsa
+	pipewire-audio
+	pipewire-jack
+	pipewire-pulse
+	pipewire-v4l2
+	pipewire-libcamera
+	pipewire-ffado
+	pipewire-zeroconf
+	realtime-privileges
+	gst-libav
+	gst-plugin-pipewire
+	gst-plugins-base
+	gst-plugins-good
+	gst-plugins-bad
+	gst-plugins-ugly
+	gst-plugins-espeak
+	gstreamer-vaapi
+	sof-firmware
+	alsa-firmware
+)
+license=('GPL')
+

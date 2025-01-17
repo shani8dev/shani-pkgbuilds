@@ -1,0 +1,37 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-network
+pkgver=1.0
+pkgrel=1
+pkgdesc="Network related packages for Shani OS"
+arch=('any')
+depends=(
+    networkmanager
+    networkmanager-l2tp
+    networkmanager-vpnc
+    networkmanager-pptp
+    networkmanager-strongswan
+    networkmanager-openconnect
+    networkmanager-openvpn
+    network-manager-sstp
+    nm-connection-editor
+    modemmanager
+    openfortivpn
+    wireguard-tools
+    usb_modeswitch
+    modem-manager-gui
+	gufw
+	pacrunner
+	openresolv
+	dnsmasq
+	openldap
+	wireguard-tools
+	wpa_supplicant
+	wireless-regdb
+	usb_modeswitch
+	openssh
+	easy-rsa
+	dnsmasq
+	rp-pppoe
+)
+license=('GPL')
+

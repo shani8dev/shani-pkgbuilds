@@ -1,0 +1,24 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-core
+pkgver=1.0
+pkgrel=1
+pkgdesc="Core of Shani OS"
+arch=('any')
+depends=(
+	base
+	linux
+	linux-firmware
+	glibc-locales
+	dracut
+	shim-signed
+	edk2-shell
+	efibootmgr
+	efitools
+	dracut
+	sbctl
+	mokutil
+	sbsigntools
+	systemd-ukify
+)
+license=('GPL')
+

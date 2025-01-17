@@ -1,0 +1,18 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-accessibility
+pkgver=1.0
+pkgrel=1
+pkgdesc="Accessibility tools for Shani OS, including IBus for input methods"
+arch=('any')
+depends=(
+    orca
+    espeakup
+    brltty
+	ibus
+	ibus-typing-booster
+	ibus-libpinyin
+	ibus-anthy
+	ibus-hangul
+)
+license=('GPL')
+

@@ -24,9 +24,11 @@ post_install() {
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
 	systemctl enable systemd-oomd
-	systemctl enable rng-tools
+	systemctl enable rngd
+	systemctl enable ananicy-cpp
+	systemctl enable irqbalance
 	systemctl --global enable psd
-
+	plymouth-set-default-theme -R shani-bgrt
 	post_upgrade
 }
 
@@ -38,9 +40,11 @@ post_upgrade() {
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
 	systemctl enable systemd-oomd
-	systemctl enable rng-tools
+	systemctl enable rngd
+	systemctl enable ananicy-cpp
+	systemctl enable irqbalance
 	systemctl --global enable psd
-
+	plymouth-set-default-theme -R shani-bgrt
 	echo "Performing misc postinstall operations..."
 	update_fonts
 	update_gtk

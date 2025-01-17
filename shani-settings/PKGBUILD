@@ -1,14 +1,14 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 
 pkgname=shani-settings
-pkgver=0.0.2
+pkgver=0.0.3
 pkgrel=1
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
 pkgdesc="Shani OS settings"
 
-_commit='8810d5a2a3237c3debcba96e2cdb6db506a41ad9'
+_commit='a67568b4c19a58c538df61c628712be09711e66a'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
 
@@ -18,6 +18,19 @@ depends=(
   'profile-sync-daemon'
   'zram-generator'
   'rng-tools'
+  'ananicy-cpp'
+  'irqbalance'
+  'plymouth'
+  'bash-completion'
+  'fish'
+  'zsh'
+  'zsh-autosuggestions'
+  'zsh-completions'
+  'zsh-syntax-highlighting'
+  'zsh-history-substring-search'
+  'starship'
+  'fzf'
+  'mcfly'
 )
 makedepends=('polkit')
 backup=(etc/sudoers.d/{editor,insults,pwfeedback})

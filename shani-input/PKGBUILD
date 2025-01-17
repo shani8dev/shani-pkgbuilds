@@ -1,0 +1,17 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-input
+pkgver=1.0
+pkgrel=1
+pkgdesc="Input devices and tools for Shani OS"
+arch=('any')
+depends=(
+	fprintd
+	linuxconsole
+	lirc
+	ccid
+	libdvdcss
+	bolt
+	android-udev
+)
+license=('GPL')
+

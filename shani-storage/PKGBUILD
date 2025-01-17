@@ -1,0 +1,35 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-storage
+pkgver=1.0
+pkgrel=1
+pkgdesc="Storage related packages for Shani OS"
+arch=('any')
+depends=(
+	lvm2
+	dmraid
+	fscrypt
+	mdadm
+	cryptsetup
+	nvme-cli
+	squashfs-tools
+	dosfstools
+	e2fsprogs 
+	f2fs-tools
+	bcachefs-tools
+	exfatprogs
+	fatresize
+	ntfs-3g
+	mtools
+	sshfs
+	reiserfsprogs
+	xfsprogs
+	btrfs-progs
+	udisks2-lvm2
+	udisks2-btrfs
+	exfat-utils
+	fuse
+	fuse-overlayfs
+	nfs-utils
+)
+license=('GPL')
+
