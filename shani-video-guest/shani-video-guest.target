@@ -1,0 +1,6 @@
+
+[Unit]
+Description=Shani virtualmachine guest target
+Wants=vboxservice.service vboxdrmclient.service vmtoolsd.service vmware-vmblock-fuse.service spice-vdagentd.socket qemu-guest-agent.service
+[Install]
+WantedBy=multi-user.target

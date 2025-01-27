@@ -1,0 +1,22 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-video-guest
+pkgver=1.1
+pkgrel=1
+pkgdesc="Video Guest drivers and related packages for Shani OS"
+arch=('any')
+depends=(
+    spice-vdagent
+	qemu-guest-agent
+	virtualbox-guest-utils
+	open-vm-tools
+)
+license=('GPL')
+source=(	'shani-video-guest.target')
+sha256sums=('SKIP')
+install="$pkgname.install"
+package() {
+	cd "$srcdir" || exit
+	install -Dm644 shani-video-guest.target "$pkgdir"/usr/lib/systemd/system/shani-video-guest.target
+	install -d "$pkgdir"/usr/lib/systemd/user/graphical-session.target.wants/
+	ln -s /usr/lib/systemd/user/spice-vdagent.service "$pkgdir"/usr/lib/systemd/user/graphical-session.target.wants/spice-vdagent.service
+}

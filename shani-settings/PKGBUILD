@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 
 pkgname=shani-settings
-pkgver=0.0.3
+pkgver=0.0.4
 pkgrel=1
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
@@ -17,7 +17,7 @@ depends=(
   'systemd-oomd-defaults'
   'profile-sync-daemon'
   'zram-generator'
-  'rng-tools'
+  'haveged'
   'ananicy-cpp'
   'irqbalance'
   'plymouth'

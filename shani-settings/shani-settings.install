@@ -19,16 +19,6 @@ update_gtk() {
 
 # Post installation
 post_install() {
-	systemctl enable btrfs-balance.timer
-	systemctl enable btrfs-defrag.timer
-	systemctl enable btrfs-scrub.timer
-	systemctl enable btrfs-trim.timer
-	systemctl enable systemd-oomd
-	systemctl enable rngd
-	systemctl enable ananicy-cpp
-	systemctl enable irqbalance
-	systemctl --global enable psd
-	plymouth-set-default-theme -R shani-bgrt
 	post_upgrade
 }
 
@@ -40,7 +30,8 @@ post_upgrade() {
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
 	systemctl enable systemd-oomd
-	systemctl enable rngd
+	systemctl enable systemd-timesyncd
+	systemctl enable haveged
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
 	systemctl --global enable psd

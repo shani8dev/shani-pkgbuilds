@@ -1,11 +1,12 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
 	gdm
+	gnome-browser-connector
 	gnome-backgrounds
 	gnome-console
 	gnome-connections
@@ -19,6 +20,7 @@ depends=(
 	gnome-settings-daemon
 	gnome-tweaks
 	gnome-shell-extensions
+	gnome-shell-extension-appindicator
 	gnome-user-share
 	gnome-remote-desktop
 	gnome-keyring
@@ -36,12 +38,24 @@ depends=(
 	gnome-usage
 	gnome-firmware
 	gnome-boxes
+	gnome-network-displays 
+	modem-manager-gui
+	gufw
+	linux-wifi-hotspot
+	pods
+	boxbuddy
 	easyeffects
 	gnote
+	errands
 	fragments
 	seahorse
 	secrets
+	pitivi
+	audacity
+	gnome-video-effects
+	epiphany
 	loupe
+	drawing
 	amberol
 	showtime
 	snapshot
@@ -49,6 +63,7 @@ depends=(
 	kooha
 	shortwave
 	authenticator
+	decoder
 	gpaste
 	impression
 	warp
@@ -78,10 +93,10 @@ depends=(
 	webp-pixbuf-loader
 	libwmf
 	libopenraw
-	poppler-data
+	ffmpegthumbnailer
 	xdg-desktop-portal-gnome
-    xdg-user-dirs
+    xdg-user-dirs-gtk
     xdg-utils
 )
 license=('GPL')
-
+install="$pkgname.install"

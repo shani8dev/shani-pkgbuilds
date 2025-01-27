@@ -1,6 +1,6 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-bluetooth
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="Bluetooth related packages for Shani OS"
 arch=('any')
@@ -11,6 +11,8 @@ depends=(
     bluez-cups
     bluez-plugins
     bluez-obex
+    bluez-mesh
+    bluez-tools
 )
 license=('GPL')
-
+install="$pkgname.install"

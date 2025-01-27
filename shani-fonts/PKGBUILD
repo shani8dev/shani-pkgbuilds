@@ -1,14 +1,12 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-fonts
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="Fonts for Shani OS"
 arch=('any')
 depends=(
-    terminus-font
     noto-fonts
     noto-fonts-cjk
-    ttf-indic-otf
     noto-fonts-emoji
 )
 license=('GPL')

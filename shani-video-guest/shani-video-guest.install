@@ -1,0 +1,7 @@
+post_install() {
+	ln -s /usr/lib/systemd/system/shani-video-guest.target /etc/systemd/system/multi-user.target.wants/shani-video-guest.target
+}
+
+post_remove() {
+	rm -f /etc/systemd/system/multi-user.target.wants/shani-video-guest.target
+}
