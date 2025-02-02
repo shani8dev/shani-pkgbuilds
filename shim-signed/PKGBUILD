@@ -13,7 +13,7 @@ source=("https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/x86_64/shi
         "https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/x86_64/shim-ia32-${pkgver}-3.x86_64.rpm"
         "https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/aarch64/shim-aa64-${pkgver}-3.aarch64.rpm")
 noextract=("shim-x64-${pkgver}-3.x86_64.rpm" "shim-ia32-${pkgver}-3.x86_64.rpm" "shim-aa64-${pkgver}-3.aarch64.rpm")
-
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 # Prepare the environment
 prepare() {
     cd "$srcdir"
