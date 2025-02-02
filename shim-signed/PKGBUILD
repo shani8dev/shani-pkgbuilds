@@ -1,8 +1,8 @@
 # Maintainer: nl6720 <nl6720@archlinux.org>
 
-pkgname='shim-signed'
+pkgname='shim-signed-fedora'
 pkgver='15.8'
-pkgrel='3'
+pkgrel='1'
 pkgdesc='Initial UEFI bootloader from Fedora that handles chaining to a trusted full bootloader under secure boot environments for x86_64, i386, and aarch64 architectures'
 url='https://kojipkgs.fedoraproject.org/packages/shim'
 arch=('any')
@@ -32,6 +32,10 @@ sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 prepare() {
     echo "Preparing shim files..."
+
+    # Ensure directories exist
+    mkdir -p "${_SHIM_DIR}" "${_SHIM32_DIR}" "${_SHIMAA64_DIR}"
+
     # Download RPM files (automatically handled by source array)
     echo "Unpacking RPM files..."
     bsdtar -C "${_SHIM_DIR}" -xf "${srcdir}/${_SHIM_RPM}"
@@ -51,17 +55,18 @@ package() {
     
     install -Dm0644 "${_SHIMAA64_DIR}/boot/efi/EFI/fedora/{mmaa64.efi,shimaa64.efi}" "${pkgdir}/usr/share/${pkgname}/shimaa64.efi"
     install -Dm0644 "${_SHIMAA64_DIR}/boot/efi/EFI/fedora/shimaa64.efi" "${pkgdir}/usr/share/${pkgname}/BOOTAA64.efi"
+
 }
 
 # Clean up temporary directories after installation
-_cleanup() {
+cleanup() {
     rm -rf "${_SHIM_DIR}" "${_SHIM32_DIR}" "${_SHIMAA64_DIR}"
     echo "Cleanup complete."
 }
 
-# Make sure cleanup happens at the end of package() 
+# Hook cleanup after package installation
 package() {
     # Existing package logic...
-    _cleanup
+    cleanup
 }
 
