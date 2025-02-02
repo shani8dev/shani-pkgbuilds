@@ -1,41 +1,36 @@
-# Maintainer: User
+# Maintainer: nl6720 <nl6720@archlinux.org>
 
 pkgname='shim-signed'
-pkgver='15.8'
-pkgrel='3'
-pkgdesc='UEFI bootloader that handles chaining to a trusted full bootloader under secure boot environments (from Fedora)'
-url='https://kojipkgs.fedoraproject.org/packages/shim/15.8/3'
+pkgver='15.8+ubuntu+1.58'
+pkgrel='1'
+pkgdesc='Initial UEFI bootloader that handles chaining to a trusted full bootloader under secure boot environments (prebuilt x64 and AA64 binaries from Ubuntu)'
+url='https://packages.ubuntu.com/noble/shim-signed'
 arch=('any')
 license=('BSD-2-Clause')
 options=('!strip' '!debug')
 install="${pkgname}.install"
-source=("https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/x86_64/shim-x64-${pkgver}-3.x86_64.rpm"
-        "https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/x86_64/shim-ia32-${pkgver}-3.x86_64.rpm"
-        "https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/aarch64/shim-aa64-${pkgver}-3.aarch64.rpm")
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+source=("http://archive.ubuntu.com/ubuntu/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_amd64.deb"
+        "http://ports.ubuntu.com/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_arm64.deb")
+noextract=("shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_arm64.deb")
+sha256sums=('ba9b5d80e5d886c30664f2bebfb5c2fcce3b9b40f16fc46cba49c19a91c8059c'
+            '58b0f8a0f43bdff2122af8f52b05a5eb73b1964079e36e3eed8d06b4d5164917')
+sha512sums=('b14146826a0b754934ae2b71e1975faa5929654542399015c3c32e9d9d74c678294d481a7946471bfe38b6c6e6f303f50bae72fc30de8494933083da626ac4de'
+            '5aef2178a0d2446179be64b22619e230a2322b7122f2733a2577ca622e28670f8c39651a09c6408064c64b45eca32c04822fcbac9905b03ba617ce6913182728')
 
-# Prepare the environment, download, and unpack RPMs
 prepare() {
-    echo "Downloading RPMs..."
-    curl -LO "${source[@]}" || exit 1
+	local debfile
 
-    echo "Unpacking RPMs..."
-    for rpm in *.rpm; do
-        bsdtar -C "$srcdir" -xf "$rpm" || exit 1
-    done
+	cd "$srcdir"
+	bsdtar -xf data.tar.xz
+	for debfile in "${noextract[@]}"; do
+		bsdtar -xOf "$debfile" data.tar.xz | bsdtar -x usr/lib/shim/
+	done
 }
 
-# Package function to copy files to the final package
+
 package() {
-    echo "Packaging Shim files..."
-
-    # Install all shim files in a single command
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/{shimx64.efi,mmx64.efi,shimia32.efi,mmia32.efi,shimaa64.efi,mmaa64.efi}" "$pkgdir/usr/share/$pkgname/"
-
-    # Install the BootX files
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/{shimx64.efi,shimia32.efi,shimaa64.efi}" "$pkgdir/usr/share/$pkgname/BOOTX64.efi"
-
-    # Install license file
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm0644 "${srcdir}/usr/lib/shim/shimx64.efi.signed.latest" "${pkgdir}/usr/share/${pkgname}/shimx64.efi"
+	install -Dm0644 "${srcdir}/usr/lib/shim/shimaa64.efi.signed.latest" "${pkgdir}/usr/share/${pkgname}/shimaa64.efi"
+	install -Dm0644 "${srcdir}/usr/lib/shim/"{mm,fb}{x64,aa64}".efi" "${pkgdir}/usr/share/${pkgname}/"
+	install -Dm0644 "${srcdir}/usr/share/doc/shim-signed/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
-
