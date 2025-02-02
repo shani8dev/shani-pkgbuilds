@@ -29,10 +29,11 @@ prepare() {
 package() {
     echo "Packaging Shim files..."
 
-    # Install shim EFI files into the package
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimx64.efi" "$pkgdir/usr/share/$pkgname/shimx64.efi"
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimia32.efi" "$pkgdir/usr/share/$pkgname/shimia32.efi"
-    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimaa64.efi" "$pkgdir/usr/share/$pkgname/shimaa64.efi"
+    # Install all shim files in a single command
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/{shimx64.efi,mmx64.efi,shimia32.efi,mmia32.efi,shimaa64.efi,mmaa64.efi}" "$pkgdir/usr/share/$pkgname/"
+
+    # Install the BootX files
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/{shimx64.efi,shimia32.efi,shimaa64.efi}" "$pkgdir/usr/share/$pkgname/BOOTX64.efi"
 
     # Install license file
     install -Dm0644 "$srcdir/boot/efi/EFI/fedora/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
