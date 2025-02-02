@@ -1,14 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-scanner
 pkgver=1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Scanner support tools for Shani OS"
 arch=('any')
 depends=(
 	argyllcms
     colord-sane
     sane-airscan
-    sane-gt68xx-firmware
     simple-scan
 )
 license=('GPL')

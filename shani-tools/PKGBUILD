@@ -1,13 +1,15 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
 	sudo
 	which
 	texinfo
+	less
+	diffutils
 	git
 	lsb-release
 	logrotate

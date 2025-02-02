@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-printer
 pkgver=1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Printer support tools and drivers for Shani OS"
 arch=('any')
 depends=(
@@ -10,18 +10,8 @@ depends=(
     cups-pdf
     cups-browsed
     cups-pk-helper
-    foomatic-db
-    foomatic-db-engine
-    foomatic-db-ppds
-    foomatic-db-nonfree
-	foomatic-db-nonfree-ppds
-    foomatic-db-gutenprint-ppds
-    ghostscript
-    splix
-    gutenprint
     ipp-usb
     system-config-printer
-    a2ps
 )
 license=('GPL')
 install="$pkgname.install"
