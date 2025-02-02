@@ -1,42 +1,40 @@
-# Maintainer: nl6720 <nl6720@archlinux.org>
+# Maintainer: User
 
 pkgname='shim-signed'
 pkgver='15.8'
 pkgrel='3'
-pkgdesc='Initial UEFI bootloader that handles chaining to a trusted full bootloader under secure boot environments (Fedora-based binaries)'
+pkgdesc='UEFI bootloader that handles chaining to a trusted full bootloader under secure boot environments (from Fedora)'
 url='https://kojipkgs.fedoraproject.org/packages/shim/15.8/3'
 arch=('any')
 license=('BSD-2-Clause')
 options=('!strip' '!debug')
 install="${pkgname}.install"
-source=("https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/x86_64/shim-x64-${pkgver}-3.x86_64.rpm"
-        "https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/x86_64/shim-ia32-${pkgver}-3.x86_64.rpm"
-        "https://kojipkgs.fedoraproject.org/packages/shim/${pkgver}/3/aarch64/shim-aa64-${pkgver}-3.aarch64.rpm")
-noextract=("shim-x64-${pkgver}-3.x86_64.rpm" "shim-ia32-${pkgver}-3.x86_64.rpm" "shim-aa64-${pkgver}-3.aarch64.rpm")
+source=("https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/x86_64/shim-x64-${pkgver}-3.x86_64.rpm"
+        "https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/x86_64/shim-ia32-${pkgver}-3.x86_64.rpm"
+        "https://kojipkgs.fedoraproject.org/packages/shim/15.8/3/aarch64/shim-aa64-${pkgver}-3.aarch64.rpm")
 sha256sums=('SKIP' 'SKIP' 'SKIP')
-# Prepare the environment
+
+# Prepare the environment, download, and unpack RPMs
 prepare() {
-    cd "$srcdir"
+    echo "Downloading RPMs..."
+    curl -LO "${source[@]}" || exit 1
 
-    # Download and unpack Fedora shim RPMs
-    echo "Downloading Fedora shim RPM packages..."
-    ${_DLPROG} --create-dirs -L -O --output-dir "${srcdir}" "${source[@]}"
-
-    # Extract the RPM packages
-    echo "Extracting Fedora RPM packages..."
-    for rpmfile in "${source[@]}"; do
-        bsdtar -C "$srcdir" -xf "$rpmfile"
+    echo "Unpacking RPMs..."
+    for rpm in *.rpm; do
+        bsdtar -C "$srcdir" -xf "$rpm" || exit 1
     done
 }
 
-# Install the package
+# Package function to copy files to the final package
 package() {
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/shimx64.efi" "${pkgdir}/usr/share/${pkgname}/shimx64.efi"
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/shimia32.efi" "${pkgdir}/usr/share/${pkgname}/shimia32.efi"
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/shimaa64.efi" "${pkgdir}/usr/share/${pkgname}/shimaa64.efi"
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/mmx64.efi" "${pkgdir}/usr/share/${pkgname}/mmx64.efi"
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/mmia32.efi" "${pkgdir}/usr/share/${pkgname}/mmia32.efi"
-    install -Dm0644 "${srcdir}/boot/efi/EFI/fedora/mmaa64.efi" "${pkgdir}/usr/share/${pkgname}/mmaa64.efi"
-    install -Dm0644 "${srcdir}/usr/share/doc/shim-signed/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    echo "Packaging Shim files..."
+
+    # Install shim EFI files into the package
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimx64.efi" "$pkgdir/usr/share/$pkgname/shimx64.efi"
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimia32.efi" "$pkgdir/usr/share/$pkgname/shimia32.efi"
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/shimaa64.efi" "$pkgdir/usr/share/$pkgname/shimaa64.efi"
+
+    # Install license file
+    install -Dm0644 "$srcdir/boot/efi/EFI/fedora/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
