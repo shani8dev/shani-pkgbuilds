@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
@@ -40,7 +40,9 @@ depends=(
 	distrobox
 	podman
 	podman-docker
+	podman-compose
 	fwupd
+	python-pip
 )
 license=('GPL')
 

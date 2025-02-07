@@ -35,6 +35,7 @@ post_upgrade() {
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
 	systemctl --global enable psd
+	systemctl --global enable gamemoded
 	plymouth-set-default-theme -R shani-bgrt
 	echo "Performing misc postinstall operations..."
 	update_fonts

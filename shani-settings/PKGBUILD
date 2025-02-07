@@ -2,7 +2,7 @@
 
 pkgname=shani-settings
 pkgver=0.0.4
-pkgrel=1
+pkgrel=2
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
@@ -19,6 +19,7 @@ depends=(
   'zram-generator'
   'haveged'
   'ananicy-cpp'
+  'gamemode'
   'irqbalance'
   'plymouth'
   'bash-completion'
