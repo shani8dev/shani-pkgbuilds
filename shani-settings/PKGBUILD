@@ -1,14 +1,14 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 
 pkgname=shani-settings
-pkgver=0.0.4
+pkgver=0.0.5
 pkgrel=2
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
 pkgdesc="Shani OS settings"
 
-_commit='a67568b4c19a58c538df61c628712be09711e66a'
+_commit='72cb8d97ea47071979d1a8b288ee370f557c086d'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
 
