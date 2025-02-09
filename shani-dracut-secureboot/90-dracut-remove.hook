@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Remove
+Operation = Upgrade
+Type = Package
+Target = *-dkms*
+
+[Action]
+Description = Rebuilding initramfs after DKMS package changes
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/generate-and-sign.sh
+NeedsTargets

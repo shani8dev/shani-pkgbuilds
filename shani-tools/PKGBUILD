@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
@@ -26,6 +26,7 @@ depends=(
 	vi
     nano
     micro
+    pv
 	unrar
 	p7zip
 	unzip

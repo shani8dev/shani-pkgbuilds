@@ -1,0 +1,31 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-dracut-secureboot
+pkgdesc="Dracut secureboot for Shani OS"
+pkgver=1.0.0
+pkgrel=1
+arch=('any')
+license=('GPL')
+source=(05-shani.conf generate-and-sign.sh 90-dracut-install.hook 60-dracut-remove.hook)
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            'SKIP')
+
+package() {
+    depends=('dracut' 'zstd')
+    conflicts=('mkinitcpio' 'dracut-hook')
+
+    cd "$srcdir" || exit
+    
+    install -Dm644 05-shani.conf "$pkgdir"/usr/lib/dracut/dracut.conf.d/05-shani.conf
+    
+    # Install the generate-and-sign.sh script
+    install -Dm755 generate-and-sign.sh "$pkgdir"/usr/share/libalpm/scripts/generate-and-sign.sh
+
+    # Install Pacman hooks
+    install -Dm644 90-dracut-install.hook "$pkgdir"/usr/share/libalpm/hooks/90-dracut-install.hook
+    install -Dm644 60-dracut-remove.hook "$pkgdir"/usr/share/libalpm/hooks/60-dracut-remove.hook
+
+    echo "✅ Package shani-dracut-support is ready."
+}
