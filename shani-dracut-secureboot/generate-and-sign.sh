@@ -71,7 +71,6 @@ sign_kernel_modules() {
 move_kernel_image
 generate_initramfs
 sign_file "$KERNEL_IMAGE"
-sign_file "$INITRAMFS_IMAGE"
 #sign_kernel_modules
 
 # Sign EFI files
