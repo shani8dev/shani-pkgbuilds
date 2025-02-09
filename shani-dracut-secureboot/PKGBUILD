@@ -3,7 +3,7 @@
 pkgname=shani-dracut-secureboot
 pkgdesc="Dracut secureboot for Shani OS"
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 arch=('any')
 license=('GPL')
 depends=('dracut' 'zstd' 'sbsigntools')
