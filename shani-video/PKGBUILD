@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
-pkgver=1.1
-pkgrel=2
+pkgver=1.2
+pkgrel=1
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
 depends=(
@@ -20,6 +20,6 @@ depends=(
     intel-media-driver
 	nvidia-prime
 	nvidia-utils
-	nvidia-open-dkms
+	nvidia-open
 )
 license=('GPL')

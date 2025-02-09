@@ -1,6 +1,6 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
@@ -21,6 +21,7 @@ depends=(
 	pacrunner
 	openresolv
 	dnsmasq
+	nss-mdns
 	openldap
 	wireguard-tools
 	wpa_supplicant
@@ -29,7 +30,6 @@ depends=(
 	openssh
 	easy-rsa
 	dnsmasq
-	rp-pppoe
 	ufw
 )
 license=('GPL')

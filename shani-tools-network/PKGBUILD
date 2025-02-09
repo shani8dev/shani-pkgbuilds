@@ -1,0 +1,28 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-tools-network
+pkgver=1.2
+pkgrel=1
+pkgdesc="Networking tools for Shani OS"
+arch=('any')
+depends=(
+	iftop  
+	ethtool  
+	net-tools  
+	nmap    
+	traceroute  
+	whois  
+	wireless_tools  
+	tcpdump  
+	inetutils  
+	usbutils  
+	bridge-utils  
+	bind  
+	openbsd-netcat  
+	curl  
+	wget  
+	nbd  
+	rsync
+	zsync
+)
+license=('GPL')
+

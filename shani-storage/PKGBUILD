@@ -1,19 +1,19 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
 depends=(
 	lvm2
 	dmraid
-	fscrypt
 	mdadm
 	cryptsetup
+	fscrypt
 	nvme-cli
 	squashfs-tools
 	dosfstools
-	e2fsprogs 
+	e2fsprogs
 	f2fs-tools
 	bcachefs-tools
 	exfatprogs
@@ -23,13 +23,11 @@ depends=(
 	sshfs
 	xfsprogs
 	btrfs-progs
-	udisks2-lvm2
-	udisks2-btrfs
-	exfat-utils
-	fuse-zip
-	fuseiso
 	fuse-overlayfs
 	nfs-utils
+	samba
+	ecryptfs-utils
+	ndctl
 )
 license=('GPL')
 

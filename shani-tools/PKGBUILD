@@ -1,49 +1,22 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
-pkgver=1.1
-pkgrel=4
+pkgver=1.2
+pkgrel=1
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
-	sudo
-	which
-	texinfo
-	less
-	diffutils
-	git
-	lsb-release
-	logrotate
-	dmidecode
-	inxi
-	mesa-utils
-	vulkan-tools
-	iftop
-	htop
-	tree
-	rsync
-	dialog
-	cronie
-	vi
+    sudo
+    which
+    less
+    diffutils
+    patch
+    time
+    git
+    gnupg
+    man-db
+    plocate
+    vi
     nano
-    micro
-    pv
-	unrar
-	p7zip
-	unzip
-	zip
-	android-tools
-    apparmor
-    tpm2-tools
-    tpm2-tss
-	elfutils
-	flatpak
-	malcontent
-	distrobox
-	podman
-	podman-docker
-	podman-compose
-	fwupd
-	python-pip
 )
 license=('GPL')
 

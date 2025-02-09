@@ -1,6 +1,6 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-bluetooth
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="Bluetooth related packages for Shani OS"
 arch=('any')

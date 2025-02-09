@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
-pkgver=1.1
-pkgrel=2
+pkgver=1.2
+pkgrel=1
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
@@ -75,6 +75,7 @@ depends=(
 	usbguard
 	baobab
 	gsmartcontrol
+	malcontent
 	nautilus
 	nautilus-image-converter
 	nautilus-share

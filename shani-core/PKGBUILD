@@ -1,26 +1,31 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
-pkgver=1.1
+pkgver=1.2
 pkgrel=1
 pkgdesc="Core of Shani OS"
 arch=('any')
 depends=(
-	base
-	amd-ucode
-	intel-ucode
-	linux-zen
-	linux-zen-headers
-	linux-firmware
-	glibc-locales
-	dracut
-	shim-signed
-	edk2-shell
-	efibootmgr
-	efitools
-	dracut
-	sbctl
-	mokutil
-	sbsigntools
+	base  
+	amd-ucode  
+	intel-ucode  
+	linux
+	linux-firmware  
+	glibc-locales  
+	lsb-release  
+	dracut  
+	shim-signed  
+	edk2-shell  
+	efibootmgr  
+	efitools  
+	sbctl  
+	mokutil  
+	sbsigntools  
+	broadcom-wl
+	apparmor  
+	tpm2-tools  
+	tpm2-tss  
+	fwupd  
+	flatpak
 )
 license=('GPL')
 
