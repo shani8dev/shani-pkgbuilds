@@ -14,51 +14,26 @@ EFI_FILES=(
     "/usr/lib/systemd/boot/efi/systemd-bootx64.efi"
 )
 
-# Ensure the directory for the keys exists
-mkdir -p /usr/share/secureboot/keys
+mkdir -p "$SHANI_BOOT_DIR"
 
-# Generate MOK keys if they do not exist
-generate_keys() {
-    if [[ ! -f "$MOK_KEY" || ! -f "$MOK_CRT" || ! -f "$MOK_DER" ]]; then
-        echo "🔑 Generating new MOK keys..."
-        openssl req -newkey rsa:4096 -nodes -keyout "$MOK_KEY" \
-            -new -x509 -sha256 -days 3650 -out "$MOK_CRT" \
-            -subj "/CN=Shani OS Secure Boot Key/"
-        openssl x509 -in "$MOK_CRT" -outform DER -out "$MOK_DER"
-        echo "✅ New MOK keys generated."
-    else
-        echo "🔑 MOK keys already exist. Skipping key generation."
-    fi
-}
-
-# Ensure Secure Boot keys are ready
-generate_keys
-echo "✅ Secure Boot keys are ready."
-
-# Move vmlinuz to shani-boot
 move_kernel_image() {
-    local src_vmlinuz="/usr/lib/modules/$(uname -r)/vmlinuz"
-    local dest_vmlinuz="$SHANI_BOOT_DIR/vmlinuz"
-
-    if [[ -f "$src_vmlinuz" ]]; then
-        echo "🚀 Moving kernel image to $SHANI_BOOT_DIR..."
-        mkdir -p "$SHANI_BOOT_DIR"
-        mv -f "$src_vmlinuz" "$dest_vmlinuz"
-        echo "✅ Kernel image moved."
-    else
-        echo "⚠️ Kernel image not found at $src_vmlinuz. Skipping move."
-    fi
+    echo "🚀 Moving kernel image..."
+    for mod_dir in /usr/lib/modules/*; do
+        [[ -f "$mod_dir/vmlinuz" ]] || continue
+        install -Dm644 "$mod_dir/vmlinuz" "$KERNEL_IMAGE"
+        echo "✅ Moved: $KERNEL_IMAGE"
+        break # Only move the first detected kernel
+    done
 }
 
-# Generate initramfs images in /usr/lib/shani-boot
 generate_initramfs() {
-    echo ":: Building initramfs for kernel $(uname -r)..."
-    mkdir -p "$SHANI_BOOT_DIR"
-    if command -v dracut &>/dev/null; then
-        dracut --force "$INITRAMFS_IMAGE" "$(uname -r)"
-    else
-        echo "❌ Dracut not found. Skipping initramfs generation."
-    fi
+    echo "🛠️ Building initramfs image..."
+    for mod_dir in /usr/lib/modules/*; do
+        [[ -d "$mod_dir" ]] || continue
+        dracut --force "$INITRAMFS_IMAGE" --kver "$(basename "$mod_dir")"
+        echo "✅ Built: $INITRAMFS_IMAGE"
+        break # Only generate for the first detected kernel
+    done
 }
 
 # Generic function to sign files
