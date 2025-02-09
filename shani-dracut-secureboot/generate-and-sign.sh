@@ -19,14 +19,15 @@ mkdir -p /usr/share/secureboot/keys
 
 # Generate MOK keys if they do not exist
 generate_keys() {
-    if [[ ! -f "$MOK_KEY" || ! -f "$MOK_CRT" ]]; then
+    if [[ ! -f "$MOK_KEY" || ! -f "$MOK_CRT" || ! -f "$MOK_DER" ]]; then
         echo "🔑 Generating new MOK keys..."
         openssl req -newkey rsa:4096 -nodes -keyout "$MOK_KEY" \
             -new -x509 -sha256 -days 3650 -out "$MOK_CRT" \
             -subj "/CN=Shani OS Secure Boot Key/"
         openssl x509 -in "$MOK_CRT" -outform DER -out "$MOK_DER"
+        echo "✅ New MOK keys generated."
     else
-        echo "🔑 Using existing MOK keys..."
+        echo "🔑 MOK keys already exist. Skipping key generation."
     fi
 }
 
@@ -34,59 +35,71 @@ generate_keys() {
 generate_keys
 echo "✅ Secure Boot keys are ready."
 
+# Move vmlinuz to shani-boot
+move_kernel_image() {
+    local src_vmlinuz="/usr/lib/modules/$(uname -r)/vmlinuz"
+    local dest_vmlinuz="$SHANI_BOOT_DIR/vmlinuz"
+
+    if [[ -f "$src_vmlinuz" ]]; then
+        echo "🚀 Moving kernel image to $SHANI_BOOT_DIR..."
+        mkdir -p "$SHANI_BOOT_DIR"
+        mv -f "$src_vmlinuz" "$dest_vmlinuz"
+        echo "✅ Kernel image moved."
+    else
+        echo "⚠️ Kernel image not found at $src_vmlinuz. Skipping move."
+    fi
+}
+
 # Generate initramfs images in /usr/lib/shani-boot
 generate_initramfs() {
     echo ":: Building initramfs for kernel $(uname -r)..."
-    # Ensure the boot directory exists
     mkdir -p "$SHANI_BOOT_DIR"
-    dracut -L 1 --force --no-hostonly -o "network" "$INITRAMFS_IMAGE" "$(uname -r)"
+    if command -v dracut &>/dev/null; then
+        dracut --force "$INITRAMFS_IMAGE" "$(uname -r)"
+    else
+        echo "❌ Dracut not found. Skipping initramfs generation."
+    fi
 }
 
-# Generic function to sign files (kernel, initramfs, and EFI)
+# Generic function to sign files
 sign_file() {
     local file="$1"
-    
-    # Check if the file exists
-    if [[ ! -f "$file" ]]; then
-        echo "❌ File does not exist: ${file}. Skipping."
-        return 0  # File doesn't exist, skipping without error
+    [[ ! -f "$file" ]] && echo "❌ File missing: $file" && return 0
+    echo "🔏 Signing: $file..."
+    if sbsign --key "$MOK_KEY" --cert "$MOK_CRT" --output "${file}.signed" "$file"; then
+        mv -f "${file}.signed" "$file"
+        echo "✅ Signed: $file"
+    else
+        echo "❌ Signing failed: $file" >&2
     fi
-    
-    echo "🔏 Signing file: ${file}..."
-    if ! sbsign --key "$MOK_KEY" --cert "$MOK_CRT" --output "${file}.signed" "$file"; then
-        echo "❌ Failed to sign file ${file}."
-        exit 1
-    fi
-    mv -f "${file}.signed" "$file"
-    echo "✅ Signed file: ${file}"
-    return 0  # Success
 }
 
 # Sign kernel modules
 sign_kernel_modules() {
     local modules_dir="/usr/lib/modules/$(uname -r)"
-    echo "🔏 Signing kernel modules in: ${modules_dir}..."
-    
-    # Check if the directory exists
-    if [[ ! -d "$modules_dir" ]]; then
-        echo "❌ Kernel modules directory does not exist: ${modules_dir}. Skipping."
-        return 0
-    fi
-    
-    # Find and sign kernel modules
-    find "$modules_dir" -type f -name '*.ko*' -exec sign_file "{}" \;
+    [[ ! -d "$modules_dir" ]] && echo "❌ No kernel modules found: $modules_dir" && return 0
+    echo "🔏 Signing kernel modules in: $modules_dir..."
+
+    find "$modules_dir/kernel" "$modules_dir/extramodules" -type f \( -name '*.ko' -o -name '*.ko.zst' \) 2>/dev/null | while read -r module; do
+        if [[ "$module" == *.ko.zst ]]; then
+            zstd -d --rm "$module" -o "${module%.zst}"
+            module="${module%.zst}"
+        fi
+        sign_file "$module"
+        [[ -f "$module" ]] && zstd --rm "$module"
+    done
+
     echo "✅ Kernel modules signed."
 }
 
 # Main execution
+move_kernel_image
 generate_initramfs
 sign_file "$KERNEL_IMAGE"
 sign_file "$INITRAMFS_IMAGE"
+#sign_kernel_modules
 
-# Sign kernel modules
-sign_kernel_modules
-
-# Sign the EFI files
+# Sign EFI files
 for efi_file in "${EFI_FILES[@]}"; do
     sign_file "$efi_file"
 done
