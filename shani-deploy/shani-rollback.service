@@ -1,0 +1,11 @@
+[Unit]
+Description=Rollback system on boot failure for Shani OS
+Conflicts=rescue.service emergency.service
+After=systemd-boot-failed.service
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/rollback-system.sh
+RemainAfterExit=true
+StandardOutput=journal

@@ -1,0 +1,36 @@
+# Maintainer: Your Name <your@email.com>
+pkgname=shani-deployment
+pkgver=1.2
+pkgrel=1
+pkgdesc="Safe transactional deployment system for Shani OS"
+arch=('x86_64')
+license=('GPL3')
+depends=(
+    'btrfs-progs'
+    'zstd'
+    'sbsigntools'
+    'efitools'
+    'dracut'
+    'systemd'
+    'jq'
+)
+source=(
+    'deploy-image.sh'
+    'gen-efi.sh'
+    'rollback-system.sh'
+    'shani-deploy.service'
+    'shani-deploy.timer'
+    'shani-rollback.service'
+)
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+package() {
+    install -Dm755 deploy-image.sh "$pkgdir/usr/local/bin/deploy-image"
+    install -Dm755 gen-efi.sh "$pkgdir/usr/local/bin/gen-efi"
+    install -Dm755 rollback-system.sh "$pkgdir/usr/local/bin/rollback-system"
+    
+    # Systemd units
+    install -Dm644 shani-deploy.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 shani-deploy.timer -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 shani-rollback.service -t "$pkgdir/usr/lib/systemd/system/"
+}

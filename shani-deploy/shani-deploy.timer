@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodic System Updates
+
+[Timer]
+OnBootSec=15m
+OnUnitActiveSec=1h
+RandomizedDelaySec=30m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
