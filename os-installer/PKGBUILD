@@ -6,7 +6,7 @@ pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver"
         'list_disk_if_zero.patch')
-sha256sums=('SKIP' '726189d3b61233c9ec6d75522c99f9b14f47a56674150d2fcb7029e265df42c9')
+sha256sums=('SKIP' 'SKIP')
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
