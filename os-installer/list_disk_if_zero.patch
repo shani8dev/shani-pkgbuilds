@@ -37,4 +37,3 @@ index 228acd7..cfef77a 100644
              required_size_str = disk_provider.disk_size_to_str(self.minimum_disk_size)
 -- 
 2.47.0
-
