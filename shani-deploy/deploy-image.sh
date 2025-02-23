@@ -1,47 +1,75 @@
 #!/bin/bash
 # deploy-image.sh – Update the candidate slot (blue–green deployment).
-# Determines the active slot from /deployment/current-slot and updates the alternate (candidate) slot.
-# Backs up the candidate slot before updating, applies the update transactionally using a temporary staging subvolume,
-# and regenerates UKI entries so that systemd-boot will boot the candidate on next reboot.
-# Updates /deployment/current-slot to mark the candidate as active.
+#
+# This script updates the candidate slot of a blue–green deployment.
+# Although the running system is booted from one of the blue or green subvolumes,
+# the update process mounts the Btrfs top-level (using subvolid=5) from the device
+# so that the shared deployment subvolume (named "deployment") and its children can be accessed.
+#
+# The script then:
+#   1. Downloads and verifies the new image.
+#   2. Checks if the new version differs from the currently deployed version.
+#   3. Backs up the candidate slot (if it exists), clears its read-only property,
+#      and deletes it to prepare for the update.
+#   4. Receives the full update image (which always contains a subvolume "shanios_base")
+#      into a temporary subvolume, then snapshots it as the new candidate slot.
+#   5. Regenerates UKI entries for Secure Boot.
+#   6. Updates the slot marker files to switch the active slot.
+#
 # Usage: ./deploy-image.sh
+
 set -Eeuo pipefail
 IFS=$'\n\t'
-trap 'echo "[ERROR] Error at ${BASH_SOURCE[0]} line ${LINENO}: ${BASH_COMMAND}" >&2; exit 1' ERR
+trap 'echo "[DEPLOY][ERROR] Error at ${BASH_SOURCE[0]} line ${LINENO}: ${BASH_COMMAND}" >&2; exit 1' ERR
 
-### Configuration
+##############################
+# Configuration
+##############################
 OS_NAME="shanios"
 BUILD_VERSION="$(date +%Y%m%d)"
 OUTPUT_DIR="./cache/output"
-DEPLOYMENT_DIR="/deployment"   # Contains both data and system subvolumes.
+# The deployment subvolume created during install is named "deployment"
+DEPLOYMENT_DIR="deployment"
 LATEST_URL="https://example.com/path/to/latest.txt"
 IMAGE_BASE_URL="https://example.com/path/to"
 PROFILE="default"
 IMAGE_NAME="${OS_NAME}-${BUILD_VERSION}-${PROFILE}.zst"
 IMAGE_URL="${IMAGE_BASE_URL}/${IMAGE_NAME}.zsync"
-DOWNLOAD_DIR="${DEPLOYMENT_DIR}/downloads"
+# Downloads are stored under the data subvolume (already created during install)
+DOWNLOAD_DIR="/deployment/data/downloads"
 ZSYNC_CACHE_DIR="${DOWNLOAD_DIR}/zsync_cache"
+# Temporary mount point for accessing the Btrfs top-level.
 MOUNT_DIR="/mnt"
+# Path to the UKI regeneration script.
 GENEFI_SCRIPT="/usr/local/bin/gen-efi.sh"
 
+# Minimum free space thresholds (in MB)
 MIN_FREE_SPACE_MB=10240
 MIN_METADATA_FREE_MB=512
+
 LATEST_FILE="${DOWNLOAD_DIR}/latest.txt"
 OLD_LATEST_FILE="${DOWNLOAD_DIR}/old.txt"
-CURRENT_SLOT_FILE="${DEPLOYMENT_DIR}/current-slot"  # Contains "blue" or "green"
-PREVIOUS_SLOT_FILE="${DEPLOYMENT_DIR}/previous-slot"
 
+# Files for slot management are stored within the deployment subvolume.
+# When mounted via the top-level, these reside at:
+#   $MOUNT_DIR/deployment/current-slot and $MOUNT_DIR/deployment/previous-slot
+ROOTLABEL="shani_root"
+ROOT_DEV="/dev/disk/by-label/${ROOTLABEL}"
 
-echo "[DEPLOY] Checking disk space on ${DEPLOYMENT_DIR}..."
-free_space_mb=$(df --output=avail "$DEPLOYMENT_DIR" | tail -n1)
+##############################
+# Step 1: Download and verify the image
+##############################
+echo "[DEPLOY] Checking disk space on /deployment..."
+free_space_mb=$(df --output=avail "/deployment" 2>/dev/null | tail -n1 || echo 0)
 free_space_mb=$(( free_space_mb / 1024 ))
-[ "$free_space_mb" -lt "$MIN_FREE_SPACE_MB" ] && { echo "[DEPLOY] Not enough disk space"; exit 1; }
+if [ "$free_space_mb" -lt "$MIN_FREE_SPACE_MB" ]; then
+  echo "[DEPLOY] Not enough disk space (available: ${free_space_mb} MB, required: ${MIN_FREE_SPACE_MB} MB)"
+  exit 1
+fi
 echo "[DEPLOY] Disk space OK."
 
 echo "[DEPLOY] Preparing download environment..."
-if ! btrfs subvolume list "$DEPLOYMENT_DIR" | grep -q "downloads\$"; then
-  btrfs subvolume create "$DOWNLOAD_DIR" || { echo "[DEPLOY] Failed to create downloads subvolume"; exit 1; }
-fi
+# The downloads subvolume is already created under /deployment/data/downloads.
 mkdir -p "$ZSYNC_CACHE_DIR"
 
 echo "[DEPLOY] Downloading latest image info..."
@@ -65,12 +93,23 @@ gpg --verify "${IMAGE_NAME}.asc" "$IMAGE_NAME" || { echo "[DEPLOY] PGP verificat
 echo "[DEPLOY] Image verification successful."
 
 NEW_VERSION=$(echo "$IMAGE_NAME" | cut -d '-' -f2)
-if [ -f "$CURRENT_SLOT_FILE" ]; then
-    ACTIVE_SLOT=$(cat "$CURRENT_SLOT_FILE")
+
+##############################
+# Step 2: Mount Btrfs top-level and determine active slot
+##############################
+echo "[DEPLOY] Mounting Btrfs top-level..."
+mkdir -p "$MOUNT_DIR"
+mount -o subvolid=5 "$ROOT_DEV" "$MOUNT_DIR" || { echo "[DEPLOY] Mounting failed"; exit 1; }
+
+# Read active slot from the deployment subvolume.
+ACTIVE_SLOT_FILE="$MOUNT_DIR/${DEPLOYMENT_DIR}/current-slot"
+if [ -f "$ACTIVE_SLOT_FILE" ]; then
+    ACTIVE_SLOT=$(cat "$ACTIVE_SLOT_FILE")
 else
     ACTIVE_SLOT="blue"
-    echo "$ACTIVE_SLOT" > "$CURRENT_SLOT_FILE"
+    echo "$ACTIVE_SLOT" > "$ACTIVE_SLOT_FILE"
 fi
+
 if [ "$ACTIVE_SLOT" = "blue" ]; then
     CANDIDATE_SLOT="green"
 else
@@ -78,58 +117,80 @@ else
 fi
 echo "[DEPLOY] Active slot: ${ACTIVE_SLOT}; Candidate slot: ${CANDIDATE_SLOT}"
 
-CURRENT_VERSION=$(cat "${DEPLOYMENT_DIR}/system/${ACTIVE_SLOT}/etc/shani-version" 2>/dev/null || echo "none")
+# Check currently deployed version from the active slot.
+CURRENT_VERSION=$(cat "$MOUNT_DIR/${DEPLOYMENT_DIR}/system/${ACTIVE_SLOT}/etc/shani-version" 2>/dev/null || echo "none")
 if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
   echo "[DEPLOY] Deployed version ($CURRENT_VERSION) matches new image. Skipping update."
+  umount -R "$MOUNT_DIR"
   exit 0
 fi
 
-# Mount deployment top-level.
-mkdir -p "$MOUNT_DIR"
-mount -o subvolid=5 "$DEPLOYMENT_DIR" "$MOUNT_DIR" || { echo "[DEPLOY] Mounting failed"; exit 1; }
+##############################
+# Step 3: Update candidate slot
+##############################
+# Define candidate slot path.
+CANDIDATE_PATH="$MOUNT_DIR/${DEPLOYMENT_DIR}/system/${CANDIDATE_SLOT}"
 
-# Backup the candidate slot.
-if btrfs subvolume list "$MOUNT_DIR" | grep -q "system/${CANDIDATE_SLOT}\$"; then
-  CANDIDATE_BACKUP="${CANDIDATE_SLOT}_backup_$(date +%Y%m%d%H%M)"
-  btrfs subvolume snapshot "$MOUNT_DIR/system/${CANDIDATE_SLOT}" "$MOUNT_DIR/system/$CANDIDATE_BACKUP" || { echo "[DEPLOY] Candidate backup snapshot failed"; exit 1; }
-  echo "[DEPLOY] Created candidate backup: $CANDIDATE_BACKUP"
+# If candidate subvolume exists, back it up and delete it.
+if btrfs subvolume list "$MOUNT_DIR" | grep -q "path ${DEPLOYMENT_DIR}/system/${CANDIDATE_SLOT}\$"; then
+    CANDIDATE_BACKUP="${CANDIDATE_SLOT}_backup_$(date +%Y%m%d%H%M)"
+    btrfs subvolume snapshot "$CANDIDATE_PATH" "$MOUNT_DIR/${DEPLOYMENT_DIR}/system/$CANDIDATE_BACKUP" \
+      || { echo "[DEPLOY] Candidate backup snapshot failed"; exit 1; }
+    echo "[DEPLOY] Created candidate backup: $CANDIDATE_BACKUP"
+    # Clear read-only property and delete the existing candidate.
+    btrfs property set -f -ts "$CANDIDATE_PATH" ro false || { echo "[DEPLOY] Failed to clear candidate read-only property"; exit 1; }
+    btrfs subvolume delete "$CANDIDATE_PATH" || { echo "[DEPLOY] Failed to delete existing candidate slot"; exit 1; }
 fi
 
-# Update candidate slot.
-btrfs property set -f -ts "$MOUNT_DIR/system/$CANDIDATE_SLOT" ro false || { echo "[DEPLOY] Failed to clear candidate read-only property"; exit 1; }
-TEMP_SUBVOL="temp_update"
-btrfs subvolume create "$MOUNT_DIR/$TEMP_SUBVOL" || { echo "[DEPLOY] Temporary subvolume creation failed"; exit 1; }
-if [ -n "$CANDIDATE_BACKUP" ]; then
-  echo "[DEPLOY] Performing incremental update on candidate slot..."
-  btrfs send -p "$MOUNT_DIR/system/$CANDIDATE_BACKUP" "$MOUNT_DIR/$TEMP_SUBVOL" | btrfs receive "$MOUNT_DIR/system/$CANDIDATE_SLOT" || {
-    echo "[DEPLOY] Incremental update failed; rolling back candidate..."
-    btrfs subvolume delete "$MOUNT_DIR/system/$CANDIDATE_SLOT"
-    btrfs subvolume snapshot "$MOUNT_DIR/system/$CANDIDATE_BACKUP" "$MOUNT_DIR/system/$CANDIDATE_SLOT"
-    exit 1
-  }
+# Create a temporary subvolume for the update.
+TEMP_SUBVOL="$MOUNT_DIR/temp_update"
+btrfs subvolume create "$TEMP_SUBVOL" || { echo "[DEPLOY] Temporary subvolume creation failed"; exit 1; }
+
+echo "[DEPLOY] Receiving full update image into temporary subvolume..."
+zstd -d --long=31 -T0 "$DOWNLOAD_DIR/$IMAGE_NAME" -c | btrfs receive "$TEMP_SUBVOL" \
+    || { echo "[DEPLOY] Image extraction failed"; exit 1; }
+
+# Verify that the received update contains the expected subvolume "shanios_base"
+if [ -d "$TEMP_SUBVOL/shanios_base" ]; then
+    echo "[DEPLOY] Found 'shanios_base' in update image. Creating candidate slot snapshot..."
+    btrfs subvolume snapshot "$TEMP_SUBVOL/shanios_base" "$CANDIDATE_PATH" \
+        || { echo "[DEPLOY] Snapshot swap failed"; exit 1; }
 else
-  echo "[DEPLOY] No candidate backup found. Performing full update on candidate slot..."
-  zstd -d --long -T0 "$DOWNLOAD_DIR/$IMAGE_NAME" -c | btrfs receive "$MOUNT_DIR/$TEMP_SUBVOL" || { echo "[DEPLOY] Image extraction failed"; exit 1; }
-  btrfs subvolume snapshot "$MOUNT_DIR/$TEMP_SUBVOL" "$MOUNT_DIR/system/$CANDIDATE_SLOT" || { echo "[DEPLOY] Snapshot swap failed"; exit 1; }
+    echo "[DEPLOY] Received image does not contain expected 'shanios_base' subvolume"
+    exit 1
 fi
 
-btrfs property set -f -ts "$MOUNT_DIR/system/$CANDIDATE_SLOT" ro true || { echo "[DEPLOY] Failed to set candidate as read-only"; exit 1; }
-btrfs subvolume delete "$MOUNT_DIR/$TEMP_SUBVOL" || { echo "[DEPLOY] Deleting temporary subvolume failed"; exit 1; }
+btrfs property set -f -ts "$CANDIDATE_PATH" ro true || { echo "[DEPLOY] Failed to set candidate as read-only"; exit 1; }
+btrfs subvolume delete "$TEMP_SUBVOL" || { echo "[DEPLOY] Deleting temporary subvolume failed"; exit 1; }
 umount -R "$MOUNT_DIR" || { echo "[DEPLOY] Unmounting failed"; exit 1; }
 echo "[DEPLOY] Candidate slot update complete."
 
+##############################
+# Step 4: Update Secure Boot configuration
+##############################
 echo "[DEPLOY] Updating Secure Boot configuration..."
 mkdir -p "$MOUNT_DIR"
-mount -o subvol="system/${CANDIDATE_SLOT}" "$DEPLOYMENT_DIR" "$MOUNT_DIR" || { echo "[DEPLOY] Mounting updated candidate failed"; exit 1; }
-mount LABEL=shani_boot "$MOUNT_DIR/boot/efi" || { echo "[DEPLOY] Mounting EFI failed"; exit 1; }
+# Mount the candidate system subvolume for UKI generation.
+mount -o "subvol=${DEPLOYMENT_DIR}/system/${CANDIDATE_SLOT}" "$ROOT_DEV" "$MOUNT_DIR" \
+    || { echo "[DEPLOY] Mounting updated candidate failed"; exit 1; }
+mount --mkdir -o ro LABEL=shani_boot "$MOUNT_DIR/boot/efi" \
+    || { echo "[DEPLOY] Mounting EFI failed"; exit 1; }
 if [[ -x "$GENEFI_SCRIPT" ]]; then
-  arch-chroot "$MOUNT_DIR" "$GENEFI_SCRIPT" configure "$CANDIDATE_SLOT" || { echo "[DEPLOY] UKI generation failed"; exit 1; }
+  arch-chroot "$MOUNT_DIR" "$GENEFI_SCRIPT" configure "$CANDIDATE_SLOT" \
+      || { echo "[DEPLOY] UKI generation failed"; exit 1; }
 fi
 umount -R "$MOUNT_DIR"
 
-# Switch active slot by updating the current-slot record.
-# In deploy-image.sh after determining ACTIVE_SLOT and CANDIDATE_SLOT:
-echo "$ACTIVE_SLOT" > "$PREVIOUS_SLOT_FILE"
-echo "$CANDIDATE_SLOT" > "$CURRENT_SLOT_FILE"
+##############################
+# Step 5: Switch active slot marker
+##############################
+echo "[DEPLOY] Remounting top-level to update slot marker files..."
+mkdir -p "$MOUNT_DIR"
+mount -o subvolid=5 "$ROOT_DEV" "$MOUNT_DIR" || { echo "[DEPLOY] Mounting failed"; exit 1; }
+echo "[DEPLOY] Switching active slot..."
+echo "$ACTIVE_SLOT" > "$MOUNT_DIR/${DEPLOYMENT_DIR}/previous-slot"
+echo "$CANDIDATE_SLOT" > "$MOUNT_DIR/${DEPLOYMENT_DIR}/current-slot"
+umount -R "$MOUNT_DIR"
+
 echo "[DEPLOY] Deployment finished successfully. Next boot will use slot: ${CANDIDATE_SLOT}"
 
