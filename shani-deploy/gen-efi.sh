@@ -46,17 +46,18 @@ generate_cmdline() {
     if [ -f "$CMDLINE_FILE" ]; then
         log "Reusing existing kernel cmdline from $CMDLINE_FILE"
     else
-        local cmdline="quiet splash rootflags=subvol=@${slot}"
+        local uuid
+        uuid=$(blkid -s UUID -o value /dev/disk/by-label/"$ROOTLABEL")
+        local cmdline="quiet splash root=UUID=${uuid} ro rootfstype=btrfs rootflags=subvol=@${slot},compress=zstd,space_cache=v2,autodefrag"
         if [ -e "/dev/mapper/${ROOTLABEL}" ]; then
-            cmdline+=" rd.luks.uuid=$(blkid -s UUID -o value /dev/mapper/${ROOTLABEL})"
-            cmdline+=" rd.luks.options=$(blkid -s UUID -o value /dev/mapper/${ROOTLABEL})=tpm2-device=auto"
+		local luks_uuid
+    		luks_uuid=$(blkid -s UUID -o value /dev/mapper/${ROOTLABEL})
+            cmdline+=" rd.luks.uuid=${luks_uuid} rd.luks.options=${luks_uuid}=tpm2-device=auto"
         fi
         if [ -f "/data/swap/swapfile" ]; then
-            local root_uuid
-            root_uuid=$(blkid -s UUID -o value /dev/disk/by-label/"$ROOTLABEL")
             local swap_offset
             swap_offset=$(btrfs inspect-internal map-swapfile -r /data/swap/swapfile | awk '{print $NF}')
-            cmdline+=" resume=UUID=${root_uuid} resume_offset=${swap_offset}"
+            cmdline+=" resume=UUID=${uuid} resume_offset=${swap_offset}"
         fi
         echo "$cmdline" > "$CMDLINE_FILE"
         chmod 0644 "$CMDLINE_FILE"
@@ -70,7 +71,7 @@ generate_uki() {
     kernel_ver=$(get_kernel_version)
     local uki_path="$EFI_DIR/${OS_NAME}-${slot}.efi"
     generate_cmdline "$slot"
-    dracut --force --uefi --kver "$kernel_ver" --cmdline "$(cat "$CMDLINE_FILE")" "$uki_path"
+    dracut --force --uefi --kver "$kernel_ver" --kernel-cmdline "$(cat "$CMDLINE_FILE")" "$uki_path"
     sign_efi_binary "$uki_path"
     cat > "$BOOT_ENTRIES/${OS_NAME}-${slot}.conf" <<EOF
 title   ${OS_NAME}-${slot}
