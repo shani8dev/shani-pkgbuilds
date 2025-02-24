@@ -6,6 +6,13 @@ Requires=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/deploy-image
+ExecStart=/usr/local/bin/deploy-image.sh
 StandardOutput=journal
+StandardError=journal
 TimeoutStopSec=300
+Restart=on-failure
+RestartPreventExitStatus=1
+
+[Install]
+WantedBy=multi-user.target
+
