@@ -36,7 +36,7 @@ post_upgrade() {
 	systemctl enable irqbalance
 	systemctl --global enable psd
 	systemctl --global enable gamemoded
-	plymouth-set-default-theme -R shani-bgrt
+	plymouth-set-default-theme bgrt
 	echo "Performing misc postinstall operations..."
 	update_fonts
 	update_gtk

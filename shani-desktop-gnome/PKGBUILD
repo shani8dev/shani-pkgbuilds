@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
@@ -46,6 +46,7 @@ depends=(
 	pods
 	boxbuddy
 	easyeffects
+	lsp-plugins-lv2
 	gnote
 	errands
 	fragments
@@ -69,6 +70,7 @@ depends=(
 	impression
 	warp
 	curtail
+	handbrake
 	switcheroo
 	switcheroo-control
 	power-profiles-daemon

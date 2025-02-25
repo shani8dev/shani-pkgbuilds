@@ -11,83 +11,153 @@
 
 set -Eeuo pipefail
 
+# Check for required dependencies
+REQUIRED_CMDS=("blkid" "dracut" "sbsign" "sbverify" "bootctl" "ls" "grep" "sort" "tail" "awk" "mkdir" "cat")
+for cmd in "${REQUIRED_CMDS[@]}"; do
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI][ERROR] Required command '$cmd' not found. Please install it." >&2
+        exit 1
+    fi
+done
+
+# Must run as root.
 if [[ $EUID -ne 0 ]]; then
     echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI][ERROR] Must run as root." >&2
     exit 1
 fi
+
+# Validate command-line arguments.
+if [[ "${1:-}" != "configure" ]]; then
+    echo "Usage: $0 configure <target_slot>"
+    exit 1
+fi
+
+if [[ -z "${2:-}" ]]; then
+    echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI][ERROR] Missing target slot. Usage: $0 configure <target_slot>" >&2
+    exit 1
+fi
+
+TARGET_SLOT="$2"
 
 # Configuration
 OS_NAME="shanios"
 ESP="/boot/efi"
 EFI_DIR="$ESP/EFI/${OS_NAME}"
 BOOT_ENTRIES="$ESP/loader/entries"
-CMDLINE_FILE="/etc/kernel/install_cmdline_$2"
+CMDLINE_FILE="/etc/kernel/install_cmdline_${TARGET_SLOT}"
 MOK_KEY="/usr/share/secureboot/keys/MOK.key"
 MOK_CRT="/usr/share/secureboot/keys/MOK.crt"
 ROOTLABEL="shani_root"
 
+# Ensure required directories exist.
 mkdir -p "$ESP" "$EFI_DIR" "$BOOT_ENTRIES"
 
+# Logging function.
 log() {
     echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI] $*"
 }
 
+# Error handling function.
+error_exit() {
+    log "ERROR: $*"
+    exit 1
+}
+
+# Sign the EFI binary.
 sign_efi_binary() {
-    sbsign --key "$MOK_KEY" --cert "$MOK_CRT" --output "$1" "$1"
-    sbverify --cert "$MOK_CRT" "$1"
+    local file="$1"
+    sbsign --key "$MOK_KEY" --cert "$MOK_CRT" --output "$file" "$file" || error_exit "sbsign failed for $file"
+    sbverify --cert "$MOK_CRT" "$file" || error_exit "sbverify failed for $file"
 }
 
+# Retrieve the latest kernel version.
 get_kernel_version() {
-    ls -1 /usr/lib/modules/ | grep -E '^[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1
+    local kernel_ver
+    kernel_ver=$(ls -1 /usr/lib/modules/ 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+    if [[ -z "$kernel_ver" ]]; then
+        error_exit "No valid kernel version found in /usr/lib/modules/"
+    fi
+    echo "$kernel_ver"
 }
 
+# Generate (or reuse) the kernel command line file.
 generate_cmdline() {
     local slot="$1"
     if [ -f "$CMDLINE_FILE" ]; then
         log "Reusing existing kernel cmdline from $CMDLINE_FILE"
     else
-        local uuid
-        uuid=$(blkid -s UUID -o value /dev/disk/by-label/"$ROOTLABEL")
-        local cmdline="quiet splash root=UUID=${uuid} ro rootfstype=btrfs rootflags=subvol=@${slot},compress=zstd,space_cache=v2,autodefrag"
+        # Retrieve the filesystem UUID from the partition labeled with ROOTLABEL.
+        local fs_uuid
+        fs_uuid=$(blkid -s UUID -o value /dev/disk/by-label/"${ROOTLABEL}" 2>/dev/null || true)
+        if [[ -z "$fs_uuid" ]]; then
+            error_exit "Failed to retrieve filesystem UUID for label ${ROOTLABEL}"
+        fi
+
+        # Check if encryption is enabled by testing if /dev/mapper/${ROOTLABEL} exists.
+        local rootdev encryption_params resume_uuid
         if [ -e "/dev/mapper/${ROOTLABEL}" ]; then
-		local luks_uuid
-    		luks_uuid=$(blkid -s UUID -o value /dev/mapper/${ROOTLABEL})
-            cmdline+=" rd.luks.uuid=${luks_uuid} rd.luks.options=${luks_uuid}=tpm2-device=auto"
+            # Encryption enabled: retrieve LUKS UUID.
+            local luks_uuid
+            luks_uuid=$(blkid -s UUID -o value /dev/mapper/"${ROOTLABEL}" 2>/dev/null || true)
+            if [[ -z "$luks_uuid" ]]; then
+                error_exit "Failed to retrieve LUKS UUID for /dev/mapper/${ROOTLABEL}"
+            fi
+            rootdev="/dev/mapper/${ROOTLABEL}"
+            encryption_params=" rd.luks.uuid=${luks_uuid} rd.luks.name=${luks_uuid}=${ROOTLABEL} rd.luks.options=${luks_uuid}=tpm2-device=auto"
+            resume_uuid="${luks_uuid}"
+        else
+            # No encryption: use filesystem UUID.
+            rootdev="UUID=${fs_uuid}"
+            encryption_params=""
+            resume_uuid="${fs_uuid}"
         fi
-        if [ -f "/data/swap/swapfile" ]; then
+
+        # Build the kernel command line.
+        local cmdline="quiet splash ro rootfstype=btrfs rootflags=subvol=@${slot},compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
+
+        # Append swap parameters if a swap file exists.
+        if [ -f /swap/swapfile ]; then
             local swap_offset
-            swap_offset=$(btrfs inspect-internal map-swapfile -r /data/swap/swapfile | awk '{print $NF}')
-            cmdline+=" resume=UUID=${uuid} resume_offset=${swap_offset}"
+            swap_offset=$(btrfs inspect-internal map-swapfile -r /swap/swapfile | awk '{print $NF}' 2>/dev/null || true)
+            if [[ -n "$swap_offset" ]]; then
+                cmdline+=" resume=UUID=${resume_uuid} resume_offset=${swap_offset}"
+            else
+                log "WARNING: Swap file exists but failed to determine swap offset."
+            fi
         fi
+
         echo "$cmdline" > "$CMDLINE_FILE"
         chmod 0644 "$CMDLINE_FILE"
         log "Kernel cmdline generated for ${slot} (saved in ${CMDLINE_FILE})"
     fi
 }
 
+# Generate the Unified Kernel Image.
 generate_uki() {
     local slot="$1"
     local kernel_ver
     kernel_ver=$(get_kernel_version)
     local uki_path="$EFI_DIR/${OS_NAME}-${slot}.efi"
     generate_cmdline "$slot"
-    dracut --force --uefi --kver "$kernel_ver" --kernel-cmdline "$(cat "$CMDLINE_FILE")" "$uki_path"
+    local kernel_cmdline
+    kernel_cmdline=$(<"$CMDLINE_FILE")
+    if [[ -z "$kernel_cmdline" ]]; then
+        error_exit "Kernel command line is empty."
+    fi
+    dracut --force --uefi --kver "$kernel_ver" --kernel-cmdline "$kernel_cmdline" "$uki_path" || error_exit "dracut failed"
     sign_efi_binary "$uki_path"
     cat > "$BOOT_ENTRIES/${OS_NAME}-${slot}.conf" <<EOF
 title   ${OS_NAME}-${slot}
 efi     /EFI/${OS_NAME}/${OS_NAME}-${slot}.efi
 EOF
-    bootctl set-default "${OS_NAME}-${slot}.conf"
+    bootctl set-default "${OS_NAME}-${slot}.conf" || error_exit "bootctl set-default failed"
 }
 
+# Main case switch.
 case "${1:-}" in
     configure)
-        if [[ -z "${2:-}" ]]; then
-            echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI][ERROR] Missing target slot. Usage: $0 configure <target_slot>" >&2
-            exit 1
-        fi
-        generate_uki "$2"
-        log "UKI generated for $2"
+        generate_uki "$TARGET_SLOT"
+        log "UKI generated for ${TARGET_SLOT}"
         ;;
     *)
         echo "Usage: $0 configure <target_slot>"
