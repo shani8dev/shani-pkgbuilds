@@ -113,7 +113,7 @@ generate_cmdline() {
         fi
 
         # Build the kernel command line.
-        local cmdline="quiet splash rootfstype=btrfs rootflags=subvol=@${slot},ro,compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
+        local cmdline="quiet splash systemd.volatile=state rootfstype=btrfs rootflags=subvol=@${slot},ro,noatime,compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
 
         # Append swap parameters if a swap file exists.
         if [ -f /swap/swapfile ]; then
