@@ -2,8 +2,8 @@
 
 pkgname=os-installer-config
 pkgver=0.0.1
-pkgrel=14
-_commit='64ee0a89fc1624d299620526f90a6ea52fe4b851'  # Replace with the specific commit hash
+pkgrel=15
+_commit='6e764607a8c5304ff77c3da2cfb912150d9e9bdb'  # Replace with the specific commit hash
 pkgdesc="Default Shani OS configuration files for the os-installer"
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
 arch=('x86_64')
