@@ -156,12 +156,8 @@ EOF
 # Main case switch.
 case "${1:-}" in
     configure)
-        if [[ -z "${2:-}" ]]; then
-            echo "$(date "+%Y-%m-%d %H:%M:%S") [GENEFI][ERROR] Missing target slot. Usage: $0 configure <target_slot>" >&2
-            exit 1
-        fi
-        generate_uki "$2"
-        log "UKI generated for $2"
+        generate_uki "$TARGET_SLOT"
+        log "UKI generated for ${TARGET_SLOT}"
         ;;
     *)
         echo "Usage: $0 configure <target_slot>"
