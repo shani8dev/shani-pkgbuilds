@@ -10,4 +10,3 @@ Unit=deploy-image.service
 
 [Install]
 WantedBy=timers.target
-

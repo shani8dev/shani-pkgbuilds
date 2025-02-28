@@ -1,7 +1,7 @@
 # Maintainer: Your Name <your@email.com>
 pkgname=shani-deployment
 pkgver=1.2
-pkgrel=7
+pkgrel=9
 pkgdesc="Safe transactional deployment system for Shani OS"
 arch=('x86_64')
 license=('GPL3')
@@ -13,24 +13,33 @@ depends=(
     'dracut'
     'systemd'
     'jq'
+    'zsync'
 )
 source=(
     'deploy-image.sh'
     'gen-efi.sh'
-    'rollback-system.sh'
+    'check-boot-failure.sh'
     'shani-deploy.service'
     'shani-deploy.timer'
     'shani-rollback.service'
+    'check-boot-failure.service'
+    'check-boot-failure.timer'
+    'mark-boot-ok.service'
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
+    # Install main scripts
     install -Dm755 deploy-image.sh "$pkgdir/usr/local/bin/deploy-image"
     install -Dm755 gen-efi.sh "$pkgdir/usr/local/bin/gen-efi"
-    install -Dm755 rollback-system.sh "$pkgdir/usr/local/bin/rollback-system"
-    
-    # Systemd units
-    install -Dm644 shani-deploy.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 shani-deploy.timer -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 shani-rollback.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm755 check-boot-failure.sh "$pkgdir/usr/local/bin/check-boot-failure"
+
+    # Install systemd units
+    install -Dm644 image-deploy.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 image-deploy.timer -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 rollback-system.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 check-boot-failure.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 check-boot-failure.timer -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 mark-boot-ok.service -t "$pkgdir/usr/lib/systemd/system/"
 }
+install="$pkgname.install"
