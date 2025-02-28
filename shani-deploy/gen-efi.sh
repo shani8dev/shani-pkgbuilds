@@ -86,31 +86,45 @@ generate_cmdline() {
     if [ -f "$CMDLINE_FILE" ]; then
         log "Reusing existing kernel cmdline from $CMDLINE_FILE"
     else
-        # Retrieve the filesystem UUID from the partition labeled with ROOTLABEL.
-        local fs_uuid
-        fs_uuid=$(blkid -s UUID -o value /dev/disk/by-label/"${ROOTLABEL}" 2>/dev/null || true)
-        if [[ -z "$fs_uuid" ]]; then
-            error_exit "Failed to retrieve filesystem UUID for label ${ROOTLABEL}"
-        fi
+		# Get the filesystem UUID from the partition labeled with ROOTLABEL.
+		# This UUID belongs to the btrfs filesystem (inside the decrypted mapping).
+		local fs_uuid
+		fs_uuid=$(blkid -s UUID -o value /dev/disk/by-label/"${ROOTLABEL}" 2>/dev/null || true)
+		if [[ -z "$fs_uuid" ]]; then
+		    error_exit "Failed to retrieve filesystem UUID for label ${ROOTLABEL}"
+		fi
 
-        # Check if encryption is enabled by testing if /dev/mapper/${ROOTLABEL} exists.
-        local rootdev encryption_params resume_uuid
-        if [ -e "/dev/mapper/${ROOTLABEL}" ]; then
-            # Encryption enabled: retrieve LUKS UUID.
-            local luks_uuid
-            luks_uuid=$(blkid -s UUID -o value /dev/mapper/"${ROOTLABEL}" 2>/dev/null || true)
-            if [[ -z "$luks_uuid" ]]; then
-                error_exit "Failed to retrieve LUKS UUID for /dev/mapper/${ROOTLABEL}"
-            fi
-            rootdev="/dev/mapper/${ROOTLABEL}"
-            encryption_params=" rd.luks.uuid=${luks_uuid} rd.luks.name=${luks_uuid}=${ROOTLABEL} rd.luks.options=${luks_uuid}=tpm2-device=auto"
-            resume_uuid="${luks_uuid}"
-        else
-            # No encryption: use filesystem UUID.
-            rootdev="UUID=${fs_uuid}"
-            encryption_params=""
-            resume_uuid="${fs_uuid}"
-        fi
+		local rootdev encryption_params resume_uuid
+
+		if [ -e "/dev/mapper/${ROOTLABEL}" ]; then
+		    # Encryption is enabled.
+		    # Determine the underlying block device that contains the LUKS header.
+		    # lsblk -no PKNAME returns the parent device name (e.g., "sda2").
+		    local parent
+		    parent=$(lsblk -no PKNAME /dev/mapper/"${ROOTLABEL}" | head -n 1)
+		    if [[ -z "$parent" ]]; then
+		        error_exit "Failed to determine underlying block device for /dev/mapper/${ROOTLABEL}"
+		    fi
+		    local underlying="/dev/${parent}"
+		    
+		    # Retrieve the LUKS header UUID from the underlying device.
+		    local luks_uuid
+		    luks_uuid=$(cryptsetup luksUUID "$underlying" 2>/dev/null || true)
+		    if [[ -z "$luks_uuid" ]]; then
+		        error_exit "Failed to retrieve LUKS UUID from underlying device $underlying"
+		    fi
+		    
+		    # Set root device to the mapped device (decrypted filesystem).
+		    rootdev="/dev/mapper/${ROOTLABEL}"
+		    # Build encryption parameters for the kernel command line.
+		    encryption_params=" rd.luks.uuid=${luks_uuid} rd.luks.name=${luks_uuid}=${ROOTLABEL} rd.luks.options=discard"
+		    resume_uuid="${luks_uuid}"
+		else
+		    # If encryption is not enabled, fallback to filesystem UUID.
+		    rootdev="UUID=${fs_uuid}"
+		    encryption_params=""
+		    resume_uuid="${fs_uuid}"
+		fi
 
         # Build the kernel command line.
         local cmdline="quiet splash systemd.volatile=state rootfstype=btrfs rootflags=subvol=@${slot},ro,noatime,compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
