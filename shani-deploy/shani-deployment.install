@@ -3,9 +3,9 @@ post_install() {
 }
 
 post_upgrade() {
-	systemctl enable shani-deploy.service
-	systemctl enable shani-deploy.timer
-	systemctl enable shani-rollback.service
+	systemctl enable deploy-image.service
+	systemctl enable deploy-image.timer
+	systemctl enable rollback-system.service
 	systemctl enable check-boot-failure.service
 	systemctl enable check-boot-failure.timer
 	systemctl enable mark-boot-ok.service
