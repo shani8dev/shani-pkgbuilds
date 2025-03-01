@@ -8,7 +8,7 @@ url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
 pkgdesc="Shani OS settings"
 
-_commit='ee375109e85c2c1c14bc9ada31fbef75c705f57d'
+_commit='0fb88c7e4d49ace62df5356025c743590fcc1745'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
 
