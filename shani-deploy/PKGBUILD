@@ -19,8 +19,8 @@ source=(
     'deploy-image.sh'
     'gen-efi.sh'
     'check-boot-failure.sh'
-    'image-deploy.service'
-    'image-deploy.timer'
+    'deploy-image.service'
+    'deploy-image.timer'
     'rollback-system.service'
     'check-boot-failure.service'
     'check-boot-failure.timer'
@@ -35,8 +35,8 @@ package() {
     install -Dm755 check-boot-failure.sh "$pkgdir/usr/local/bin/check-boot-failure"
 
     # Install systemd units
-    install -Dm644 image-deploy.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 image-deploy.timer -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 deploy-image.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 deploy-image.timer -t "$pkgdir/usr/lib/systemd/system/"
     install -Dm644 rollback-system.service -t "$pkgdir/usr/lib/systemd/system/"
     install -Dm644 check-boot-failure.service -t "$pkgdir/usr/lib/systemd/system/"
     install -Dm644 check-boot-failure.timer -t "$pkgdir/usr/lib/systemd/system/"
