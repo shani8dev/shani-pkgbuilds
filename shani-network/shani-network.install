@@ -5,5 +5,5 @@ post_install() {
 post_upgrade() {
 	systemctl enable NetworkManager.service
 	systemctl enable ModemManager.service
-	systemctl enable ufw
+	systemctl enable firewalld
 }

@@ -1,11 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
 	gdm
+	mutter
+	gpaste
 	gnome-browser-connector
 	gnome-backgrounds
 	gnome-console
@@ -14,15 +16,12 @@ depends=(
 	gnome-disk-utility
 	gnome-menus
 	gnome-shell
-	gnome-system-monitor
-	mutter
+	gnome-shell-extension-appindicator
 	gnome-session
 	gnome-settings-daemon
-	gnome-tweaks
-	gnome-shell-extensions
-	gnome-shell-extension-appindicator
 	gnome-user-share
 	gnome-remote-desktop
+	gnome-system-monitor
 	gnome-keyring
 	gnome-screenshot
 	gnome-font-viewer
@@ -40,45 +39,37 @@ depends=(
 	gnome-software
 	gnome-boxes
 	gnome-network-displays 
-	modem-manager-gui
-	gufw
-	linux-wifi-hotspot
-	pods
-	boxbuddy
-	easyeffects
-	lsp-plugins-lv2
+	gnome-podcasts
+	gnome-video-effects
+	gsmartcontrol
+	baobab
+	malcontent
+	amberol
+	papers
+	loupe
+	showtime
+	snapshot
+	kooha
 	gnote
 	errands
 	fragments
+	shortwave
+	impression
+	junction
 	seahorse
 	secrets
-	pitivi
-	audacity
-	gnome-video-effects
-	epiphany
-	loupe
 	drawing
-	amberol
-	showtime
-	snapshot
-	papers
-	kooha
-	shortwave
-	authenticator
-	decoder
-	gpaste
-	impression
-	warp
-	curtail
-	handbrake
-	switcheroo
-	switcheroo-control
-	power-profiles-daemon
+	quadrapassel
+	aisleriot
+	gnome-chess
+	gnome-mahjongg
+	gnome-nibbles
+	pods
+	boxbuddy
 	rygel
+	power-profiles-daemon
+	switcheroo-control
 	usbguard
-	baobab
-	gsmartcontrol
-	malcontent
 	nautilus
 	nautilus-image-converter
 	nautilus-share
@@ -101,6 +92,8 @@ depends=(
 	xdg-desktop-portal-gnome
     xdg-user-dirs-gtk
     xdg-utils
+	adwaita-fonts
+	papirus-icon-theme
 )
 license=('GPL')
 install="$pkgname.install"

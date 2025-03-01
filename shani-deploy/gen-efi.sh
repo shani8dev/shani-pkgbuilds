@@ -103,7 +103,7 @@ generate_cmdline() {
             resume_uuid="${fs_uuid}"
         fi
 
-        local cmdline="quiet splash systemd.volatile=state ro rootfstype=btrfs rootflags=subvol=@${slot},ro,noatime,compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
+        local cmdline="quiet splash systemd.volatile=state ro lsm=landlock,lockdown,yama,integrity,apparmor,bpf rootfstype=btrfs rootflags=subvol=@${slot},ro,noatime,compress=zstd,space_cache=v2,autodefrag${encryption_params} root=${rootdev}"
         if [ -f /swap/swapfile ]; then
             local swap_offset
             swap_offset=$(btrfs inspect-internal map-swapfile -r /swap/swapfile | awk '{print $NF}' 2>/dev/null || true)

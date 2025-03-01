@@ -29,5 +29,9 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable pcscd.socket
+	systemctl enable lircd.socket
+	systemctl enable fprintd
+	systemctl enable bolt
+	systemctl enable inputattach
 	add_group
 }
