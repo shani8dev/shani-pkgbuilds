@@ -1,17 +1,22 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
 	gdm
 	mutter
 	gpaste
+	malcontent
+	rygel
+	power-profiles-daemon
+	switcheroo-control
+	usbguard
+    system-config-printer
 	gnome-browser-connector
 	gnome-backgrounds
 	gnome-console
-	gnome-connections
 	gnome-control-center
 	gnome-disk-utility
 	gnome-menus
@@ -25,52 +30,10 @@ depends=(
 	gnome-system-monitor
 	gnome-keyring
 	gnome-screenshot
-	gnome-font-viewer
-	gnome-text-editor
-	gnome-maps
-	gnome-clocks
-	gnome-characters
-	gnome-calculator
-	gnome-weather
-	gnome-sound-recorder
 	gnome-nettool
-	gnome-logs
-	gnome-firmware
 	gnome-software
-	gnome-boxes
-	gnome-network-displays 
-	gnome-podcasts
-	gnome-video-effects
-	meld
-	gsmartcontrol
-	baobab
-	malcontent
-	amberol
-	papers
-	loupe
-	showtime
-	snapshot
-	kooha
-	gnote
-	errands
-	fragments
-	shortwave
-	impression
-	junction
-	seahorse
-	secrets
-	drawing
-	quadrapassel
-	aisleriot
-	gnome-chess
-	gnome-mahjongg
-	gnome-nibbles
-	pods
-	boxbuddy
-	rygel
-	power-profiles-daemon
-	switcheroo-control
-	usbguard
+	gnome-firmware
+	file-roller
 	nautilus
 	nautilus-image-converter
 	nautilus-share
@@ -85,7 +48,6 @@ depends=(
 	gvfs-onedrive
 	gvfs-smb
 	gvfs-wsdd
-	file-roller
 	webp-pixbuf-loader
 	libwmf
 	libopenraw
