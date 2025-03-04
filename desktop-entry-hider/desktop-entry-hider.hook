@@ -8,3 +8,4 @@ Target = usr/share/applications/*.desktop
 Description = Running Desktop Entry Hider...
 When = PostTransaction
 Exec = /usr/bin/desktop-entry-hider
+
