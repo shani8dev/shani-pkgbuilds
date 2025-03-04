@@ -292,15 +292,20 @@ mount --bind /data "$MOUNT_DIR/data" || die "Data bind mount failed"
 log "Setting up overlay for /etc..."
 mkdir -p "$MOUNT_DIR/data/overlay/etc/upper" "$MOUNT_DIR/data/overlay/etc/work"
 mount -t overlay overlay -o "lowerdir=$MOUNT_DIR/etc,upperdir=$MOUNT_DIR/data/overlay/etc/upper,workdir=$MOUNT_DIR/data/overlay/etc/work" "$MOUNT_DIR/etc" || die "Overlay mount failed"
+log "Setting up overlay for /var..."
+mkdir -p "$MOUNT_DIR/data/overlay/var/upper" "$MOUNT_DIR/data/overlay/var/work"
+mount -t overlay overlay -o "lowerdir=$MOUNT_DIR/var,upperdir=$MOUNT_DIR/data/overlay/var/upper,workdir=$MOUNT_DIR/data/overlay/var/work" "$MOUNT_DIR/var" || die "Overlay mount failed"
 log "Regenerating Secure Boot UKI..."
 arch-chroot "$MOUNT_DIR" "$GENEFI_SCRIPT" configure "$CANDIDATE_SLOT" || { 
     safe_umount "$MOUNT_DIR/etc"; 
+    safe_umount "$MOUNT_DIR/var"; 
     safe_umount "$MOUNT_DIR/data"; 
     safe_umount "$MOUNT_DIR/boot/efi"; 
     safe_umount "$MOUNT_DIR"; 
     die "UKI generation failed"; 
 }
 safe_umount "$MOUNT_DIR/etc"
+safe_umount "$MOUNT_DIR/var"
 safe_umount "$MOUNT_DIR/data"
 safe_umount "$MOUNT_DIR/boot/efi"
 safe_umount "$MOUNT_DIR"
