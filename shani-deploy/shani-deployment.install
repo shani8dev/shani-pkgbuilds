@@ -1,12 +1,22 @@
 post_install() {
-	post_upgrade
+    post_upgrade
 }
 
 post_upgrade() {
-	systemctl enable deploy-image.service
-	systemctl enable deploy-image.timer
-	systemctl enable rollback-system.service
-	systemctl enable check-boot-failure.service
-	systemctl enable check-boot-failure.timer
-	systemctl enable mark-boot-ok.service
+    # Enable deployment-related system services
+    systemctl enable deploy-image.service
+    systemctl enable deploy-image.timer
+    systemctl enable rollback-system.service
+    systemctl enable check-boot-failure.service
+    systemctl enable check-boot-failure.timer
+    systemctl enable mark-boot-ok.service
+
+    # Enable system-wide Flatpak update services
+    systemctl enable flatpak-update-system.service
+    systemctl enable flatpak-update-system.timer
+
+    # Enable user-level Flatpak update services globally
+    systemctl --global enable flatpak-update-user.service
+    systemctl --global enable flatpak-update-user.timer
 }
+

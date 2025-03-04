@@ -1,7 +1,7 @@
 # Maintainer: Your Name <your@email.com>
 pkgname=shani-deployment
 pkgver=1.2
-pkgrel=11
+pkgrel=12
 pkgdesc="Safe transactional deployment system for Shani OS"
 arch=('x86_64')
 license=('GPL3')
@@ -14,6 +14,7 @@ depends=(
     'systemd'
     'jq'
     'zsync'
+    'flatpak'
 )
 source=(
     'deploy-image.sh'
@@ -25,8 +26,12 @@ source=(
     'check-boot-failure.service'
     'check-boot-failure.timer'
     'mark-boot-ok.service'
+    'flatpak-update-system.service'
+    'flatpak-update-system.timer'
+    'flatpak-update-user.service'
+    'flatpak-update-user.timer'
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
     # Install main scripts
@@ -41,5 +46,13 @@ package() {
     install -Dm644 check-boot-failure.service -t "$pkgdir/usr/lib/systemd/system/"
     install -Dm644 check-boot-failure.timer -t "$pkgdir/usr/lib/systemd/system/"
     install -Dm644 mark-boot-ok.service -t "$pkgdir/usr/lib/systemd/system/"
+    
+    # Install Flatpak update services
+    install -Dm644 flatpak-update-system.service -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 flatpak-update-system.timer -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 flatpak-update-user.service -t "$pkgdir/usr/lib/systemd/user/"
+    install -Dm644 flatpak-update-user.timer -t "$pkgdir/usr/lib/systemd/user/"
 }
+
 install="$pkgname.install"
+
