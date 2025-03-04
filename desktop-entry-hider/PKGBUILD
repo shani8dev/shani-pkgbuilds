@@ -1,0 +1,23 @@
+pkgname=desktop-entry-hider
+pkgver=0.0.1
+pkgrel=1
+pkgdesc='Hide unwanted desktop entry files (.desktop)'
+arch=('any')
+source=(
+    "desktop-entry-hider"
+    "desktop-entry-hider.hook"
+    "configs/"
+)
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+package() {
+    install -d "$pkgdir/usr/bin/"
+    install -d "$pkgdir/usr/share/libalpm/hooks/"
+    install -d "$pkgdir/etc/desktop-entry-hider/configs/"
+
+    install -m755 "desktop-entry-hider" "$pkgdir/usr/bin/"
+    install -m644 "desktop-entry-hider.hook" "$pkgdir/usr/share/libalpm/hooks/"
+
+    # Copy all .desktop files from configs/
+    install -m644 configs/* "$pkgdir/etc/desktop-entry-hider/configs/"
+}
