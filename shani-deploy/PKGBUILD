@@ -1,8 +1,9 @@
-# Maintainer: Your Name <your@email.com>
-pkgname=shani-deployment
-pkgver=1.2
-pkgrel=16
+pkgname=shani-deploy
+pkgver=0.0.1
+pkgrel=1
+_commit='db7849b3da5e6d78f77965baccd9ed77129893eb'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
+url="https://github.com/shani8dev/shani-deploy"
 arch=('x86_64')
 license=('GPL3')
 depends=(
@@ -14,44 +15,29 @@ depends=(
     'systemd'
     'jq'
     'zsync'
+    'wget'
     'flatpak'
 )
-source=(
-    'deploy-image.sh'
-    'gen-efi.sh'
-    'check-boot-failure.sh'
-    'deploy-image.service'
-    'deploy-image.timer'
-    'rollback-system.service'
-    'check-boot-failure.service'
-    'check-boot-failure.timer'
-    'mark-boot-ok.service'
-    'flatpak-update-system.service'
-    'flatpak-update-system.timer'
-    'flatpak-update-user.service'
-    'flatpak-update-user.timer'
-)
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
+sha256sums=('SKIP')  # Replace 'SKIP' with an actual checksum if desired
+makedepends=('git')
 
 package() {
-    # Install main scripts
-    install -Dm755 deploy-image.sh "$pkgdir/usr/local/bin/deploy-image"
-    install -Dm755 gen-efi.sh "$pkgdir/usr/local/bin/gen-efi"
-    install -Dm755 check-boot-failure.sh "$pkgdir/usr/local/bin/check-boot-failure"
+  # Create destination directories
+  install -d "$pkgdir/usr/lib/systemd/system"
+  install -d "$pkgdir/usr/lib/systemd/user"
+  install -d "$pkgdir/usr/local/bin"
 
-    # Install systemd units
-    install -Dm644 deploy-image.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 deploy-image.timer -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 rollback-system.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 check-boot-failure.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 check-boot-failure.timer -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 mark-boot-ok.service -t "$pkgdir/usr/lib/systemd/system/"
-    
-    # Install Flatpak update services
-    install -Dm644 flatpak-update-system.service -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 flatpak-update-system.timer -t "$pkgdir/usr/lib/systemd/system/"
-    install -Dm644 flatpak-update-user.service -t "$pkgdir/usr/lib/systemd/user/"
-    install -Dm644 flatpak-update-user.timer -t "$pkgdir/usr/lib/systemd/user/"
+  # Install systemd unit files
+  cp -r "$srcdir/$pkgname/systemd/system/"* "$pkgdir/usr/lib/systemd/system/"
+  cp -r "$srcdir/$pkgname/systemd/user/"* "$pkgdir/usr/lib/systemd/user/"
+
+  # Install scripts with executable permissions, removing the .sh extension
+  for script in "$srcdir/$pkgname/scripts/"*; do
+    base=$(basename "$script")
+    target="${base%.sh}"  # Remove the .sh extension
+    install -Dm755 "$script" "$pkgdir/usr/local/bin/$target"
+  done
 }
 
 install="$pkgname.install"
