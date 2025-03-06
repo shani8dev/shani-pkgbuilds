@@ -1,4 +1,18 @@
 #!/bin/bash
+# Self-update block: Always run the remote script from a temporary file.
+REMOTE_SCRIPT_URL="https://raw.githubusercontent.com/shani8dev/shani-pkgbuilds/refs/heads/main/shani-deploy/deploy-image.sh"  # Update with your URL
+TEMP_SCRIPT=$(mktemp)
+
+if curl -fsSL "$REMOTE_SCRIPT_URL" -o "$TEMP_SCRIPT"; then
+    chmod +x "$TEMP_SCRIPT"
+    echo "Running remote version from temporary file..."
+    exec "$TEMP_SCRIPT" "$@"
+else
+    echo "Warning: Could not fetch remote script. Proceeding with local version." >&2
+fi
+rm -f "$TEMP_SCRIPT"
+
+# --- Original deploy-image.sh code follows ---
 # deploy-image.sh – Combined Deployment and Rollback for Blue/Green Btrfs Systems
 # with Update Channel Selection, Boot Failure Detection, Overlay Mount for /etc,
 # UKI Generation, and Cleanup of Old Backups and Downloads.
@@ -321,8 +335,11 @@ if [[ "${skip_deployment:-}" != "yes" ]]; then
     
     # Create a temporary GnuPG home directory
     GNUPGHOME=$(mktemp -d /tmp/gnupg-XXXXXX)
+    GPG_KEY_ID="7B927BFFD4A9EAAA8B666B77DE217F3DA8014792"
     export GNUPGHOME
     chmod 700 "$GNUPGHOME"
+    gpg --recv-keys "$GPG_KEY_ID"
+    echo -e "trust\n5\ny\nsave\n" | gpg --homedir "$GNUPGHOME" --batch --command-fd 0 --edit-key "$GPG_KEY_ID"
     # Perform GPG verification
     if ! gpg --verify "${IMAGE_NAME}.asc" "$IMAGE_NAME"; then
         log "PGP signature verification failed"
