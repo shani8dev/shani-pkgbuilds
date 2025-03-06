@@ -1,11 +1,11 @@
 post_install() {
-    #post_upgrade
+    post_upgrade
 }
 
 post_upgrade() {
     # Enable deployment-related system services
-    systemctl enable deploy-image.service
-    systemctl enable deploy-image.timer
+    #systemctl enable deploy-image.service
+    #systemctl enable deploy-image.timer
     systemctl enable rollback-system.service
     systemctl enable check-boot-failure.service
     systemctl enable check-boot-failure.timer
