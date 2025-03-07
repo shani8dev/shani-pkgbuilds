@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
@@ -58,7 +58,7 @@ depends=(
     xdg-utils
 	adwaita-fonts
 	papirus-icon-theme
-	adw-gtk-theme
+	gnome-themes-extra
 )
 license=('GPL')
 install="$pkgname.install"
