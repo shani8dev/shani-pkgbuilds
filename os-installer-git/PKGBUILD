@@ -1,0 +1,50 @@
+pkgname=os-installer-git
+pkgver=0.4.3
+pkgrel=1
+pkgdesc='Operating system installer by the GNOME project'
+url='https://gitlab.gnome.org/p3732/os-installer'
+source=("git+https://gitlab.gnome.org/p3732/os-installer.git")
+sha256sums=('SKIP')
+arch=('x86_64')
+license=('GPL3')
+makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
+depends=('gnome-desktop-4' 'gtk4' 'libadwaita' 'libgweather-4' 'python-yaml' 'udisks2' 'vte4' 'python-gobject')
+optdepends=('epiphany: online assistance'
+            'gnome-disk-utility: manual disk partitioning'
+            'gnome-control-center: Wi-Fi setup')
+
+# The Git repository clones into the directory "os-installer"
+_gitname=os-installer
+
+# pkgver() automatically computes the version based on git describe.
+# If the repository is exactly at a tag (no extra commits), it outputs just the tag.
+# Otherwise, it appends commit count and the short commit hash.
+pkgver() {
+    cd "$srcdir/$_gitname" || return 1
+    ver=$(git describe --tags --long --always) || return 1
+    if [[ $ver =~ ^([0-9]+\.[0-9]+\.[0-9]+)-0-g[0-9a-f]+$ ]]; then
+        # At a tag, output only the tag version
+        echo "${BASH_REMATCH[1]}"
+    elif [[ $ver =~ ^([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)-g([0-9a-f]+)$ ]]; then
+        # Output version with additional commit count and short hash
+        echo "${BASH_REMATCH[1]}.r${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+    else
+        # Fallback: output raw version string
+        echo "$ver"
+    fi
+}
+
+prepare() {
+    cd "$srcdir/$_gitname" || return 1
+}
+
+build() {
+    cd "$srcdir/$_gitname" || return 1
+    meson setup --prefix=/usr build
+}
+
+package() {
+    cd "$srcdir/$_gitname" || return 1
+    meson install -C build --destdir "$pkgdir"
+}
+
