@@ -1,13 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=8
+pkgrel=9
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
 	gdm
 	mutter
-	gpaste
+	baobab
 	malcontent
 	rygel
 	power-profiles-daemon
@@ -34,6 +34,7 @@ depends=(
 	gnome-nettool
 	gnome-software
 	gnome-firmware
+	gnome-logs
 	file-roller
 	nautilus
 	nautilus-image-converter
