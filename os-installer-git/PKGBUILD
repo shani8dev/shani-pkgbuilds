@@ -1,12 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
 pkgver=0.5.0
-pkgrel=4
+pkgrel=5
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 _commit='10dcfe5cdfa7ad80b9b86d71a5e42786fdb04566'  # Replace with the specific commit hash
-source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit")
-sha256sums=('SKIP')
+source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
+        "summary-blp.patch")  # Add the patch file
+sha256sums=('SKIP' 'SKIP')
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
@@ -17,6 +18,7 @@ optdepends=('epiphany: online assistance'
 
 prepare() {
     cd "$srcdir/os-installer" || return 1
+    patch -p1 < "$srcdir/summary-blp.patch"  # Apply the patch
 }
 
 build() {
