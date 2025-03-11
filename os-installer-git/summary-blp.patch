@@ -1,5 +1,5 @@
 diff --git a/data/resources/ui/pages/summary.blp b/data/resources/ui/pages/summary.blp
-index 633a86a..5954213 100644
+index 633a86a..cff8b1f 100644
 --- a/data/resources/ui/pages/summary.blp
 +++ b/data/resources/ui/pages/summary.blp
 @@ -51,6 +51,7 @@ template $SummaryPage : Box {
@@ -26,128 +26,19 @@ index 633a86a..5954213 100644
        /* Translators: Description of selected timezone. */
        title: _("Timezone");
        styles ["property"]
-@@ -97,49 +100,12 @@ template $SummaryPage : Box {
-     }
- 
-     Adw.ActionRow software_row {
--      margin-top: 6;
+@@ -100,6 +103,7 @@ template $SummaryPage : Box {
+       margin-top: 6;
        name: "software";
        activatable: true;
--
--      [prefix]
--      Box {
--        orientation: vertical;
--        halign: start;
--        spacing: 3;
--
--        Label {
--          /* Translators: Description of selected additional software. */
--          label: _("Additional Software");
--          xalign: 0;
--          styles ["dim-label", "caption"]
--        }
--
--        Stack software_stack {
--          margin-bottom: 6;
--          vhomogeneous: false;
--          transition-type: crossfade;
--
--          StackPage {
--            name: "used";
--            child: ListBox software_list {
--              halign: start;
--              margin-bottom: 6;
--              selection-mode: none;
--              styles ["nested-list"]
--            };
--          }
--
--          StackPage {
--            name: "none";
--            child: Label {
--              /* Translators: Shown when list of selected software is empty. */
--              label: _("None");
--              xalign: 0;
--              styles ["dim-label"]
--            };
--          }
--        }
--      }
 +      visible: false;
-+      /* Translators: Description of selected additional software. */
-+      title: _("Additional Software");
-+      styles ["property"]
  
-       Image {
-         icon-name: "go-next-symbolic";
-@@ -149,50 +115,10 @@ template $SummaryPage : Box {
+       [prefix]
+       Box {
+@@ -149,6 +153,7 @@ template $SummaryPage : Box {
      Adw.ActionRow feature_row {
        name: "feature";
        activatable: true;
--      /* Translators: Description of selected additional software. */
--
--      [prefix]
--      Box {
--        margin-top: 6;
--        orientation: vertical;
--        halign: start;
--        spacing: 3;
--
--        Label {
--          /* Translators: Description of selected additional software. */
--          label: _("Additional Features");
--          xalign: 0;
--          styles ["dim-label", "caption"]
--        }
--
--
--        Stack feature_stack {
--          margin-bottom: 6;
--          vhomogeneous: false;
--          transition-type: crossfade;
--
--          StackPage {
--            name: "used";
--            child: ListBox feature_list {
--              halign: start;
--              margin-bottom: 6;
--              selection-mode: none;
--              styles ["nested-list"]
--            };
--          }
--
--          StackPage {
--            name: "none";
--            child: Label {
--              /* Translators: Shown when list of selected features is empty. */
--              label: _("None");
--              hexpand: true;
--              xalign: 0;
--              styles ["dim-label"]
--            };
--          }
--        }
--      }
 +      visible: false;
-+      /* Translators: Description of selected additional features. */
-+      title: _("Additional Features");
-+      styles ["property"]
+       /* Translators: Description of selected additional software. */
  
-       Image {
-         icon-name: "go-next-symbolic";
-@@ -200,14 +126,8 @@ template $SummaryPage : Box {
-     }
-   }
- 
--  Button {
-+  $ConfirmButton {
-     action-name: "win.advance";
--    /* Translators: On button. */
--    label: _("_Confirm");
--    focusable: true;
-     receives-default: true;
--    halign: center;
--    use-underline: true;
--    styles ["suggested-action", "pill"]
-   }
- }
+       [prefix]
