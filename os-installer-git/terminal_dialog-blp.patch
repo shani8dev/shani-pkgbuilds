@@ -1,0 +1,36 @@
+diff --git a/data/resources/ui/terminal_dialog.blp b/data/resources/ui/terminal_dialog.blp
+index 4f20e97..69b59f9 100644
+--- a/data/resources/ui/terminal_dialog.blp
++++ b/data/resources/ui/terminal_dialog.blp
+@@ -2,20 +2,20 @@ using Gtk 4.0;
+ using Adw 1;
+ 
+ template $TerminalDialog: Adw.Dialog {
+-  child: Overlay {
+-    overflow: hidden;
+-    styles ["terminal-box"]
+-
+-    child: Adw.Bin placeholder {
+-      margin-start: 12;
+-      margin-end: 12;
+-    };
+-
+-    [overlay]
++  child: Adw.ToolbarView {
++    [top]
+     Adw.HeaderBar {
+-      valign: start;
+       styles ["flat"]
+     }
++
++    content: Adw.Bin {
++      styles ["terminal-box"]
++      child: Adw.Bin placeholder {
++        can-focus: false;
++        margin-start: 12;
++        margin-end: 12;
++      };
++    };
+   };
+ 
+   closed => $closed();
