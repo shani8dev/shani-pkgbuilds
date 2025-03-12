@@ -31,7 +31,7 @@ post_upgrade() {
 	systemctl enable btrfs-trim.timer
 	systemctl enable systemd-oomd
 	systemctl enable systemd-timesyncd
-	systemctl enable haveged
+	systemctl enable rngd
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
 	systemctl --global enable psd
