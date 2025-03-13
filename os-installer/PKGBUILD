@@ -17,7 +17,6 @@ optdepends=('epiphany: online assistance'
 
 prepare () {
 	cd $srcdir/$pkgname
-    patch -p1 < "$srcdir/disk.patch"  # Apply the patch
     patch -p1 < "$srcdir/partition.patch"  # Apply the patch
 }
 
