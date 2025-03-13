@@ -5,9 +5,8 @@ pkgrel=2
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver"
-        "disk.patch"
         "partition.patch")  # Add the patch file
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP')
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
