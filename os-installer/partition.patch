@@ -1,0 +1,48 @@
+--- a/src/ui/pages/partition.py
++++ b/src/ui/pages/partition.py
+@@ class PartitionPage(Gtk.Stack):
+-    def _setup_partition_list(self, selected_disk):
+-        if not self.disk_exists(selected_disk):
+-            self.set_visible_child_name("no-disk")
+-            return
+-
+-        if not selected_disk.partitions:
+-            reset_model(self.partition_list_model, [])
+-            self.partition_stack.set_visible_child_name("no-partitions")
+-        elif is_booted_with_uefi() and selected_disk.efi_partition is None:
+-            self.partition_stack.set_visible_child_name("no-boot-partition")
+-        else:
+-            reset_model(self.partition_list_model, selected_disk.partitions)
+-            self.partition_stack.set_visible_child_name("available")
+-
+-        # set disk info
+-        self.whole_disk_row.set_subtitle(selected_disk.device_path)
+-        self.disk_size.set_label(selected_disk.size_text)
+-        self.disk = selected_disk
++    def _setup_partition_list(self, selected_disk):
++        if not self.disk_exists(selected_disk):
++            self.set_visible_child_name("no-disk")
++            return
++
++        # Force whole-disk usage by clearing any partition list,
++        # so even if partitions exist, they are not available.
++        reset_model(self.partition_list_model, [])
++        self.partition_stack.set_visible_child_name("no-partitions")
++
++        # Set disk info as usual
++        self.whole_disk_row.set_subtitle(selected_disk.device_path)
++        self.disk_size.set_label(selected_disk.size_text)
++        self.disk = selected_disk
+@@ class PartitionPage(Gtk.Stack):
+-    @Gtk.Template.Callback('use_partition')
+-    def _use_partition(self, list_box, row):
+-        info = row.info
+-        if not info.name:
+-            info.name = row.get_title()
+-        self._store_device_info(info)
+-        config.set_next_page(self)
++    @Gtk.Template.Callback('use_partition')
++    def _use_partition(self, list_box, row):
++        # Instead of using the selected partition, force using the whole disk.
++        self._store_device_info(self.disk)
++        config.set_next_page(self)
