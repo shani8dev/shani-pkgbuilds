@@ -6,9 +6,8 @@ index 733760c..01d4a8a 100644
            valign: end;
            use-underline: true;
            clicked => $clicked_disks_button();
--          styles ["pill"]
-+          styles ["pill"];
-+          visible="false"
++          visible: false;
+           styles ["pill"]
          }
        }
      };
