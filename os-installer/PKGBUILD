@@ -1,12 +1,11 @@
 # Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
 pkgname=os-installer
 pkgver=0.4.3
-pkgrel=2
+pkgrel=3
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
-source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver"
-        "partition.patch")  # Add the patch file
-sha256sums=('SKIP' 'SKIP')
+source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver")
+sha256sums=('SKIP')
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
@@ -17,7 +16,6 @@ optdepends=('epiphany: online assistance'
 
 prepare () {
 	cd $srcdir/$pkgname
-    patch -p1 < "$srcdir/partition.patch"  # Apply the patch
 }
 
 build () {
