@@ -4,7 +4,7 @@
 
 pkgname=filesystem
 pkgver=2024.04.07
-pkgrel=1
+pkgrel=2
 pkgdesc='Base Shani OS files'
 arch=('any')
 license=('GPL-3.0-or-later')
@@ -34,6 +34,7 @@ source=(
   'shani-logo.png'
   'shani-logo.svg'
   'shani-logo-text.svg'
+  'shani-logo-text-light.svg
   'shani-logo-text-dark.svg'
   'crypttab'
   'env-generator'
@@ -218,6 +219,7 @@ package() {
     ["usr/share/pixmaps/shani-logo.svg"]="shani-logo.svg:644:0:0"
     ["usr/share/pixmaps/shani-logo-text.svg"]="shani-logo-text.svg:644:0:0"
     ["usr/share/pixmaps/shani-logo-text-dark.svg"]="shani-logo-text-dark.svg:644:0:0"
+    ["usr/share/pixmaps/shani-logo-text-light.svg"]="shani-logo-text-light.svg:644:0:0"
   )
 
   cd "$pkgdir"
