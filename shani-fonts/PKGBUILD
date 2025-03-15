@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-fonts
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Fonts for Shani OS"
 arch=('any')
 depends=(
@@ -9,6 +9,8 @@ depends=(
     wqy-zenhei
     ttf-joypixels
     ttf-indic-otf
+    otf-ipafont
+    ttf-baekmuk
 	ttf-hannom
 	ttf-khmer
 	ttf-tibetan-machine

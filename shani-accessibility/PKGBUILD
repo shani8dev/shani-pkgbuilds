@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-accessibility
 pkgver=1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Accessibility tools for Shani OS, including IBus for input methods"
 arch=('any')
 depends=(
@@ -13,6 +13,7 @@ depends=(
 	ibus-libpinyin
 	ibus-anthy
 	ibus-hangul
+	ibus-unikey
 )
 license=('GPL')
 

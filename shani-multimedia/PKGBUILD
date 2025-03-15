@@ -1,8 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
-pkgname=shani-audio
-pkgver=1.2
-pkgrel=3
-pkgdesc="Audio related packages for Shani OS"
+pkgname=shani-multimedia
+pkgver=1.0
+pkgrel=1
+pkgdesc="Multimedia related packages for Shani OS"
 arch=('any')
 depends=(
 	pipewire
