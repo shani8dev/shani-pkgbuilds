@@ -34,7 +34,7 @@ source=(
   'shani-logo.png'
   'shani-logo.svg'
   'shani-logo-text.svg'
-  'shani-logo-text-light.svg
+  'shani-logo-text-light.svg'
   'shani-logo-text-dark.svg'
   'crypttab'
   'env-generator'
