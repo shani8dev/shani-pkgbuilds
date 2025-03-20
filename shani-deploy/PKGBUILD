@@ -1,7 +1,7 @@
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=1
-_commit='db7849b3da5e6d78f77965baccd9ed77129893eb'  # Replace with the specific commit hash
+pkgrel=2
+_commit='a15b7a43a97b472b18bc4769ce3d46eb5425a92f'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('x86_64')
@@ -17,6 +17,7 @@ depends=(
     'zsync'
     'wget'
     'flatpak'
+    'yad'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 sha256sums=('SKIP')  # Replace 'SKIP' with an actual checksum if desired
@@ -27,10 +28,14 @@ package() {
   install -d "$pkgdir/usr/lib/systemd/system"
   install -d "$pkgdir/usr/lib/systemd/user"
   install -d "$pkgdir/usr/local/bin"
-
+  install -d "$pkgdir/etc/xdg/autostart"
+  
   # Install systemd unit files
   cp -r "$srcdir/$pkgname/systemd/system/"* "$pkgdir/usr/lib/systemd/system/"
   cp -r "$srcdir/$pkgname/systemd/user/"* "$pkgdir/usr/lib/systemd/user/"
+  
+  # Install autostart files
+  cp -r "$srcdir/$pkgname/autostart/"* "$pkgdir/etc/xdg/autostart/"
 
   # Install scripts with executable permissions, removing the .sh extension
   for script in "$srcdir/$pkgname/scripts/"*; do

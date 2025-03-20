@@ -4,12 +4,10 @@ post_install() {
 
 post_upgrade() {
     # Enable deployment-related system services
-    #systemctl enable shani-deploy.service
-    #systemctl enable shani-deploy.timer
-    systemctl enable rollback-system.service
     systemctl enable check-boot-failure.service
     systemctl enable check-boot-failure.timer
-    systemctl enable mark-boot-ok.service
+    systemctl enable mark-boot-in-progress.service
+    systemctl enable mark-boot-success.service
 
     # Enable system-wide Flatpak update services
     systemctl enable flatpak-update-system.service
@@ -18,5 +16,7 @@ post_upgrade() {
     # Enable user-level Flatpak update services globally
     systemctl --global enable flatpak-update-user.service
     systemctl --global enable flatpak-update-user.timer
+    systemctl --global enable shani-update.service
+    systemctl --global enable shani-update.timer
 }
 
