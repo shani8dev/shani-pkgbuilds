@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-multimedia
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Multimedia related packages for Shani OS"
 arch=('any')
 depends=(
@@ -15,6 +15,7 @@ depends=(
 	pipewire-zeroconf
 	realtime-privileges
 	gst-libav
+	gst-plugin-va
 	gst-plugin-pipewire
 	gst-plugin-libcamera 
 	gst-plugins-base
