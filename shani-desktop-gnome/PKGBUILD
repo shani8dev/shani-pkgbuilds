@@ -1,12 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=9
+pkgrel=10
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
 	gdm
 	mutter
+	gpaste
 	baobab
 	malcontent
 	rygel
@@ -14,6 +15,7 @@ depends=(
 	switcheroo-control
 	usbguard
     system-config-printer
+    evolution-data-server
     gnome-initial-setup
 	gnome-browser-connector
 	gnome-backgrounds
