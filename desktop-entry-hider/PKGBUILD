@@ -1,6 +1,6 @@
 pkgname=desktop-entry-hider
 pkgver=0.0.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Hide unwanted desktop entry files (.desktop)"
 arch=('any')
 license=('MIT')  # Adjust as needed
