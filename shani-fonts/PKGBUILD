@@ -1,20 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-fonts
-pkgver=1.2
-pkgrel=4
+pkgver=1.3
+pkgrel=1
 pkgdesc="Fonts for Shani OS"
 arch=('any')
 depends=(
-    ttf-dejavu
-    wqy-zenhei
-    ttf-joypixels
-    ttf-indic-otf
-    otf-ipafont
-    ttf-baekmuk
-	ttf-hannom
-	ttf-khmer
-	ttf-tibetan-machine
-	ttf-liberation
+    noto-fonts 
+    noto-fonts-cjk 
+    noto-fonts-emoji
 )
 license=('GPL')
 
