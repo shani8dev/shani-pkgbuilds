@@ -5,4 +5,5 @@ post_install() {
 post_upgrade() {
 	systemctl enable gdm.service
 	systemctl enable switcheroo-control.service
+	systemctl enable power-profiles-daemon.service
 }
