@@ -1,13 +1,14 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-input
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Input devices and tools for Shani OS"
 arch=('any')
 depends=(
 	fprintd
 	linuxconsole
 	lirc
+	gpsd
 	opensc
 	ccid
 	libnfc
@@ -17,6 +18,8 @@ depends=(
 	bolt
 	android-udev
 	game-devices-udev
+	iio-sensor-proxy
+	libratbag
 )
 license=('GPL')
 install="$pkgname.install"

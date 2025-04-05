@@ -1,0 +1,8 @@
+post_install() {
+	post_upgrade
+}
+
+post_upgrade() {
+	systemctl enable sddm.service
+	systemctl enable switcheroo-control.service
+}

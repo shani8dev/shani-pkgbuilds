@@ -1,0 +1,49 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-desktop-plasma
+pkgver=1.0
+pkgrel=1
+pkgdesc="PLASMA desktop environment for Shani OS"
+arch=('any')
+depends=(
+	sddm
+    plasma-meta
+    flatpak-kcm
+    plymouth-kcm
+    colord-kde
+    kdf
+    krfb
+    krdc
+    kdeconnect
+    kwalletmanager
+    konsole
+    ark
+	kde-accessibility-meta
+	kde-system-meta
+	kvantum
+	power-profiles-daemon
+	switcheroo-control
+	quota-tools
+    dolphin-plugins
+    kio-extras
+    kio-gdrive
+    kio-zeroconf
+    kio-fuse
+	kamera
+	kdegraphics-thumbnailers
+	kdenetwork-filesharing
+	kimageformats
+	qt6-imageformats
+	libappimage
+	ffmpegthumbs
+	icoutils
+	maliit-keyboard
+	appmenu-gtk-module
+	webp-pixbuf-loader
+	libwmf
+	libopenraw
+	xdg-desktop-portal-gtk
+	xdg-user-dirs
+	xdg-utils
+)
+license=('GPL')
+install="$pkgname.install"

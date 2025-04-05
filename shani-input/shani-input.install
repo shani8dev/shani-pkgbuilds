@@ -30,8 +30,10 @@ post_install() {
 post_upgrade() {
 	systemctl enable pcscd.socket
 	systemctl enable lircd.socket
+	systemctl enable gpsd.socket
 	systemctl enable fprintd
 	systemctl enable bolt
 	systemctl enable inputattach
+	systemctl enable ratbagd
 	add_group
 }
