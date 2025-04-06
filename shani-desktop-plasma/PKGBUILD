@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 depends=(
@@ -20,6 +20,8 @@ depends=(
 	kde-accessibility-meta
 	kde-system-meta
 	kvantum
+	vlc
+	elisa
 	power-profiles-daemon
 	switcheroo-control
 	quota-tools
