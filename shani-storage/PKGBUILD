@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
 pkgver=1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
 depends=(
@@ -28,6 +28,7 @@ depends=(
 	samba
 	ecryptfs-utils
 	ndctl
+	quota-tools
 )
 license=('GPL')
 

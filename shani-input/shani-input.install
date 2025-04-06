@@ -35,5 +35,6 @@ post_upgrade() {
 	systemctl enable bolt
 	systemctl enable inputattach
 	systemctl enable ratbagd
+	systemctl enable geoclue
 	add_group
 }
