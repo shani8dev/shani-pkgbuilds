@@ -25,7 +25,6 @@ depends=(
     plasma-pa
     plasma-systemmonitor
     plasma-thunderbolt
-    plasma-welcome
     plasma-workspace-wallpapers
     print-manager
     spectacle
