@@ -1,8 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
-pkgname=shani-input
-pkgver=1.2
-pkgrel=4
-pkgdesc="Input devices and tools for Shani OS"
+pkgname=shani-peripherals
+pkgver=1.0
+pkgrel=1
+pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 depends=(
 	fprintd

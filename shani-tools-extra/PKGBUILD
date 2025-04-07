@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
@@ -20,16 +20,7 @@ depends=(
     dialog
     pv
     jq
-    micro	
-	unrar
-	p7zip
-	unzip
-	zip
-	arj
-	unarj
-	lrzip
-	lzip
-	lzop
+    micro
 	python-pip
 	android-tools
 	distrobox

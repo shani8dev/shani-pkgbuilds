@@ -25,6 +25,7 @@ depends=(
     plasma-pa
     plasma-systemmonitor
     plasma-thunderbolt
+    plasma-vault
     plasma-workspace-wallpapers
     print-manager
     spectacle
@@ -34,6 +35,7 @@ depends=(
     flatpak-kcm
     plymouth-kcm
     colord-kde
+    kdf
     krfb
     kdeconnect
     kcron
@@ -43,6 +45,8 @@ depends=(
 	kvantum
 	power-profiles-daemon
 	switcheroo-control
+	konsole
+	yakuake
 	dolphin
 	dolphin-plugins
 	kio-admin

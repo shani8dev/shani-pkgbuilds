@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=11
+pkgrel=12
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 depends=(
@@ -37,7 +37,6 @@ depends=(
 	gnome-software
 	gnome-firmware
 	gnome-logs
-	file-roller
 	nautilus
 	nautilus-image-converter
 	nautilus-share
