@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 depends=(
