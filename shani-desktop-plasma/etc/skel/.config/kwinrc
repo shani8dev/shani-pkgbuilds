@@ -1,10 +1,15 @@
 [Plugins]
-blurEnabled=true
-translucencyEnabled=true
+blurEnabled=false
+forceblurEnabled=true
 magiclampEnabled=true
+coverswitchEnabled=true
+fadeEnabled=true
 squashEnabled=false
 scaleEnabled=false
 wobblywindowsEnabled=true
+
+[TabBox]
+LayoutName=coverswitch
 
 [Windows]
 BorderlessMaximizedWindows=true
@@ -13,5 +18,7 @@ BorderlessMaximizedWindows=true
 Scale=1
 
 [org.kde.kdecoration2]
+ButtonsOnLeft=XAI
+ButtonsOnRight=
 library=org.kde.breeze
 theme=Breeze
