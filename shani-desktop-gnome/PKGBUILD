@@ -68,32 +68,35 @@ source=()
 md5sums=()
 
 package() {
-	# Copy etc and usr directories to the package directory
-	cp -r etc "$pkgdir"/
-	cp -r usr "$pkgdir"/
+    # Ensure necessary directories exist
+    install -d "$pkgdir/usr/share/gnome-background-properties"
+    install -d "$pkgdir/usr/share/backgrounds/"
+    install -d "$pkgdir/etc/"
+    install -d "$pkgdir/usr/"
 
-	# Ensure directories exist
-	install -d "$pkgdir/usr/share/gnome-background-properties"
+    # Copy local etc and usr directories
+    cp -r "$startdir/etc" "$pkgdir/"
+    cp -r "$startdir/usr" "$pkgdir/"
 
-	# Generate GNOME wallpaper XML dynamically
-	XML_FILE="$pkgdir/usr/share/gnome-background-properties/shani-wallpapers.xml"
-	WALLPAPER_DIR="$pkgdir/usr/share/backgrounds/shani"
+    # Generate GNOME wallpaper XML dynamically
+    local xml_file="$pkgdir/usr/share/gnome-background-properties/shani-wallpapers.xml"
+    local wallpaper_dir="$pkgdir/usr/share/backgrounds/shani"
 
-	echo '<?xml version="1.0" encoding="UTF-8"?>' > "$XML_FILE"
-	echo "<wallpapers>" >> "$XML_FILE"
+    echo '<?xml version="1.0" encoding="UTF-8"?>' > "$xml_file"
+    echo "<wallpapers>" >> "$xml_file"
 
-	for file in "$WALLPAPER_DIR"/*.{png,jpg,jpeg,webp}; do
-		[ -e "$file" ] || continue  # Skip if no matching files
-		filename=$(basename "$file")
-		name="${filename%.*}"  # Remove extension
+    for file in "$wallpaper_dir"/*.{png,jpg,jpeg,webp}; do
+        [ -e "$file" ] || continue  # Skip if no matching files
+        filename=$(basename "$file")
+        name="${filename%.*}"  # Remove extension
 
-		echo "  <wallpaper>" >> "$XML_FILE"
-		echo "    <name>${name//-/ }</name>" >> "$XML_FILE"
-		echo "    <filename>/usr/share/backgrounds/shani/$filename</filename>" >> "$XML_FILE"
-		echo "    <options>zoom</options>" >> "$XML_FILE"
-		echo "  </wallpaper>" >> "$XML_FILE"
-	done
+        echo "  <wallpaper>" >> "$xml_file"
+        echo "    <name>${name//-/ }</name>" >> "$xml_file"
+        echo "    <filename>/usr/share/backgrounds/shani/$filename</filename>" >> "$xml_file"
+        echo "    <options>zoom</options>" >> "$xml_file"
+        echo "  </wallpaper>" >> "$xml_file"
+    done
 
-	echo "</wallpapers>" >> "$XML_FILE"
+    echo "</wallpapers>" >> "$xml_file"
 }
 

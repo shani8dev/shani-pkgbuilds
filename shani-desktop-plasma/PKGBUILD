@@ -71,7 +71,12 @@ install="$pkgname.install"
 source=()
 md5sums=()
 package() {
-	# Copy etc and usr directories to the package directory
-	cp -r etc "$pkgdir"/
-	cp -r usr "$pkgdir"/
+    # Ensure target directories exist
+    install -d "$pkgdir/etc"
+    install -d "$pkgdir/usr"
+
+    # Copy etc and usr directories from the build context
+    cp -r "$startdir/etc" "$pkgdir/"
+    cp -r "$startdir/usr" "$pkgdir/"
 }
+
