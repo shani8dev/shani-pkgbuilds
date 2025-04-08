@@ -1,0 +1,172 @@
+[org.gnome.shell]
+disable-extension-version-validation=true
+always-show-log-out=true
+favorite-apps=['com.google.Chrome.desktop', 'com.vivaldi.Vivaldi.desktop', 'org.onlyoffice.desktopeditors.desktop', 'firefox.desktop', 'thunderbird.desktop', 'org.gnome.Evolution.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.Settings.desktop', 'org.gnome.Software.desktop']
+enabled-extensions=['GPaste@gnome-shell-extensions.gnome.org', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info']
+
+[org.gnome.desktop.background]
+picture-uri='file:///usr/share/backgrounds/shani/saturn-x.png'
+picture-uri-dark='file:///usr/share/backgrounds/shani/saturn-x.png'
+show-desktop-icons=true
+
+[org.gnome.desktop.interface]
+accent-color='orange'
+color-scheme='prefer-dark'
+cursor-theme='Adwaita'
+gtk-theme='Adwaita-dark'
+icon-theme='Papirus-Dark'
+document-font-name='Sans 11'
+font-name='Adwaita Sans 11'
+monospace-font-name='Adwaita Mono 11'
+clock-show-date=true
+clock-show-weekday=true
+clock-format='12h'
+enable-animations=true
+enable-hot-corners=true
+show-battery-percentage=true
+
+[org.gnome.desktop.datetime]
+automatic-timezone=true
+
+[org.gnome.shell.weather]
+automatic-location=true
+
+[org.gnome.Console]
+theme='night'
+
+[org.gnome.desktop.peripherals.keyboard]
+numlock-state=true
+
+[org.gnome.desktop.peripherals.touchpad]
+natural-scroll=false
+tap-to-click=true
+two-finger-scrolling-enabled=true
+tap-and-drag=true
+
+[org.gnome.desktop.privacy]
+usb-protection=true
+usb-protection-level='lockscreen'
+old-files-age=uint32 7
+recent-files-max-age=7
+remove-old-temp-files=true
+remove-old-trash-files=true
+
+[org.gnome.desktop.session]
+idle-delay=uint32 300
+
+[org.gnome.desktop.sound]
+allow-volume-above-100-percent=true
+input-feedback-sounds=true
+
+[org.gnome.desktop.input-sources]
+show-all-sources=true
+
+[org.gnome.desktop.wm.preferences]
+button-layout='appmenu:minimize,maximize,close'
+
+[org.gnome.desktop.screensaver]
+lock-delay=uint32 0
+picture-uri='file:///usr/share/backgrounds/shani/saturn-x.png'
+
+[org.gnome.login-screen]
+logo='/usr/share/pixmaps/shani-logo-text-dark.svg'
+
+[org.gnome.desktop.app-folders]
+folder-children=['Accessories', 'Games', 'Office', 'System-tools', 'Utilities']
+
+[org.gtk.settings.file-chooser]
+sort-directories-first=true
+location-mode='filename-entry'
+
+[org.gnome.file-roller.dialogs.extract]
+recreate-folders=true
+
+[org.gnome.nautilus.preferences]
+always-use-location-entry=true
+default-folder-viewer='icon-view'
+show-create-link=true
+
+[org.gnome.nautilus.desktop]
+home-icon-visible = true
+trash-icon-visible = true
+volumes-visible = true
+
+[org.gnome.mutter]
+overlay-key='Super_L'
+dynamic-workspaces = true
+edge-tiling = true
+center-new-windows = true
+
+[org.gnome.TextEditor]
+show-line-numbers = true
+
+[org.gnome.desktop.wm.keybindings]
+close=['<Super>q']
+maximize=@as []
+minimize=@as []
+move-to-workspace-1=['<Shift><Super>1']
+move-to-workspace-2=['<Shift><Super>2']
+move-to-workspace-3=['<Shift><Super>3']
+move-to-workspace-4=['<Shift><Super>4']
+move-to-workspace-5=['<Shift><Super>5']
+move-to-workspace-6=['<Shift><Super>6']
+move-to-workspace-7=['<Shift><Super>7']
+move-to-workspace-8=['<Shift><Super>8']
+move-to-workspace-9=['<Shift><Super>9']
+move-to-workspace-10=['<Shift><Super>0']
+move-to-workspace-left=['<Super><Shift>Page_Up', '<Super><Shift><Alt>Left', '<Control><Shift><Alt>Left']
+move-to-workspace-right=['<Super><Shift>Page_Down', '<Super><Shift><Alt>Right', '<Control><Shift><Alt>Right']
+panel-main-menu=['<Alt>F1']
+switch-to-workspace-1=['<Super>1']
+switch-to-workspace-2=['<Super>2']
+switch-to-workspace-3=['<Super>3']
+switch-to-workspace-4=['<Super>4']
+switch-to-workspace-5=['<Super>5']
+switch-to-workspace-6=['<Super>6']
+switch-to-workspace-7=['<Super>7']
+switch-to-workspace-8=['<Super>8']
+switch-to-workspace-9=['<Super>9']
+switch-to-workspace-10=['<Super>0']
+switch-to-workspace-left=['<Super>Page_Up', '<Super><Alt>Left', '<Control><Alt>Left']
+switch-to-workspace-right=['<Super>Page_Down', '<Super><Alt>Right', '<Control><Alt>Right']
+
+[org.gnome.shell.keybindings]
+switch-to-application-1=@as []
+switch-to-application-2=@as []
+switch-to-application-3=@as []
+switch-to-application-4=@as []
+switch-to-application-5=@as []
+switch-to-application-6=@as []
+switch-to-application-7=@as []
+switch-to-application-8=@as []
+switch-to-application-9=@as []
+
+[org.gnome.Terminal.Legacy.Profile]
+background-color='rgb(46,52,54)'
+bold-is-bright=true
+cursor-shape='underline'
+custom-command='/bin/fish'
+default-size-columns=110
+default-size-rows=30
+foreground-color='rgb(211,215,207)'
+palette=['rgb(46,52,54)', 'rgb(204,0,0)', 'rgb(78,154,6)', 'rgb(196,160,0)', 'rgb(52,101,164)', 'rgb(117,80,123)', 'rgb(6,152,154)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(239,41,41)', 'rgb(138,226,52)', 'rgb(252,233,79)', 'rgb(114,159,207)', 'rgb(173,127,168)', 'rgb(52,226,226)', 'rgb(238,238,236)']
+use-system-font=false
+use-theme-colors=true
+rewrap-on-resize=true
+use-custom-command=true
+visible-name='Shani'
+
+[org.gnome.gedit.preferences.editor]
+auto-indent=true
+editor-font='Hack 12'
+style-scheme-for-dark-theme-variant='solarized-dark'
+style-scheme-for-light-theme-variant='solarized-light'
+tabs-size=4
+use-default-font=false
+wrap-last-split-mode='word'
+display-line-numbers=true
+bracket-matching=true
+
+[org.gnome.gedit.plugins]
+active-plugins=['time', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo', 'codecomment', 'bracketcompletion']
+

@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=8
+pkgrel=9
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
+license=('GPL')
 depends=(
 	sddm
     bluedevil
@@ -66,5 +67,11 @@ depends=(
 	xdg-user-dirs
 	xdg-utils
 )
-license=('GPL')
 install="$pkgname.install"
+source=()
+md5sums=()
+package() {
+	# Copy etc and usr directories to the package directory
+	cp -r etc "$pkgdir"/
+	cp -r usr "$pkgdir"/
+}

@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=12
+pkgrel=13
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
+license=('GPL')
 depends=(
 	gdm
 	mutter
@@ -14,9 +15,9 @@ depends=(
 	power-profiles-daemon
 	switcheroo-control
 	usbguard
-    system-config-printer
-    evolution-data-server
-    gnome-initial-setup
+	system-config-printer
+	evolution-data-server
+	gnome-initial-setup
 	gnome-browser-connector
 	gnome-backgrounds
 	gnome-console
@@ -56,11 +57,43 @@ depends=(
 	libopenraw
 	ffmpegthumbnailer
 	xdg-desktop-portal-gnome
-    xdg-user-dirs-gtk
-    xdg-utils
+	xdg-user-dirs-gtk
+	xdg-utils
 	adwaita-fonts
 	papirus-icon-theme
 	gnome-themes-extra
 )
-license=('GPL')
 install="$pkgname.install"
+source=()
+md5sums=()
+
+package() {
+	# Copy etc and usr directories to the package directory
+	cp -r etc "$pkgdir"/
+	cp -r usr "$pkgdir"/
+
+	# Ensure directories exist
+	install -d "$pkgdir/usr/share/gnome-background-properties"
+
+	# Generate GNOME wallpaper XML dynamically
+	XML_FILE="$pkgdir/usr/share/gnome-background-properties/shani-wallpapers.xml"
+	WALLPAPER_DIR="$pkgdir/usr/share/backgrounds/shani"
+
+	echo '<?xml version="1.0" encoding="UTF-8"?>' > "$XML_FILE"
+	echo "<wallpapers>" >> "$XML_FILE"
+
+	for file in "$WALLPAPER_DIR"/*.{png,jpg,jpeg,webp}; do
+		[ -e "$file" ] || continue  # Skip if no matching files
+		filename=$(basename "$file")
+		name="${filename%.*}"  # Remove extension
+
+		echo "  <wallpaper>" >> "$XML_FILE"
+		echo "    <name>${name//-/ }</name>" >> "$XML_FILE"
+		echo "    <filename>/usr/share/backgrounds/shani/$filename</filename>" >> "$XML_FILE"
+		echo "    <options>zoom</options>" >> "$XML_FILE"
+		echo "  </wallpaper>" >> "$XML_FILE"
+	done
+
+	echo "</wallpapers>" >> "$XML_FILE"
+}
+
