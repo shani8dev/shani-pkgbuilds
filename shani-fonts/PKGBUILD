@@ -7,6 +7,7 @@ arch=('any')
 source=(90-indian-fonts.conf
         70-noto-cjk.conf
         75-noto-color-emoji.conf)
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 depends=(
     noto-fonts 
     noto-fonts-cjk 
