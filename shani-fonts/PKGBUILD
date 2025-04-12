@@ -4,7 +4,7 @@ pkgver=1.3
 pkgrel=2
 pkgdesc="Fonts for Shani OS"
 arch=('any')
-source=(90-bengali.conf
+source=(90-indian-fonts.conf
         70-noto-cjk.conf
         75-noto-color-emoji.conf)
 depends=(
@@ -15,7 +15,7 @@ depends=(
 license=('GPL')
 package() {
 	mkdir -p "$pkgdir"/etc/fonts/conf.d
-	install -D -m644 90-bengali.conf "$pkgdir"/etc/fonts/conf.d/90-bengali.conf
+	install -D -m644 90-indian-fonts.conf "$pkgdir"/etc/fonts/conf.d/90-indian-fonts.conf
 	install -D -m644 70-noto-cjk.conf "$pkgdir"/etc/fonts/conf.d/70-noto-cjk.conf
 	install -D -m644 75-noto-color-emoji.conf "$pkgdir"/etc/fonts/conf.d/75-noto-color-emoji.conf
 }
