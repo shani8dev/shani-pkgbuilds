@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=13
+pkgrel=14
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -27,6 +27,7 @@ depends=(
 	gnome-shell
 	gnome-shell-extension-appindicator
 	gnome-shell-extension-caffeine
+	gnome-shell-extension-gsconnect
 	gnome-session
 	gnome-settings-daemon
 	gnome-user-share
