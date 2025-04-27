@@ -1,0 +1,27 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-desktop-gamescope
+pkgver=1.0
+pkgrel=1
+pkgdesc="Gamescope desktop environment for Shani OS"
+arch=('any')
+license=('GPL')
+depends=(
+	greetd
+	gamescope
+	xdg-user-dirs
+	xdg-utils
+)
+install="$pkgname.install"
+source=()
+md5sums=()
+
+package() {
+    # Ensure necessary directories exist
+    install -d "$pkgdir/etc/"
+    install -d "$pkgdir/usr/"
+
+    # Copy local etc and usr directories
+    cp -r "$startdir/etc" "$pkgdir/"
+    cp -r "$startdir/usr" "$pkgdir/"
+}
+

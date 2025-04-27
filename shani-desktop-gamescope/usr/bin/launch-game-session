@@ -1,0 +1,14 @@
+#!/bin/bash
+# Ensure environment variables are set properly
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+
+# Run Gamescope with fullscreen, adaptive sync, and HDR support
+exec gamescope \
+  -f \
+  --adaptive-sync \
+  --hdr-enabled \
+  --hdr-itm \
+  --steam \
+  -e -- flatpak run org.pegasus_frontend.Pegasus
+
