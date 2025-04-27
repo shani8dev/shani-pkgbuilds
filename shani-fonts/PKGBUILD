@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-fonts
 pkgver=1.3
-pkgrel=2
+pkgrel=3
 pkgdesc="Fonts for Shani OS"
 arch=('any')
 source=(90-indian-fonts.conf
