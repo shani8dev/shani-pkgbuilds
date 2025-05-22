@@ -192,112 +192,112 @@ audio/x-voc=org.kde.elisa.desktop; # Creative Voice File (VOC)
 # ---------------------------------------------------------------------
 
 # --- Ogg-Based Video ---
-video/x-ogm+ogg=org.videolan.VLC.desktop;
-video/ogg=org.videolan.VLC.desktop;
-video/x-theora+ogg=org.videolan.VLC.desktop;
-video/x-theora=org.videolan.VLC.desktop;
+video/x-ogm+ogg=org.kde.haruna.desktop;
+video/ogg=org.kde.haruna.desktop;
+video/x-theora+ogg=org.kde.haruna.desktop;
+video/x-theora=org.kde.haruna.desktop;
 
 # --- Microsoft / Windows Formats ---
-video/x-ms-asf=org.videolan.VLC.desktop;
-video/x-ms-asf-plugin=org.videolan.VLC.desktop;
-video/x-ms-asx=org.videolan.VLC.desktop;
-video/x-ms-wm=org.videolan.VLC.desktop;
-video/x-ms-wmv=org.videolan.VLC.desktop;
-video/x-ms-wmx=org.videolan.VLC.desktop;
-video/x-ms-wvx=org.videolan.VLC.desktop;
-video/x-ms-wmp=org.videolan.VLC.desktop;
-video/x-ms-wvxvideo=org.videolan.VLC.desktop;
-video/x-ms-dvr=org.videolan.VLC.desktop;  # Windows Media DVR (DVR-MS)
-video/x-ms-vob=org.videolan.VLC.desktop;
+video/x-ms-asf=org.kde.haruna.desktop;
+video/x-ms-asf-plugin=org.kde.haruna.desktop;
+video/x-ms-asx=org.kde.haruna.desktop;
+video/x-ms-wm=org.kde.haruna.desktop;
+video/x-ms-wmv=org.kde.haruna.desktop;
+video/x-ms-wmx=org.kde.haruna.desktop;
+video/x-ms-wvx=org.kde.haruna.desktop;
+video/x-ms-wmp=org.kde.haruna.desktop;
+video/x-ms-wvxvideo=org.kde.haruna.desktop;
+video/x-ms-dvr=org.kde.haruna.desktop;  # Windows Media DVR (DVR-MS)
+video/x-ms-vob=org.kde.haruna.desktop;
 
 # --- AVI-Based Formats ---
-video/x-msvideo=org.videolan.VLC.desktop;
-video/msvideo=org.videolan.VLC.desktop;
-video/x-mjpeg=org.videolan.VLC.desktop;
-video/x-motion-jpeg=org.videolan.VLC.desktop;
+video/x-msvideo=org.kde.haruna.desktop;
+video/msvideo=org.kde.haruna.desktop;
+video/x-mjpeg=org.kde.haruna.desktop;
+video/x-motion-jpeg=org.kde.haruna.desktop;
 
 # --- MPEG-Based Formats ---
-video/mp2t=org.videolan.VLC.desktop;
-video/mpeg=org.videolan.VLC.desktop;
-video/mpeg-system=org.videolan.VLC.desktop;
-video/mp1s=org.videolan.VLC.desktop;
-video/mp2p=org.videolan.VLC.desktop;
-video/mpeg4=org.videolan.VLC.desktop;
-video/x-mpeg=org.videolan.VLC.desktop;
-video/x-mpeg2=org.videolan.VLC.desktop;
-video/mp4=org.videolan.VLC.desktop;
-video/mp4v-es=org.videolan.VLC.desktop;
-video/x-m4v=org.videolan.VLC.desktop;
+video/mp2t=org.kde.haruna.desktop;
+video/mpeg=org.kde.haruna.desktop;
+video/mpeg-system=org.kde.haruna.desktop;
+video/mp1s=org.kde.haruna.desktop;
+video/mp2p=org.kde.haruna.desktop;
+video/mpeg4=org.kde.haruna.desktop;
+video/x-mpeg=org.kde.haruna.desktop;
+video/x-mpeg2=org.kde.haruna.desktop;
+video/mp4=org.kde.haruna.desktop;
+video/mp4v-es=org.kde.haruna.desktop;
+video/x-m4v=org.kde.haruna.desktop;
 
 # --- QuickTime & Apple Formats ---
-video/quicktime=org.videolan.VLC.desktop;
-video/x-caf=org.videolan.VLC.desktop; # Apple Core Audio Format (CAF)
-video/x-quicktime=org.videolan.VLC.desktop;
+video/quicktime=org.kde.haruna.desktop;
+video/x-caf=org.kde.haruna.desktop; # Apple Core Audio Format (CAF)
+video/x-quicktime=org.kde.haruna.desktop;
 
 # --- Matroska / WebM Formats ---
-video/x-matroska=org.videolan.VLC.desktop;
-video/x-matroska-3d=org.videolan.VLC.desktop;
-video/x-mkv=org.videolan.VLC.desktop;
-video/webm=org.videolan.VLC.desktop;
+video/x-matroska=org.kde.haruna.desktop;
+video/x-matroska-3d=org.kde.haruna.desktop;
+video/x-mkv=org.kde.haruna.desktop;
+video/webm=org.kde.haruna.desktop;
 
 # --- Mobile Formats ---
-video/3gp=org.videolan.VLC.desktop;
-video/3gpp=org.videolan.VLC.desktop;
-video/3gpp2=org.videolan.VLC.desktop;
+video/3gp=org.kde.haruna.desktop;
+video/3gpp=org.kde.haruna.desktop;
+video/3gpp2=org.kde.haruna.desktop;
 
 # --- Streaming & Broadcast Formats ---
-video/vnd.mpegurl=org.videolan.VLC.desktop;
-video/vnd.dlna.mpeg-tts=org.videolan.VLC.desktop;
+video/vnd.mpegurl=org.kde.haruna.desktop;
+video/vnd.dlna.mpeg-tts=org.kde.haruna.desktop;
 video/x-totem-stream=org.gnome.Totem.desktop;
-video/iso.segment=org.videolan.VLC.desktop;
+video/iso.segment=org.kde.haruna.desktop;
 
 # --- Digital Video (DV) Formats ---
-video/dv=org.videolan.VLC.desktop;
-video/x-dv=org.videolan.VLC.desktop;
+video/dv=org.kde.haruna.desktop;
+video/x-dv=org.kde.haruna.desktop;
 
 # --- Flash-Based Formats ---
-video/flv=org.videolan.VLC.desktop;
-video/x-flv=org.videolan.VLC.desktop;
+video/flv=org.kde.haruna.desktop;
+video/x-flv=org.kde.haruna.desktop;
 
 # --- FLI/FLC Animation Formats ---
-video/fli=org.videolan.VLC.desktop;
-video/x-flic=org.videolan.VLC.desktop;
-video/x-flc=org.videolan.VLC.desktop;
-video/x-fli=org.videolan.VLC.desktop;
+video/fli=org.kde.haruna.desktop;
+video/x-flic=org.kde.haruna.desktop;
+video/x-flc=org.kde.haruna.desktop;
+video/x-fli=org.kde.haruna.desktop;
 
 # --- RealVideo Formats ---
-video/vnd.rn-realvideo=org.videolan.VLC.desktop;
-video/x-pn-realvideo=org.videolan.VLC.desktop;
-video/x-smv=org.videolan.VLC.desktop;
+video/vnd.rn-realvideo=org.kde.haruna.desktop;
+video/x-pn-realvideo=org.kde.haruna.desktop;
+video/x-smv=org.kde.haruna.desktop;
 
 # --- Various Proprietary & Niche Formats ---
-video/divx=org.videolan.VLC.desktop;
-video/vnd.divx=org.videolan.VLC.desktop;
-video/x-divx=org.videolan.VLC.desktop;
-video/x-vid=org.videolan.VLC.desktop;
-video/x-nsv=org.videolan.VLC.desktop;  # Nullsoft Streaming Video (NSV)
-video/x-nut=org.videolan.VLC.desktop;  # NUT Open Container Format
-video/x-ivf=org.videolan.VLC.desktop;  # IVF Intel Indeo Video Format
-video/x-sgi-movie=org.videolan.VLC.desktop;
-video/x-mve=org.videolan.VLC.desktop;  # Interplay MVE video format
-video/x-pva=org.videolan.VLC.desktop;  # PVA container format
+video/divx=org.kde.haruna.desktop;
+video/vnd.divx=org.kde.haruna.desktop;
+video/x-divx=org.kde.haruna.desktop;
+video/x-vid=org.kde.haruna.desktop;
+video/x-nsv=org.kde.haruna.desktop;  # Nullsoft Streaming Video (NSV)
+video/x-nut=org.kde.haruna.desktop;  # NUT Open Container Format
+video/x-ivf=org.kde.haruna.desktop;  # IVF Intel Indeo Video Format
+video/x-sgi-movie=org.kde.haruna.desktop;
+video/x-mve=org.kde.haruna.desktop;  # Interplay MVE video format
+video/x-pva=org.kde.haruna.desktop;  # PVA container format
 
 # --- H.264, H.265 / HEVC Formats ---
-video/x-h264=org.videolan.VLC.desktop;
-video/x-h265=org.videolan.VLC.desktop;
-video/h264=org.videolan.VLC.desktop;
-video/h265=org.videolan.VLC.desktop;
-video/hevc=org.videolan.VLC.desktop;
+video/x-h264=org.kde.haruna.desktop;
+video/x-h265=org.kde.haruna.desktop;
+video/h264=org.kde.haruna.desktop;
+video/h265=org.kde.haruna.desktop;
+video/hevc=org.kde.haruna.desktop;
 
 # --- DVD & VCD Formats ---
-video/x-vcd=org.videolan.VLC.desktop;
-video/x-svcd=org.videolan.VLC.desktop;
-video/x-vob=org.videolan.VLC.desktop;
-video/x-ts=org.videolan.VLC.desktop;
+video/x-vcd=org.kde.haruna.desktop;
+video/x-svcd=org.kde.haruna.desktop;
+video/x-vob=org.kde.haruna.desktop;
+video/x-ts=org.kde.haruna.desktop;
 
 # --- Annodex Formats (Legacy) ---
-video/annodex=org.videolan.VLC.desktop;
-video/x-annodex=org.videolan.VLC.desktop;
+video/annodex=org.kde.haruna.desktop;
+video/x-annodex=org.kde.haruna.desktop;
 
 
 # ---------------------------------------------------------------------
