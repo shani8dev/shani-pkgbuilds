@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 depends=(
@@ -21,6 +21,7 @@ depends=(
 	iio-sensor-proxy
 	libratbag
 	geoclue
+	apcupsd
 )
 license=('GPL')
 install="$pkgname.install"

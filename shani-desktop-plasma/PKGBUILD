@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=11
+pkgrel=12
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -12,7 +12,6 @@ depends=(
     breeze-gtk
     discover
     kdeplasma-addons
-    kgamma
     krdp
     kscreen
     ksshaskpass
@@ -48,6 +47,7 @@ depends=(
 	switcheroo-control
 	konsole
 	yakuake
+	ark
 	dolphin
 	dolphin-plugins
 	kio-admin

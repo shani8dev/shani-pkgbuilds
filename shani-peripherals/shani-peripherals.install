@@ -36,5 +36,6 @@ post_upgrade() {
 	systemctl enable inputattach
 	systemctl enable ratbagd
 	systemctl enable geoclue
+	systemctl enable apcupsd
 	add_group
 }
