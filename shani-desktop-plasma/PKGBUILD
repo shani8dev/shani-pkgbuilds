@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=12
+pkgrel=13
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -63,7 +63,6 @@ depends=(
 	system-config-printer
 	plasma-applet-window-buttons
 	plasma6-applets-window-title
-	kwin-effects-forceblur
 	xdg-desktop-portal-gtk
 	xdg-user-dirs
 	xdg-utils

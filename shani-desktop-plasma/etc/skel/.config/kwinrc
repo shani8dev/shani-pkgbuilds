@@ -1,23 +1,10 @@
-[Effect-blurplus]
-BlurDecorations=true
-BlurMatching=false
-BlurNonMatching=true
-BottomCornerRadius=20
-DockCornerRadius=20
-MenuCornerRadius=20
-NoiseStrength=0
-PaintAsTranslucent=true
-TopCornerRadius=20
-WindowClasses=xwaylandvideobridge
-
 [Effect-wobblywindows]
 Drag=85
 Stiffness=10
 WobblynessLevel=1
 
 [Plugins]
-blurEnabled=false
-forceblurEnabled=true
+blurEnabled=true
 magiclampEnabled=true
 coverswitchEnabled=true
 wobblywindowsEnabled=true
