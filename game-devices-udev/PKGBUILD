@@ -1,7 +1,7 @@
 # Maintainer: Fabian Bornschein <fabiscafe-at-mailbox-dot-org>
 
 pkgname=game-devices-udev
-pkgver=0.23
+pkgver=0.24
 pkgrel=0.1
 pkgdesc="Udev rules for controllers"
 url='https://codeberg.org/fabiscafe/game-devices-udev'
