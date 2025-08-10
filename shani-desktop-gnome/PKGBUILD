@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=15
+pkgrel=16
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -14,7 +14,6 @@ depends=(
 	rygel
 	power-profiles-daemon
 	switcheroo-control
-	usbguard
 	system-config-printer
 	evolution-data-server
 	gnome-initial-setup
