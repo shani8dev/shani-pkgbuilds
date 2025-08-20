@@ -2,7 +2,7 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=20
+pkgrel=21
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
@@ -17,7 +17,6 @@ depends=(
   'systemd-oomd-defaults'
   'profile-sync-daemon'
   'zram-generator'
-  'rng-tools'
   'ananicy-cpp'
   'gamemode'
   'irqbalance'
