@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
 depends=(
@@ -13,6 +13,8 @@ depends=(
 	vulkan-swrast
 	vulkan-virtio
 	vulkan-dzn
+	vulkan-freedreno
+	vulkan-asahi
 	vulkan-gfxstream
     libva-intel-driver
     intel-media-driver
