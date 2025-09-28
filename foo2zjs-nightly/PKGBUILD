@@ -15,7 +15,7 @@ provides=('foo2zjs')
 replaces=('foo2zjs')
 makedepends=('unzip' 'bc' 'wget' 'foomatic-db-engine' 'ghostscript')
 optdepends=('tix: required by hplj10xx_gui.tcl')
-arch=('i686' 'x86_64')
+arch=('x86_64')
 options=('!emptydirs' '!ccache')
 install='foo2zjs.install'
 
