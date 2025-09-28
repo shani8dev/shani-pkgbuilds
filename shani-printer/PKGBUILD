@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-printer
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Printer support tools and drivers for Shani OS"
 arch=('any')
 depends=(
@@ -26,9 +26,12 @@ depends=(
     gutenprint
     splix
 
-    # Vendor-supported drivers in official repos
+    # Vendor-supported drivers not in official repos
     hplip-minimal
     epson-inkjet-printer-escpr2
+    foo2zjs-nightly
+    brlaser
+    cnijfilter2
 )
 license=('GPL')
 install="$pkgname.install"
