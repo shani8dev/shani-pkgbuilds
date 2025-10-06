@@ -1,0 +1,23 @@
+"InstallConfigStore"
+{
+    "Software"
+    {
+        "Valve"
+        {
+            "Steam"
+            {
+                "Language"                  "english"
+                "BigPictureMode"            "1"
+                "EnableGamepadUI"           "1"
+                "SteamDeck"                 "1"
+                "TenFootMode"               "1"
+                "SuppressAutoUpdate"        "1"
+                "DisableAutoUpdate"         "1"
+                "AutoUpdateBehavior"        "2"
+                "NoRepairFiles"             "1"
+                "StartupMode"               "BigPicture"
+                "AllowDesktopConfig"        "1"
+            }
+        }
+    }
+}

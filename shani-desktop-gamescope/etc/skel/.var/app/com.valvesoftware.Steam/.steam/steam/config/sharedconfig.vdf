@@ -1,0 +1,17 @@
+"UserLocalConfigStore"
+{
+    "Software"
+    {
+        "Valve"
+        {
+            "Steam"
+            {
+                "StartupMode"           "BigPicture"
+                "BigPictureMode"        "1"
+                "EnableGamepadUI"       "1"
+                "EnableSteamDeckUI"     "1"
+                "UseHDR"                "1"
+            }
+        }
+    }
+}

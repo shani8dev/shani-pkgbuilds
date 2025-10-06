@@ -1,0 +1,12 @@
+"users"
+{
+    "$STEAM_ID"
+    {
+        "AccountName"        "$CURRENT_USER"
+        "PersonaName"        "$CURRENT_USER"
+        "RememberPassword"   "1"
+        "MostRecent"         "1"
+        "WantsOfflineMode"   "0"
+        "Timestamp"          "$(date +%s)"
+    }
+}

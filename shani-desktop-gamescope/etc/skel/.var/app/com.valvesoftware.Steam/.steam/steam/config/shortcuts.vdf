@@ -1,0 +1,139 @@
+"shortcuts"
+{
+    "0"
+    {
+        "appid"             "3000000000"
+        "AppName"           "Heroic Games Launcher"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "icon"              ""
+        "ShortcutPath"      ""
+        "LaunchOptions"     "run com.heroicgameslauncher.hgl"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "AllowOverlay"      "1"
+        "OpenVR"            "0"
+        "Devkit"            "0"
+        "DevkitGameID"      ""
+        "LastPlayTime"      "0"
+        "tags"
+        {
+            "0"             "Launchers"
+        }
+    }
+    "1"
+    {
+        "appid"             "3000000001"
+        "AppName"           "OBS Studio"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run com.obsproject.Studio"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "AllowOverlay"      "0"
+        "tags"
+        {
+            "0"             "Streaming"
+        }
+    }
+    "2"
+    {
+        "appid"             "3000000002"
+        "AppName"           "Vivaldi Browser"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run com.vivaldi.Vivaldi"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "Browsers"
+        }
+    }
+    "3"
+    {
+        "appid"             "3000000003"
+        "AppName"           "Oversteer"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run io.github.berarma.Oversteer"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "Controllers"
+        }
+    }
+    "4"
+    {
+        "appid"             "3000000004"
+        "AppName"           "AntiMicroX"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run io.github.antimicrox.antimicrox"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "Controllers"
+        }
+    }
+    "5"
+    {
+        "appid"             "3000000005"
+        "AppName"           "OpenRGB"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run org.openrgb.OpenRGB"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "RGB"
+        }
+    }
+    "6"
+    {
+        "appid"             "3000000006"
+        "AppName"           "Piper"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run org.freedesktop.Piper"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "Peripherals"
+        }
+    }
+    "7"
+    {
+        "appid"             "3000000007"
+        "AppName"           "Protontricks"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run com.github.Matoking.protontricks"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "tags"
+        {
+            "0"             "Tools"
+        }
+    }
+    "8"
+    {
+        "appid"             "3000000008"
+        "AppName"           "Bazaar"
+        "Exe"               "/usr/bin/flatpak"
+        "StartDir"          ""
+        "LaunchOptions"     "run io.github.kolunmi.Bazaar"
+        "IsHidden"          "0"
+        "AllowDesktopConfig" "1"
+        "AllowOverlay"      "1"
+        "tags"
+        {
+            "0"             "Utilities"
+        }
+    }
+}
+

@@ -1,14 +1,30 @@
-#!/bin/bash
-# Ensure environment variables are set properly
+#!/usr/bin/env bash
+# Steam Deck–style Gamescope session launcher
+
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 
-# Run Gamescope with fullscreen, adaptive sync, and HDR support
+# Overlays (optional)
+export MANGOHUD=1
+export ENABLE_VKBASALT=1
+export DXVK_HUD=compiler
+
+# Launch Steam Big Picture UI in Gamescope fullscreen
 exec gamescope \
-  -f \
-  --adaptive-sync \
-  --hdr-enabled \
-  --hdr-itm \
-  --steam \
-  -e -- flatpak run org.pegasus_frontend.Pegasus
+  -f \                        # fullscreen
+  --adaptive-sync \           # VRR support
+  --hdr-enabled \             # enable HDR
+  --hdr-itm \                 # tone-mapping
+  --expose-wayland \          # expose nested Wayland socket
+  --force-grab-cursor \       # keep pointer locked to window
+  --steam \                   # tell gamescope to use Steam integration
+  -e -- \                     # execute the following command inside
+  flatpak run com.valvesoftware.Steam -- \
+    -steamdeck \              # enable Deck UI
+    -gamepadui \              # enable Gamepad interface
+    -tenfoot \                # Big Picture mode
+    -fulldesktopres \         # match desktop resolution
+    -norepairfiles \          # skip file validation
+    -noupdate \               # skip update check
+    -silent                   # minimize console output
 
