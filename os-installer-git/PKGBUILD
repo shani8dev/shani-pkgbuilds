@@ -16,16 +16,16 @@ optdepends=('epiphany: online assistance'
             'gnome-control-center: Wi-Fi setup')
 
 prepare () {
-	cd $srcdir/$pkgname
+	cd $srcdir/os-installer
 }
 
 build () {
-	cd $srcdir/$pkgname
+	cd $srcdir/os-installer
 	meson setup --prefix=/usr build
 }
 
 package() {
-	cd $srcdir/$pkgname
+	cd $srcdir/os-installer
 	meson install -C build --destdir $pkgdir
 }
 
