@@ -1,7 +1,7 @@
 # Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
 pkgname=os-installer
 pkgver=0.5.1
-pkgrel=1
+pkgrel=2
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver")
