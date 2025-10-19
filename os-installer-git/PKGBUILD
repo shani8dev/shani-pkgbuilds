@@ -1,14 +1,12 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
-pkgver=0.5.0
-pkgrel=7
+pkgver=0.5.1
+pkgrel=1
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
-_commit='10dcfe5cdfa7ad80b9b86d71a5e42786fdb04566'  # Replace with the specific commit hash
-source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
-        "summary-blp.patch"
-        "terminal_dialog-blp.patch")  # Add the patch file
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+_commit='cc0289dac3b633170264fc7af89b332565c1a2c8'  # Replace with the specific commit hash
+source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit")
+sha256sums=('SKIP')
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
@@ -17,19 +15,17 @@ optdepends=('epiphany: online assistance'
             'gnome-disk-utility: manual disk partitioning'
             'gnome-control-center: Wi-Fi setup')
 
-prepare() {
-    cd "$srcdir/os-installer" || return 1
-    patch -p1 < "$srcdir/summary-blp.patch"  # Apply the patch
-    patch -p1 < "$srcdir/terminal_dialog-blp.patch"  # Apply the patch
+prepare () {
+	cd $srcdir/$pkgname
 }
 
-build() {
-    cd "$srcdir/os-installer" || return 1
-    meson setup --prefix=/usr build
+build () {
+	cd $srcdir/$pkgname
+	meson setup --prefix=/usr build
 }
 
 package() {
-    cd "$srcdir/os-installer" || return 1
-    meson install -C build --destdir "$pkgdir"
+	cd $srcdir/$pkgname
+	meson install -C build --destdir $pkgdir
 }
 
