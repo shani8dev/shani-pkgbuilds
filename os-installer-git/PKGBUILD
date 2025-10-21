@@ -1,12 +1,14 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
 pkgver=0.5.1
-pkgrel=1
+pkgrel=2
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
-_commit='cc0289dac3b633170264fc7af89b332565c1a2c8'  # Replace with the specific commit hash
-source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit")
-sha256sums=('SKIP')
+_commit='a6afca9d73060fde62b42efe4c0c853697a30363'  # Replace with the specific commit hash
+source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
+        "fix-execution.patch")   # <-- Add patch here
+sha256sums=('SKIP'
+            'SKIP')               # <-- Add patch checksum if you want
 arch=('x86_64')
 license=('GPL3')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
@@ -16,16 +18,19 @@ optdepends=('epiphany: online assistance'
             'gnome-control-center: Wi-Fi setup')
 
 prepare () {
-	cd $srcdir/os-installer
+    cd "$srcdir/os-installer"
+
+    # Apply the patch
+    patch -p1 < "$srcdir/fix-execution.patch"
 }
 
 build () {
-	cd $srcdir/os-installer
-	meson setup --prefix=/usr build
+    cd "$srcdir/os-installer"
+    meson setup --prefix=/usr build
 }
 
 package() {
-	cd $srcdir/os-installer
-	meson install -C build --destdir $pkgdir
+    cd "$srcdir/os-installer"
+    meson install -C build --destdir "$pkgdir"
 }
 

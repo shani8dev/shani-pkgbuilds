@@ -1,0 +1,41 @@
+diff --git a/src/core/installation_scripting.py b/src/core/installation_scripting.py
+index 486cb5c..e4ae610 100644
+--- a/src/core/installation_scripting.py
++++ b/src/core/installation_scripting.py
+@@ -63,13 +63,28 @@ class InstallationScripting():
+         file_path = config.base_path / file_name
+         if file_path.exists():
+             print(f'Starting step "{next_step.name}"...')
++
++            # Determine proper path for execution
++            script_path = str(file_path)
++            if not file_path.is_absolute():
++                script_path = f"./{script_path}"
++
++            print(f"Executing script: {script_path}")
++
+             pty = Vte.Pty.new_sync(Vte.PtyFlags.NO_CTTY, self.cancel)
++            # Run script through bash
+             pty.spawn_async(
+-                '/', [f'./{file_path}'], envs,
++                '/',
++                ['/bin/bash', script_path],
++                envs,
+                 GLib.SpawnFlags.DEFAULT,
+-                None, None, -1, self.cancel,
++                None,
++                None,
++                -1,
++                self.cancel,
+                 self._on_child_spawned,
+-                (None,))
++                (None,),
++            )
+             terminal_provider.set_pty(pty)
+             self.running_step = next_step
+         else:
+@@ -120,3 +135,4 @@ class InstallationScripting():
+ 
+ 
+ installation_scripting = InstallationScripting()
++
