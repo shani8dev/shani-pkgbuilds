@@ -2,7 +2,7 @@
 
 pkgname=plasma-setup-git
 _pkgname=plasma-setup
-pkgver=r310.072a568
+pkgver=r312.7fa31a3
 pkgrel=1
 pkgdesc="Initial setup wizard for KDE Plasma (git version)"
 arch=('x86_64')
@@ -36,7 +36,6 @@ makedepends=(
 
 conflicts=('plasma-setup')
 provides=('plasma-setup')
-install="${_pkgname}.install"
 source=("${_pkgname}::git+${url}.git")
 md5sums=('SKIP')
 

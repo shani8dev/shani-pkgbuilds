@@ -1,8 +1,0 @@
-# Post installation
-post_install() {
-	post_upgrade
-}
-
-post_upgrade() {
-	systemctl enable plasma-setup.service
-}
