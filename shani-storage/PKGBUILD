@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
 depends=(
@@ -15,7 +15,6 @@ depends=(
 	dosfstools
 	e2fsprogs
 	f2fs-tools
-	bcachefs-tools
 	exfatprogs
 	fatresize
 	ntfs-3g
@@ -23,6 +22,7 @@ depends=(
 	sshfs
 	xfsprogs
 	btrfs-progs
+	udisks2-btrfs
 	fuse-overlayfs
 	nfs-utils
 	samba
