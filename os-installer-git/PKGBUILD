@@ -1,10 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
 pkgver=0.5.1
-pkgrel=2
+pkgrel=3
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
-_commit='a6afca9d73060fde62b42efe4c0c853697a30363'  # Replace with the specific commit hash
+_commit='930c136ab52a36609c648abbad26bcb095609585'  # Replace with the specific commit hash
 source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
         "fix-execution.patch")   # <-- Add patch here
 sha256sums=('SKIP'
