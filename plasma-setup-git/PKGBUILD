@@ -2,7 +2,7 @@
 
 pkgname=plasma-setup-git
 _pkgname=plasma-setup
-pkgver=r335.fc79072
+pkgver=r344.4dfc680
 pkgrel=1
 pkgdesc="Initial setup wizard for KDE Plasma (git version)"
 arch=('x86_64')
