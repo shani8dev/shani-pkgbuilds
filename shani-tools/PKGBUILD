@@ -20,6 +20,7 @@ depends=(
     words
 	lynx
 	ed
+	bsd-games
 )
 license=('GPL')
 
