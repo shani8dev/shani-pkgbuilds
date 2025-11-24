@@ -37,5 +37,6 @@ post_upgrade() {
 	systemctl enable ratbagd
 	systemctl enable geoclue
 	systemctl enable apcupsd
+	systemctl enable usbmuxd
 	add_group
 }

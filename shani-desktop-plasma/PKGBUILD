@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=16
+pkgrel=17
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -12,11 +12,13 @@ depends=(
     kde-gtk-config
     breeze-gtk
     discover
+    filelight
     kdeplasma-addons
     krdp
     kscreen
     ksshaskpass
     kwallet-pam
+    kwalletmanager
     kwin
     kwrited
     plasma-browser-integration
@@ -62,6 +64,12 @@ depends=(
 	kimageformats
 	icoutils
 	libappimage
+	libspectre
+	libid3tag
+	libopenraw
+	libwmf
+	libultrahdr
+	djvulibre
 	appmenu-gtk-module
 	system-config-printer
 	plasma-applet-window-buttons
