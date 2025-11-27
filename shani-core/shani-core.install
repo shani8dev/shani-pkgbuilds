@@ -4,6 +4,9 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable apparmor
+	systemctl enable snapd.apparmor.service
+	systemctl enable snapd.socket
+	systemctl enable waydroid-container.service
 	systemctl enable fwupd
 	systemctl enable fwupd-refresh.timer
 }
