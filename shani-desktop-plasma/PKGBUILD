@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=17
+pkgrel=18
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -47,6 +47,7 @@ depends=(
     ksystemlog
     kjournald
     partitionmanager
+    converseen
 	kvantum
 	power-profiles-daemon
 	switcheroo-control
@@ -66,6 +67,7 @@ depends=(
 	libappimage
 	libspectre
 	libid3tag
+	libraw
 	libopenraw
 	libwmf
 	libultrahdr
