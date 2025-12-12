@@ -26,7 +26,6 @@ depends=(
 	tpm2-tss  
 	fwupd  
 	flatpak
-	snapd
 	waydroid
 )
 license=('GPL')
