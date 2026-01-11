@@ -21,22 +21,22 @@ depends=(
     pv
     jq
     micro
-	python-pip
-	android-tools
-	distrobox
-	podman
-	podman-docker
-	podman-compose
-	elfutils
-	7zip
-	arj
-	unrar 
-	unarchiver
-	unzip 
-	unace
-	zip
-	lrzip
-	lzop
+    python-pip
+    android-tools
+    distrobox
+    podman
+    podman-docker
+    podman-compose
+    elfutils
+    7zip
+    arj
+    unrar 
+    unarchiver
+    unzip 
+    unace
+    zip
+    lrzip
+    lzop
 )
 license=('GPL')
 

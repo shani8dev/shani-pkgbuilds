@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
@@ -16,11 +16,13 @@ depends=(
     man-db
     plocate
     vi
+    vim
+    tmux
     nano
     words
-	lynx
-	ed
-	bsd-games
+    lynx
+    ed
+    bsd-games
 )
 license=('GPL')
 
