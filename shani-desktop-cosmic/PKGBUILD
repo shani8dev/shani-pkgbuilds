@@ -44,7 +44,7 @@ depends=(
 	gvfs-nfs
 	gvfs-onedrive
 	gvfs-smb
-	gvfs-wsdds
+	gvfs-wsdd
 	gnome-keyring
 	system-config-printer
 	gparted
