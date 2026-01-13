@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -30,6 +30,10 @@ depends=(
 	cosmic-wallpapers
 	cosmic-workspaces
 	xdg-desktop-portal-cosmic
+	xdg-user-dirs
+	xdg-utils
+	power-profiles-daemon
+	switcheroo-control
 	gvfs
 	gvfs-afc
 	gvfs-dnssd
@@ -40,16 +44,12 @@ depends=(
 	gvfs-nfs
 	gvfs-onedrive
 	gvfs-smb
-	gvfs-wsdd
-	gnome-themes-extra
+	gvfs-wsdds
 	gnome-keyring
 	system-config-printer
+	gparted
 	switcheroo
 	transmageddon
-	xdg-user-dirs
-	xdg-utils
-	power-profiles-daemon
-	switcheroo-control
 )
 install="$pkgname.install"
 source=()
