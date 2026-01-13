@@ -1,0 +1,537 @@
+[Default Applications]
+# ---------------------------------------------------------------------
+# Text Files (Default: Cosmic Text Editor)
+# ---------------------------------------------------------------------
+text/plain=com.system76.CosmicEdit.desktop;
+text/vnd.trolltech.linguist=com.system76.CosmicEdit.desktop;
+text/markdown=com.system76.CosmicEdit.desktop;
+
+
+# ---------------------------------------------------------------------
+# Calendar (Default: Gnome Calendar)
+# ---------------------------------------------------------------------
+text/calendar=org.gnome.Calendar.desktop;
+application/x-vcalendar=org.gnome.Calendar.desktop;
+application/x-extension-ics=org.gnome.Calendar.desktop;
+
+# ---------------------------------------------------------------------
+# Contacts (Default: Gnome Contacts)
+# ---------------------------------------------------------------------
+text/vcard=org.gnome.Contacts.desktop
+application/vcard=org.gnome.Contacts.desktop
+application/x-vcard=org.gnome.Contacts.desktop
+application/x-extension-vcf=org.gnome.Contacts.desktop
+
+# ---------------------------------------------------------------------
+# Web & URI Handling (Default: Vivaldi)
+# ---------------------------------------------------------------------
+text/html=com.vivaldi.Vivaldi.desktop;
+text/xml=com.vivaldi.Vivaldi.desktop;
+application/xhtml_xml=com.vivaldi.Vivaldi.desktop;
+application/xhtml+xml=com.vivaldi.Vivaldi.desktop;
+application/rdf+xml=com.vivaldi.Vivaldi.desktop;
+application/rss+xml=com.vivaldi.Vivaldi.desktop;
+application/atom+xml=com.vivaldi.Vivaldi.desktop;
+
+# Web URL Schemes
+x-scheme-handler/ftp=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/http=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/https=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/mailto=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/about=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/chrome=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/unknown=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/webcal=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/calendar=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/news=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/feed=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/mid=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/mms=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/ircs=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/irc=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/tel=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/sip=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/callto=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/skype=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/slack=com.vivaldi.Vivaldi.desktop;
+
+# Web File Extensions
+application/x-extension-htm=com.vivaldi.Vivaldi.desktop;
+application/x-extension-html=com.vivaldi.Vivaldi.desktop;
+application/x-extension-shtml=com.vivaldi.Vivaldi.desktop;
+application/x-extension-xht=com.vivaldi.Vivaldi.desktop;
+application/x-extension-xhtml=com.vivaldi.Vivaldi.desktop;
+
+# Web Archive Formats
+application/x-mimearchive=com.vivaldi.Vivaldi.desktop;
+application/mhtml=com.vivaldi.Vivaldi.desktop;
+application/x-mhtml=com.vivaldi.Vivaldi.desktop;
+message/rfc822=com.vivaldi.Vivaldi.desktop;
+
+# WebApps & Progressive Web Apps
+application/x-web-app-manifest+json=com.vivaldi.Vivaldi.desktop;
+application/manifest+json=com.vivaldi.Vivaldi.desktop;
+
+
+# ---------------------------------------------------------------------
+# Torrent Files (Default: Fragments)
+# ---------------------------------------------------------------------
+application/x-bittorrent=de.haeckerfelix.Fragments.desktop;
+x-scheme-handler/magnet=de.haeckerfelix.Fragments.desktop;
+x-scheme-handler/dht=de.haeckerfelix.Fragments.desktop;
+
+# ---------------------------------------------------------------------
+# Documents & eBooks (Default: Papers)
+# ---------------------------------------------------------------------
+application/pdf=org.gnome.Papers.desktop;
+application/epub+zip=org.gnome.Papers.desktop;
+application/x-pdf=org.gnome.Papers.desktop;
+application/x-mobipocket-ebook=org.gnome.Papers.desktop;
+application/vnd.amazon.ebook=org.gnome.Papers.desktop;
+image/vnd.djvu=org.gnome.Papers.desktop;
+application/x-cbz=org.gnome.Papers.desktop;
+application/x-cbr=org.gnome.Papers.desktop;
+
+# ---------------------------------------------------------------------
+# Audio Formats (Default: Decibels)
+# ---------------------------------------------------------------------
+
+# --- Common Formats ---
+audio/aac=com.system76.CosmicPlayer.desktop;
+audio/amr=com.system76.CosmicPlayer.desktop;
+audio/mpeg=com.system76.CosmicPlayer.desktop;
+audio/mp3=com.system76.CosmicPlayer.desktop;
+audio/mp4=com.system76.CosmicPlayer.desktop;
+audio/ogg=com.system76.CosmicPlayer.desktop;
+audio/flac=com.system76.CosmicPlayer.desktop;
+audio/midi=com.system76.CosmicPlayer.desktop;
+audio/vorbis=com.system76.CosmicPlayer.desktop;
+audio/opus=com.system76.CosmicPlayer.desktop;
+audio/wav=com.system76.CosmicPlayer.desktop;
+audio/webm=com.system76.CosmicPlayer.desktop;
+
+# --- MPEG Variants ---
+audio/x-mp1=com.system76.CosmicPlayer.desktop;
+audio/x-mp2=com.system76.CosmicPlayer.desktop;
+audio/x-mp3=com.system76.CosmicPlayer.desktop;
+audio/x-mpeg=com.system76.CosmicPlayer.desktop;
+audio/x-mpg=com.system76.CosmicPlayer.desktop;
+
+# --- MP4 & AAC Variants ---
+audio/x-m4a=com.system76.CosmicPlayer.desktop;
+audio/x-m4b=com.system76.CosmicPlayer.desktop;
+audio/x-aac=com.system76.CosmicPlayer.desktop;
+
+# --- Matroska Audio ---
+audio/x-matroska=com.system76.CosmicPlayer.desktop;
+
+# --- Playlist Formats ---
+audio/x-mpegurl=com.system76.CosmicPlayer.desktop;
+audio/x-scpls=com.system76.CosmicPlayer.desktop;
+application/vnd.apple.mpegurl=com.system76.CosmicPlayer.desktop;
+application/xspf+xml=com.system76.CosmicPlayer.desktop;
+
+# --- AIFF, AU, WAV Formats ---
+audio/x-aiff=com.system76.CosmicPlayer.desktop;
+audio/x-pn-aiff=com.system76.CosmicPlayer.desktop;
+audio/x-pn-au=com.system76.CosmicPlayer.desktop;
+audio/x-pn-wav=com.system76.CosmicPlayer.desktop;
+audio/x-wav=com.system76.CosmicPlayer.desktop;
+audio/basic=com.system76.CosmicPlayer.desktop; # Covers older .au and .snd formats
+
+# --- Lossless & Compressed Formats ---
+audio/x-flac=com.system76.CosmicPlayer.desktop;
+audio/x-ape=com.system76.CosmicPlayer.desktop;
+audio/x-wavpack=com.system76.CosmicPlayer.desktop;
+audio/x-shorten=com.system76.CosmicPlayer.desktop; # SHN (Shorten) lossless format
+
+# --- Ogg & Vorbis Variants ---
+audio/x-opus+ogg=com.system76.CosmicPlayer.desktop;
+audio/x-vorbis+ogg=com.system76.CosmicPlayer.desktop;
+audio/x-vorbis=com.system76.CosmicPlayer.desktop;
+audio/x-speex=com.system76.CosmicPlayer.desktop;
+
+# --- Microsoft & Windows Formats ---
+audio/x-ms-wma=com.system76.CosmicPlayer.desktop;
+
+# --- Tracker Module Formats (MOD, IT, S3M, XM) ---
+audio/x-it=com.system76.CosmicPlayer.desktop;
+audio/x-mod=com.system76.CosmicPlayer.desktop;
+audio/x-s3m=com.system76.CosmicPlayer.desktop;
+audio/x-xm=com.system76.CosmicPlayer.desktop;
+audio/x-stm=com.system76.CosmicPlayer.desktop;
+audio/x-med=com.system76.CosmicPlayer.desktop; # Amiga MED tracker format
+audio/x-mtm=com.system76.CosmicPlayer.desktop; # MultiTracker MOD format
+
+# --- Additional MIDI Variants ---
+audio/x-mid=com.system76.CosmicPlayer.desktop;
+audio/x-midi=com.system76.CosmicPlayer.desktop;
+
+# --- RealAudio Formats ---
+audio/x-pn-realaudio=com.system76.CosmicPlayer.desktop;
+audio/vnd.rn-realaudio=com.system76.CosmicPlayer.desktop;
+audio/vnd.rn-realaudio-secure=com.system76.CosmicPlayer.desktop;
+
+# --- ADPCM, AU, and Older Formats ---
+audio/x-adpcm=com.system76.CosmicPlayer.desktop;
+audio/x-au=com.system76.CosmicPlayer.desktop;
+audio/x-snd=com.system76.CosmicPlayer.desktop;
+
+# --- Other Niche Audio Formats ---
+audio/vnd.dts=com.system76.CosmicPlayer.desktop;
+audio/vnd.dts.hd=com.system76.CosmicPlayer.desktop;
+audio/vnd.audible.aax=com.system76.CosmicPlayer.desktop;
+audio/vnd.audible.aa=com.system76.CosmicPlayer.desktop;
+audio/x-caf=com.system76.CosmicPlayer.desktop; # Apple Core Audio Format
+audio/x-ms-asf=com.system76.CosmicPlayer.desktop; # ASF audio (Windows Media)
+audio/x-voc=com.system76.CosmicPlayer.desktop; # Creative Voice File (VOC)
+
+
+# ---------------------------------------------------------------------
+# Video Formats (Default: Showtime)
+# ---------------------------------------------------------------------
+
+# --- Ogg-Based Video ---
+video/x-ogm+ogg=com.system76.CosmicPlayer.desktop;
+video/ogg=com.system76.CosmicPlayer.desktop;
+video/x-theora+ogg=com.system76.CosmicPlayer.desktop;
+video/x-theora=com.system76.CosmicPlayer.desktop;
+
+# --- Microsoft / Windows Formats ---
+video/x-ms-asf=com.system76.CosmicPlayer.desktop;
+video/x-ms-asf-plugin=com.system76.CosmicPlayer.desktop;
+video/x-ms-asx=com.system76.CosmicPlayer.desktop;
+video/x-ms-wm=com.system76.CosmicPlayer.desktop;
+video/x-ms-wmv=com.system76.CosmicPlayer.desktop;
+video/x-ms-wmx=com.system76.CosmicPlayer.desktop;
+video/x-ms-wvx=com.system76.CosmicPlayer.desktop;
+video/x-ms-wmp=com.system76.CosmicPlayer.desktop;
+video/x-ms-wvxvideo=com.system76.CosmicPlayer.desktop;
+video/x-ms-dvr=com.system76.CosmicPlayer.desktop;  # Windows Media DVR (DVR-MS)
+video/x-ms-vob=com.system76.CosmicPlayer.desktop;
+
+# --- AVI-Based Formats ---
+video/x-msvideo=com.system76.CosmicPlayer.desktop;
+video/msvideo=com.system76.CosmicPlayer.desktop;
+video/x-mjpeg=com.system76.CosmicPlayer.desktop;
+video/x-motion-jpeg=com.system76.CosmicPlayer.desktop;
+
+# --- MPEG-Based Formats ---
+video/mp2t=com.system76.CosmicPlayer.desktop;
+video/mpeg=com.system76.CosmicPlayer.desktop;
+video/mpeg-system=com.system76.CosmicPlayer.desktop;
+video/mp1s=com.system76.CosmicPlayer.desktop;
+video/mp2p=com.system76.CosmicPlayer.desktop;
+video/mpeg4=com.system76.CosmicPlayer.desktop;
+video/x-mpeg=com.system76.CosmicPlayer.desktop;
+video/x-mpeg2=com.system76.CosmicPlayer.desktop;
+video/mp4=com.system76.CosmicPlayer.desktop;
+video/mp4v-es=com.system76.CosmicPlayer.desktop;
+video/x-m4v=com.system76.CosmicPlayer.desktop;
+
+# --- QuickTime & Apple Formats ---
+video/quicktime=com.system76.CosmicPlayer.desktop;
+video/x-caf=com.system76.CosmicPlayer.desktop; # Apple Core Audio Format (CAF)
+video/x-quicktime=com.system76.CosmicPlayer.desktop;
+
+# --- Matroska / WebM Formats ---
+video/x-matroska=com.system76.CosmicPlayer.desktop;
+video/x-matroska-3d=com.system76.CosmicPlayer.desktop;
+video/x-mkv=com.system76.CosmicPlayer.desktop;
+video/webm=com.system76.CosmicPlayer.desktop;
+
+# --- Mobile Formats ---
+video/3gp=com.system76.CosmicPlayer.desktop;
+video/3gpp=com.system76.CosmicPlayer.desktop;
+video/3gpp2=com.system76.CosmicPlayer.desktop;
+
+# --- Streaming & Broadcast Formats ---
+video/vnd.mpegurl=com.system76.CosmicPlayer.desktop;
+video/vnd.dlna.mpeg-tts=com.system76.CosmicPlayer.desktop;
+video/x-totem-stream=org.gnome.Totem.desktop;
+video/iso.segment=com.system76.CosmicPlayer.desktop;
+
+# --- Digital Video (DV) Formats ---
+video/dv=com.system76.CosmicPlayer.desktop;
+video/x-dv=com.system76.CosmicPlayer.desktop;
+
+# --- Flash-Based Formats ---
+video/flv=com.system76.CosmicPlayer.desktop;
+video/x-flv=com.system76.CosmicPlayer.desktop;
+
+# --- FLI/FLC Animation Formats ---
+video/fli=com.system76.CosmicPlayer.desktop;
+video/x-flic=com.system76.CosmicPlayer.desktop;
+video/x-flc=com.system76.CosmicPlayer.desktop;
+video/x-fli=com.system76.CosmicPlayer.desktop;
+
+# --- RealVideo Formats ---
+video/vnd.rn-realvideo=com.system76.CosmicPlayer.desktop;
+video/x-pn-realvideo=com.system76.CosmicPlayer.desktop;
+video/x-smv=com.system76.CosmicPlayer.desktop;
+
+# --- Various Proprietary & Niche Formats ---
+video/divx=com.system76.CosmicPlayer.desktop;
+video/vnd.divx=com.system76.CosmicPlayer.desktop;
+video/x-divx=com.system76.CosmicPlayer.desktop;
+video/x-vid=com.system76.CosmicPlayer.desktop;
+video/x-nsv=com.system76.CosmicPlayer.desktop;  # Nullsoft Streaming Video (NSV)
+video/x-nut=com.system76.CosmicPlayer.desktop;  # NUT Open Container Format
+video/x-ivf=com.system76.CosmicPlayer.desktop;  # IVF Intel Indeo Video Format
+video/x-sgi-movie=com.system76.CosmicPlayer.desktop;
+video/x-mve=com.system76.CosmicPlayer.desktop;  # Interplay MVE video format
+video/x-pva=com.system76.CosmicPlayer.desktop;  # PVA container format
+
+# --- H.264, H.265 / HEVC Formats ---
+video/x-h264=com.system76.CosmicPlayer.desktop;
+video/x-h265=com.system76.CosmicPlayer.desktop;
+video/h264=com.system76.CosmicPlayer.desktop;
+video/h265=com.system76.CosmicPlayer.desktop;
+video/hevc=com.system76.CosmicPlayer.desktop;
+
+# --- DVD & VCD Formats ---
+video/x-vcd=com.system76.CosmicPlayer.desktop;
+video/x-svcd=com.system76.CosmicPlayer.desktop;
+video/x-vob=com.system76.CosmicPlayer.desktop;
+video/x-ts=com.system76.CosmicPlayer.desktop;
+
+# --- Annodex Formats (Legacy) ---
+video/annodex=com.system76.CosmicPlayer.desktop;
+video/x-annodex=com.system76.CosmicPlayer.desktop;
+
+
+# ---------------------------------------------------------------------
+# Image Formats (Default: Loupe)
+# ---------------------------------------------------------------------
+image/jpeg=org.gnome.Loupe.desktop;
+image/jpg=org.gnome.Loupe.desktop;
+image/pjpeg=org.gnome.Loupe.desktop;
+image/png=org.gnome.Loupe.desktop;
+image/x-png=org.gnome.Loupe.desktop;
+image/webp=org.gnome.Loupe.desktop;
+image/avif=org.gnome.Loupe.desktop;
+image/jxl=org.gnome.Loupe.desktop;
+image/heic=org.gnome.Loupe.desktop;
+image/heif=org.gnome.Loupe.desktop;
+image/bmp=org.gnome.Loupe.desktop;
+image/x-bmp=org.gnome.Loupe.desktop;
+image/x-ms-bmp=org.gnome.Loupe.desktop;
+image/tiff=org.gnome.Loupe.desktop;
+image/x-tiff=org.gnome.Loupe.desktop;
+image/gif=org.gnome.Loupe.desktop;
+image/svg+xml=org.gnome.Loupe.desktop;
+image/svg+xml-compressed=org.gnome.Loupe.desktop;
+image/x-icon=org.gnome.Loupe.desktop;
+image/x-ico=org.gnome.Loupe.desktop;
+image/x-icns=org.gnome.Loupe.desktop;
+image/vnd-ms.dds=org.gnome.Loupe.desktop;
+image/vnd.wap.wbmp=org.gnome.Loupe.desktop;
+image/x-portable-anymap=org.gnome.Loupe.desktop;
+image/x-portable-bitmap=org.gnome.Loupe.desktop;
+image/x-portable-graymap=org.gnome.Loupe.desktop;
+image/x-portable-pixmap=org.gnome.Loupe.desktop;
+image/x-xbitmap=org.gnome.Loupe.desktop;
+image/x-xpixmap=org.gnome.Loupe.desktop;
+image/x-pcx=org.gnome.Loupe.desktop;
+image/x-gray=org.gnome.Loupe.desktop;
+image/x-icb=org.gnome.Loupe.desktop;
+
+# Additional Formats for Compatibility
+image/vnd.adobe.photoshop=org.gnome.Loupe.desktop;
+image/x-psd=org.gnome.Loupe.desktop;
+image/x-xcf=org.gnome.Loupe.desktop;
+image/x-tga=org.gnome.Loupe.desktop;
+image/x-rgb=org.gnome.Loupe.desktop;
+image/x-eps=org.gnome.Loupe.desktop;
+image/x-icb=org.gnome.Loupe.desktop;
+image/x-vnd.adobe.photoshop=org.gnome.Loupe.desktop;
+
+# RAW Camera Formats
+image/x-sony-arw=org.gnome.Loupe.desktop;
+image/x-nikon-nef=org.gnome.Loupe.desktop;
+image/x-canon-cr2=org.gnome.Loupe.desktop;
+image/x-canon-cr3=org.gnome.Loupe.desktop;
+image/x-panasonic-rw2=org.gnome.Loupe.desktop;
+image/x-olympus-orf=org.gnome.Loupe.desktop;
+image/x-pentax-pef=org.gnome.Loupe.desktop;
+image/x-fuji-raf=org.gnome.Loupe.desktop;
+image/x-dcraw=org.gnome.Loupe.desktop;
+image/x-dng=org.gnome.Loupe.desktop;
+image/x-kodak-dcr=org.gnome.Loupe.desktop;
+image/x-minolta-mrw=org.gnome.Loupe.desktop;
+image/x-sigma-x3f=org.gnome.Loupe.desktop;
+image/x-epson-erf=org.gnome.Loupe.desktop;
+image/x-sony-sr2=org.gnome.Loupe.desktop;
+image/x-sony-srf=org.gnome.Loupe.desktop;
+image/x-raf=org.gnome.Loupe.desktop;
+image/x-crw=org.gnome.Loupe.desktop;
+image/x-mef=org.gnome.Loupe.desktop;
+image/x-raw=org.gnome.Loupe.desktop;
+
+# HDR & Special Formats
+image/vnd.radiance=org.gnome.Loupe.desktop;
+image/x-openexr=org.gnome.Loupe.desktop;
+image/x-exr=org.gnome.Loupe.desktop;
+image/x-hdr=org.gnome.Loupe.desktop;
+image/x-dpx=org.gnome.Loupe.desktop;
+image/x-cin=org.gnome.Loupe.desktop;
+
+# Vector & Metafiles
+image/emf=org.gnome.Loupe.desktop;
+image/wmf=org.gnome.Loupe.desktop;
+image/x-wmf=org.gnome.Loupe.desktop;
+image/x-emf=org.gnome.Loupe.desktop;
+
+# Scientific & High-Bit Depth
+image/x-xv=org.gnome.Loupe.desktop;
+image/x-fits=org.gnome.Loupe.desktop;
+image/x-pfm=org.gnome.Loupe.desktop;
+
+
+# ---------------------------------------------------------------------
+# Office Documents & Presentations (Default: OnlyOffice)
+# ---------------------------------------------------------------------
+
+# --- OpenDocument Text ---
+application/vnd.oasis.opendocument.text=org.onlyoffice.desktopeditors.desktop;
+application/vnd.oasis.opendocument.text-template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.oasis.opendocument.text-web=org.onlyoffice.desktopeditors.desktop;
+application/vnd.oasis.opendocument.text-master=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.writer=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.writer.template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.writer.global=org.onlyoffice.desktopeditors.desktop;
+
+# --- Microsoft Word ---
+application/msword=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-word=org.onlyoffice.desktopeditors.desktop;
+application/x-doc=org.onlyoffice.desktopeditors.desktop;
+application/rtf=org.onlyoffice.desktopeditors.desktop;
+text/rtf=org.onlyoffice.desktopeditors.desktop;
+application/vnd.wordperfect=org.onlyoffice.desktopeditors.desktop;
+application/wordperfect=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-word.document.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-word.template.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+
+# --- Legacy Microsoft Word & Other Text Processors ---
+application/x-mswrite=org.onlyoffice.desktopeditors.desktop;
+application/vnd.lotus-wordpro=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-works=org.onlyoffice.desktopeditors.desktop;
+
+# --- OpenDocument Spreadsheets ---
+application/vnd.oasis.opendocument.spreadsheet=org.onlyoffice.desktopeditors.desktop;
+application/vnd.oasis.opendocument.spreadsheet-template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.calc=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.calc.template=org.onlyoffice.desktopeditors.desktop;
+
+# --- Microsoft Excel ---
+application/msexcel=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-excel=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-excel.sheet.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.spreadsheetml.template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-excel.template.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-excel.sheet.binary.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+application/x-excel=org.onlyoffice.desktopeditors.desktop;
+application/x-msexcel=org.onlyoffice.desktopeditors.desktop;
+application/x-ms-excel=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-excel.addin.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+
+# --- CSV & Spreadsheet Variants ---
+text/csv=org.onlyoffice.desktopeditors.desktop;
+text/spreadsheet=org.onlyoffice.desktopeditors.desktop;
+application/csv=org.onlyoffice.desktopeditors.desktop;
+application/excel=org.onlyoffice.desktopeditors.desktop;
+text/comma-separated-values=org.onlyoffice.desktopeditors.desktop;
+text/tab-separated-values=org.onlyoffice.desktopeditors.desktop;
+text/x-comma-separated-values=org.onlyoffice.desktopeditors.desktop;
+text/x-csv=org.onlyoffice.desktopeditors.desktop;
+
+# --- Quattro Pro (Corel) ---
+application/x-quattropro=org.onlyoffice.desktopeditors.desktop;
+application/vnd.lotus-1-2-3=org.onlyoffice.desktopeditors.desktop;
+
+# --- OpenDocument Presentations ---
+application/vnd.oasis.opendocument.presentation=org.onlyoffice.desktopeditors.desktop;
+application/vnd.oasis.opendocument.presentation-template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.impress=org.onlyoffice.desktopeditors.desktop;
+application/vnd.sun.xml.impress.template=org.onlyoffice.desktopeditors.desktop;
+
+# --- Microsoft PowerPoint ---
+application/mspowerpoint=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.presentationml.presentation=org.onlyoffice.desktopeditors.desktop;
+application/vnd-ms-powerpoint-slideshow-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.presentation.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.presentationml.template=org.onlyoffice.desktopeditors.desktop;
+application/vnd-ms-powerpoint-template-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.presentationml.slide=org.onlyoffice.desktopeditors.desktop;
+application/vnd.openxmlformats-officedocument.presentationml.slideshow=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.addin.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
+
+# --- Apple iWork (Pages, Numbers, Keynote) ---
+application/vnd.apple.pages=org.onlyoffice.desktopeditors.desktop;
+application/vnd.apple.numbers=org.onlyoffice.desktopeditors.desktop;
+application/vnd.apple.keynote=org.onlyoffice.desktopeditors.desktop;
+application/x-iwork-keynote-sffkey=org.onlyoffice.desktopeditors.desktop;
+application/x-iwork-pages-sffpages=org.onlyoffice.desktopeditors.desktop;
+application/x-iwork-numbers-sffnumbers=org.onlyoffice.desktopeditors.desktop;
+
+# --- LaTeX, TeX & Scientific Documents ---
+application/x-latex=org.onlyoffice.desktopeditors.desktop;
+application/x-tex=org.onlyoffice.desktopeditors.desktop;
+application/x-bibtex=org.onlyoffice.desktopeditors.desktop;
+application/x-texinfo=org.onlyoffice.desktopeditors.desktop;
+
+# --- Microsoft Visio ---
+application/vnd.visio=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-visio.drawing=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-visio.template=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-visio.stencil=org.onlyoffice.desktopeditors.desktop;
+
+# --- Other Office Formats ---
+text/docxf=org.onlyoffice.desktopeditors.desktop;
+text/oform=org.onlyoffice.desktopeditors.desktop;
+application/postscript=org.onlyoffice.desktopeditors.desktop;
+application/x-dvi=org.onlyoffice.desktopeditors.desktop;
+x-scheme-handler/oo-office=org.onlyoffice.desktopeditors.desktop;
+
+
+# ---------------------------------------------------------------------
+# Font Formats (Default: Gnome Font Viewer)
+# ---------------------------------------------------------------------
+
+# TrueType Fonts
+application/x-font-ttf=org.gnome.font-viewer.desktop;
+application/x-font-truetype=org.gnome.font-viewer.desktop;
+font/ttf=org.gnome.font-viewer.desktop;
+
+# OpenType Fonts
+application/x-font-otf=org.gnome.font-viewer.desktop;
+font/otf=org.gnome.font-viewer.desktop;
+
+# PostScript Fonts
+application/x-font-type1=org.gnome.font-viewer.desktop;
+application/x-font-pfb=org.gnome.font-viewer.desktop;
+application/x-font-afm=org.gnome.font-viewer.desktop;
+application/x-font-pfa=org.gnome.font-viewer.desktop;
+
+# Web Fonts
+font/woff=org.gnome.font-viewer.desktop;
+font/woff2=org.gnome.font-viewer.desktop;
+
+# Bitmap Fonts
+application/x-font-bdf=org.gnome.font-viewer.desktop;
+application/x-font-pcf=org.gnome.font-viewer.desktop;
+application/x-font-snf=org.gnome.font-viewer.desktop;
+application/x-font-linux-psf=org.gnome.font-viewer.desktop;
+
+# Miscellaneous Font Formats
+application/x-font-ghostscript=org.gnome.font-viewer.desktop;
+application/x-font-dos=org.gnome.font-viewer.desktop;
+application/x-font-opentype=org.gnome.font-viewer.desktop;
+application/vnd.ms-fontobject=org.gnome.font-viewer.desktop;  # Embedded OpenType (EOT)
+application/font-sfnt=org.gnome.font-viewer.desktop;
+application/font-woff=org.gnome.font-viewer.desktop;
+
