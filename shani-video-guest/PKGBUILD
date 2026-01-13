@@ -6,12 +6,12 @@ pkgdesc="Video Guest drivers and related packages for Shani OS"
 arch=('any')
 depends=(
     spice-vdagent
-	qemu-guest-agent
-	virtualbox-guest-utils
-	open-vm-tools
+    qemu-guest-agent
+    virtualbox-guest-utils
+    open-vm-tools
 )
 license=('GPL')
-source=(	'shani-video-guest.target')
+source=('shani-video-guest.target')
 sha256sums=('SKIP')
 install="$pkgname.install"
 package() {

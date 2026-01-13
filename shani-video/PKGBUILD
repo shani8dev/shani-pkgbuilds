@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
 depends=(
@@ -10,19 +10,23 @@ depends=(
     vulkan-intel
     vulkan-nouveau
     vulkan-radeon
-	vulkan-swrast
-	vulkan-virtio
-	vulkan-dzn
-	vulkan-freedreno
-	vulkan-asahi
-	vulkan-gfxstream
+    vulkan-swrast
+    vulkan-virtio
+    vulkan-dzn
+    vulkan-freedreno
+    vulkan-asahi
+    vulkan-gfxstream
     libva-intel-driver
     intel-media-driver
     vpl-gpu-rt 
     libvdpau-va-gl
-	libva-nvidia-driver
-	nvidia-prime
-	nvidia-utils
-	nvidia-open
+    libva-nvidia-driver
+    nvidia-prime
+    nvidia-utils
+    nvidia-open
+    opencl-nvidia
+    intel-compute-runtime
+    rocm-opencl-runtime
+    opencl-mesa
 )
 license=('GPL')
