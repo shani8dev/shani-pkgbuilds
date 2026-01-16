@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -47,6 +47,13 @@ depends=(
 	gvfs-wsdd
 	gnome-keyring
 	system-config-printer
+	libwmf
+	libraw
+	libopenraw
+	libspectre
+	libid3tag
+	libultrahdr
+	djvulibre
 	gparted
 	switcheroo
 	transmageddon
