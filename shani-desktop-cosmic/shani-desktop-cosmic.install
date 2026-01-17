@@ -24,6 +24,7 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable cosmic-greeter.service
+	systemctl enable cosmic-greeter-daemon.service
 	echo "Performing misc postinstall operations..."
 	update_fonts
 	update_gtk

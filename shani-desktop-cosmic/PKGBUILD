@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
