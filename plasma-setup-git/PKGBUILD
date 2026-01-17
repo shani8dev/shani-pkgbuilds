@@ -2,12 +2,14 @@
 
 pkgname=plasma-setup-git
 _pkgname=plasma-setup
-pkgver=r400.4efcdba
+pkgver=0.1.0
 pkgrel=1
-pkgdesc="Initial setup wizard for KDE Plasma (git version)"
+pkgdesc="Initial setup wizard for KDE Plasma (git version, pinned commit)"
 arch=('x86_64')
 url="https://invent.kde.org/plasma/plasma-setup"
 license=('BSD-2-Clause')
+
+_commit=3cbe755150d3b9aaab72649c1ccbf74686064e95  # <-- replace with desired commit
 
 depends=(
   'gcc-libs'
@@ -20,10 +22,10 @@ depends=(
   'ki18n'
   'kpackage'
   'kconfig'
-  'kscreen'             # provides KF6Screen
-  'kwindowsystem'       # provides libkworkspace
-  'plasma-workspace'    # provides QML modules
-  'plasma-desktop'    # provides QML modules like kcm_keyboard
+  'kscreen'
+  'kwindowsystem'
+  'plasma-workspace'
+  'plasma-desktop'
 )
 
 makedepends=(
@@ -36,29 +38,28 @@ makedepends=(
 
 conflicts=('plasma-setup')
 provides=('plasma-setup')
-source=("${_pkgname}::git+${url}.git")
-md5sums=('SKIP')
 
-pkgver() {
-  local commit_count short_sha
-  commit_count=$(git -C "${_pkgname}" rev-list --count HEAD)
-  short_sha=$(git -C "${_pkgname}" rev-parse --short=7 HEAD)
-  echo "r${commit_count}.${short_sha}"
-}
+source=(
+  "${_pkgname}::git+${url}.git#commit=${_commit}"
+)
+
+sha256sums=('SKIP')
 
 build() {
-  cd "${_pkgname}"
+  cd "${srcdir}/${_pkgname}"
+
   cmake -B build \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr
+
   cmake --build build
 }
 
 package() {
-  cd "${_pkgname}"
+  cd "${srcdir}/${_pkgname}"
+
   DESTDIR="${pkgdir}" cmake --install build
 
-  # License
   install -Dm644 LICENSES/BSD-2-Clause.txt \
     "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
