@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=18
+pkgrel=19
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -79,6 +79,7 @@ depends=(
 	xdg-desktop-portal-gtk
 	xdg-user-dirs
 	xdg-utils
+	plasma-setup-git
 )
 install="$pkgname.install"
 source=()
