@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Tools for Shani OS"
 arch=('any')
 depends=(
@@ -22,6 +22,7 @@ depends=(
     words
     lynx
     ed
+    bc
     bsd-games
 )
 license=('GPL')

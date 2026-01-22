@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
@@ -14,6 +14,8 @@ depends=(
     dmidecode
     strace
     lsof
+    ncdu
+    sysstat
     cronie
     logrotate
     expect
