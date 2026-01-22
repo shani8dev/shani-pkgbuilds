@@ -27,6 +27,8 @@ depends=(
 	iperf3
 	mtr
 	tailscale
+	cloudflared
+	caddy
 )
 license=('GPL')
 
