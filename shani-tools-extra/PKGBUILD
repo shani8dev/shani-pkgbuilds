@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
@@ -42,6 +42,7 @@ depends=(
     vulkan-tools
     mesa-utils
     clinfo
+    fastfetch
 )
 license=('GPL')
 
