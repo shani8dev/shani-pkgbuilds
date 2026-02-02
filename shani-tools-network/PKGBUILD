@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 depends=(
@@ -15,7 +15,6 @@ depends=(
 	tcpdump  
 	inetutils  
 	usbutils  
-	bridge-utils  
 	bind  
 	openbsd-netcat  
 	curl  
