@@ -3,7 +3,6 @@ pkgbase = cnijfilter2
 	pkgver = 6.81
 	pkgrel = 1
 	url = https://www.canon.com.au/home-printers
-	arch = i686
 	arch = x86_64
 	license = GPL
 	license = custom:canon
