@@ -1,17 +1,18 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=19
+pkgrel=20
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
 depends=(
-	sddm
-	aurorae
+    plasma-login-manager
+    aurorae
     bluedevil
     kde-gtk-config
     breeze-gtk
     discover
+    drkonqi
     filelight
     kdeplasma-addons
     krdp
@@ -35,8 +36,7 @@ depends=(
     plasma-workspace-wallpapers
     print-manager
     spectacle
-	xdg-desktop-portal-kde
-    sddm-kcm
+    xdg-desktop-portal-kde
     flatpak-kcm
     plymouth-kcm
     colord-kde
@@ -53,6 +53,8 @@ depends=(
 	switcheroo-control
 	konsole
 	yakuake
+	sweeper 
+	qrca
 	ark
 	dolphin
 	dolphin-plugins

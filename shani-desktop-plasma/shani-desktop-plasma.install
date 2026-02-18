@@ -23,7 +23,7 @@ post_install() {
 }
 
 post_upgrade() {
-	systemctl enable sddm.service
+	systemctl enable plasmalogin.service
 	systemctl enable plasma-setup.service
 	systemctl enable switcheroo-control.service
 	systemctl enable power-profiles-daemon.service
