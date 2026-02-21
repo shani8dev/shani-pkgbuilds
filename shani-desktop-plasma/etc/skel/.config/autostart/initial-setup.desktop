@@ -1,6 +1,6 @@
 [Desktop Entry]
 Comment=Sets up Kvantum for Flatpak apps
-Exec=bash -c 'mkdir -p ~/.config/flatpak && echo -e "[Environment]\nQT_STYLE_OVERRIDE=kvantum-dark" > ~/.config/flatpak/flatpak.conf && flatpak override --user --filesystem=xdg-config/Kvantum:ro && rm ~/.config/autostart/initial-setup.desktop'
+Exec=bash -c 'mkdir -p ~/.config/flatpak && echo -e "[Environment]\nQT_STYLE_OVERRIDE=kvantum" > ~/.config/flatpak/flatpak.conf && flatpak override --user --filesystem=xdg-config/Kvantum:ro && flatpak override --user --env=QT_STYLE_OVERRIDE=kvantum && rm ~/.config/autostart/initial-setup.desktop'
 Icon=setup
 Name=Initial Flatpak Kvantum Setup
 StartupNotify=false
