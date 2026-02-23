@@ -1,7 +1,7 @@
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=27
-_commit='8467238d3638b163d591349ec3416029dc79b852'  # Replace with the specific commit hash
+pkgrel=28
+_commit='2b48dcbba0010d3eb457534288ffb220ca27ad03'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('x86_64')
@@ -20,6 +20,7 @@ depends=(
     'yad'
     'duperemove'
     'compsize'
+    'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 sha256sums=('SKIP')  # Replace 'SKIP' with an actual checksum if desired
