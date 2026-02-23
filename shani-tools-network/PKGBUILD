@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=6
+pkgrel=8
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 depends=(
@@ -23,8 +23,10 @@ depends=(
 	nbd  
 	rsync
 	zsync
+	rclone
 	iperf3
 	mtr
+	nethogs
 	tailscale
 	cloudflared
 	caddy
