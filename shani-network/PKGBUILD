@@ -29,7 +29,7 @@ depends=(
     fail2ban
     nm-connection-editor
     modem-manager-gui
-    firewalld-applet
+    firewall-config
 )
 license=('GPL')
 install="$pkgname.install"
