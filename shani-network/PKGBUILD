@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
 depends=(
@@ -13,21 +13,23 @@ depends=(
     networkmanager-openconnect
     networkmanager-openvpn
     network-manager-sstp
-    nm-connection-editor
     modemmanager
-	pacrunner
-	openresolv
-	dnsmasq
-	nss-mdns
-	openldap
+    pacrunner
+    openresolv
+    dnsmasq
+    nss-mdns
+    openldap
     openfortivpn
     wireguard-tools
-	wpa_supplicant
-	wireless-regdb
-	usb_modeswitch
-	openssh
-	firewalld
-	fail2ban
+    wpa_supplicant
+    wireless-regdb
+    usb_modeswitch
+    openssh
+    firewalld
+    fail2ban
+    nm-connection-editor
+    modem-manager-gui
+    firewalld-applet
 )
 license=('GPL')
 install="$pkgname.install"

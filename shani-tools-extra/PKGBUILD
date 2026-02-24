@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=6
+pkgrel=7
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
@@ -29,6 +29,7 @@ depends=(
     podman
     podman-docker
     podman-compose
+    buildah
     elfutils
     7zip
     arj
@@ -39,6 +40,7 @@ depends=(
     zip
     lrzip
     lzop
+    smartmontools
     vulkan-tools
     mesa-utils
     clinfo
