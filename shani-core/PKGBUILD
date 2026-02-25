@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Core of Shani OS"
 arch=('any')
 depends=(
@@ -27,6 +27,7 @@ depends=(
 	fwupd  
 	flatpak
 	waydroid
+	nix
 	cpio
 )
 license=('GPL')
