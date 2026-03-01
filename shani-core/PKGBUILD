@@ -15,6 +15,7 @@ depends=(
     lsb-release
     dracut
     cpio
+    iptables
 
     # Secure Boot
     shim-signed
