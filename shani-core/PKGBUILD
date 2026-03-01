@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=8
+pkgrel=9
 pkgdesc="Core of Shani OS"
 arch=('any')
 depends=(
@@ -15,7 +15,6 @@ depends=(
     lsb-release
     dracut
     cpio
-    iptables
 
     # Secure Boot
     shim-signed
@@ -61,13 +60,10 @@ depends=(
 
     # systemd-nspawn (@machines subvolume — systemd already in base)
 
-    # LXC (@lxc subvolume)
+    # LXC (@lxc and @lxd subvolume)
     lxc
-    
-    # Incus (@incus subvolume)
-    incus
-    incus-tools
-    incus-ui
+    lxcfs
+    lxd
 
     # Virtualization (@libvirt + @qemu subvolumes)
     #libvirt

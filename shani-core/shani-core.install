@@ -9,8 +9,8 @@ post_upgrade() {
 	systemctl enable nix-daemon.socket
 	systemctl enable podman.socket
 	systemctl enable waydroid-container.service
-	systemctl enable incus.service
-	systemctl enable incus-startup.service
+	systemctl enable lxd.socket
+	systemctl enable lxcfs.service
 	systemctl enable fwupd
 	systemctl enable fwupd-refresh.timer
 }
