@@ -1,11 +1,12 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=9
+pkgrel=10
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 depends=(
 	iftop  
+	bandwhich
 	ethtool  
 	net-tools  
 	nmap    

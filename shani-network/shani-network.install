@@ -6,4 +6,5 @@ post_upgrade() {
 	systemctl enable NetworkManager.service
 	systemctl enable ModemManager.service
 	systemctl enable firewalld
+	systemctl enable avahi-daemon.socket
 }

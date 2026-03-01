@@ -1,50 +1,56 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
-    texinfo
-    subversion
-    mercurial
+    # System info & monitoring
     inxi
     htop
+    fastfetch
     tree
     dmidecode
     strace
     lsof
     ncdu
     sysstat
+    smartmontools
+
+    # Scheduling & logging
     cronie
     logrotate
+
+    # Terminal utilities
     expect
     dialog
     pv
     jq
     micro
-    python-pip
+    texinfo
+
+    # Version control
+    subversion
+    mercurial
+
+    # Android
     android-tools
-    distrobox
-    podman
-    podman-docker
-    podman-compose
-    buildah
-    elfutils
+
+    # Archive tools
     7zip
     arj
-    unrar 
+    unrar
     unarchiver
-    unzip 
+    unzip
     unace
     zip
     lrzip
     lzop
-    smartmontools
+    elfutils
+
+    # GPU & hardware diagnostics
     vulkan-tools
     mesa-utils
     clinfo
-    fastfetch
 )
 license=('GPL')
-

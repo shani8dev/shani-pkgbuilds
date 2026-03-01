@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
 depends=(
@@ -14,16 +14,17 @@ depends=(
     networkmanager-openvpn
     network-manager-sstp
     modemmanager
+    usb_modeswitch
     pacrunner
     openresolv
     dnsmasq
+    avahi
     nss-mdns
     openldap
     openfortivpn
     wireguard-tools
     wpa_supplicant
     wireless-regdb
-    usb_modeswitch
     openssh
     firewalld
     fail2ban

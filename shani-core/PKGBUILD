@@ -1,34 +1,77 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Core of Shani OS"
 arch=('any')
 depends=(
-	base  
-	amd-ucode  
-	intel-ucode  
-	linux
-	linux-firmware  
-	glibc-locales  
-	lsb-release  
-	dracut  
-	shim-signed  
-	edk2-shell  
-	efibootmgr  
-	efitools  
-	sbctl  
-	mokutil  
-	sbsigntools  
-	broadcom-wl
-	apparmor  
-	tpm2-tools  
-	tpm2-tss  
-	fwupd  
-	flatpak
-	waydroid
-	nix
-	cpio
+    # Base system
+    base
+    amd-ucode
+    intel-ucode
+    linux
+    linux-firmware
+    glibc-locales
+    lsb-release
+    dracut
+    cpio
+
+    # Secure Boot
+    shim-signed
+    edk2-shell
+    efibootmgr
+    efitools
+    sbctl
+    mokutil
+    sbsigntools
+
+    # Security & TPM
+    apparmor
+    tpm2-tools
+    tpm2-tss
+    fwupd
+
+    # Wireless
+    broadcom-wl
+
+    # Flatpak (@flatpak subvolume)
+    flatpak
+
+    # Waydroid (@waydroid subvolume)
+    waydroid
+    python-pyclip
+
+    # Nix (@nix subvolume)
+    nix
+
+    # Podman & containers (@containers subvolume)
+    podman
+    slirp4netns
+    buildah
+    skopeo
+
+    # Container & VM user-facing tools
+    distrobox
+    podman-docker
+    podman-compose
+
+    # Apptainer — HPC/scientific container runtime
+    apptainer
+
+    # systemd-nspawn (@machines subvolume — systemd already in base)
+
+    # LXC (@lxc subvolume)
+    lxc
+    
+    # Incus (@incus subvolume)
+    incus
+    incus-tools
+    incus-ui
+
+    # Virtualization (@libvirt + @qemu subvolumes)
+    #libvirt
+    #qemu-base
+    #virt-manager
 )
 license=('GPL')
 install="$pkgname.install"

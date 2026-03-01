@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-printer
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Printer support tools and drivers for Shani OS"
 arch=('any')
 depends=(
@@ -13,19 +13,16 @@ depends=(
     cups-pk-helper
     ipp-usb
     ghostscript
-	gsfonts
-	a2ps
-	
+    gsfonts
+    a2ps
     # Foomatic database (legacy & wide coverage)
     foomatic-db
     foomatic-db-engine
-	foomatic-db-ppds
-	foomatic-db-gutenprint-ppds
-
+    foomatic-db-ppds
+    foomatic-db-gutenprint-ppds
     # Generic / open-source drivers
     gutenprint
     splix
-
     # Vendor-supported drivers not in official repos
     hplip-minimal
     epson-inkjet-printer-escpr2

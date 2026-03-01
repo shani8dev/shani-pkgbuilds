@@ -31,7 +31,6 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable cups.socket
-	systemctl enable avahi-daemon.socket
 	systemctl enable cups-browsed.service
 	add_group
 }
