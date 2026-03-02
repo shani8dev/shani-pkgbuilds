@@ -1,0 +1,57 @@
+_set_snap_confine_caps() {
+  /usr/bin/setcap -q - /usr/lib/snapd/snap-confine < /usr/lib/snapd/snap-confine.v2-only.caps
+}
+
+_create_snap_symlink() {
+  # Create /snap -> /var/lib/snapd/snap if it does not exist
+  if [ ! -e /snap ]; then
+    ln -s /var/lib/snapd/snap /snap
+  fi
+}
+
+_remove_snap_symlink() {
+  # Remove only if it is our symlink
+  if [ -L /snap ] && [ "$(readlink /snap)" = "/var/lib/snapd/snap" ]; then
+    rm -f /snap
+  fi
+}
+
+post_install() {
+  _set_snap_confine_caps
+  _create_snap_symlink
+}
+
+pre_remove() {
+  /usr/lib/snapd/snap-mgmt --purge || :
+}
+
+post_remove() {
+  _remove_snap_symlink
+}
+
+post_upgrade() {
+  # since 2.39+ void permission bits are 111 instead of 000
+  chmod 111 /var/lib/snapd/void 2>/dev/null || true
+
+  # since 2.62, snapd generates cgroup device files under /var/lib/snapd/cgroup/
+  if (( $(vercmp "$2" '2.62-1') < 0 )); then
+    echo
+    echo ">>> The snapd.service requires a restart for snaps to continue working."
+    echo ">>> Run the following command after the update:"
+    echo ">>>    systemctl restart snapd.service"
+    echo
+  fi
+
+  _set_snap_confine_caps
+  _create_snap_symlink
+
+  if (( $(vercmp "$2" '2.70-1') < 0 )); then
+    if aa-status --enabled > /dev/null 2>&1; then
+      echo
+      echo ">>> The AppArmor profiles of snapd-confine need to be reloaded."
+      echo ">>> Run the following command after the update:"
+      echo ">>>    systemctl restart apparmor.service"
+      echo
+    fi
+  fi
+}
