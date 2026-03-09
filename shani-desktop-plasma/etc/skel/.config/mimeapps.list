@@ -2,58 +2,63 @@
 # ---------------------------------------------------------------------
 # Text Files (Default: Kate)
 # ---------------------------------------------------------------------
-text/plain=org.gnome.TextEditor.desktop;
-text/vnd.trolltech.linguist=org.kde.kate.desktop;
+text/plain=org.kde.kate.desktop;
 text/markdown=org.kde.kate.desktop;
+text/vnd.trolltech.linguist=org.kde.kate.desktop;
+text/xml=org.kde.kate.desktop;
+application/xml=org.kde.kate.desktop;
+application/json=org.kde.kate.desktop;
+application/x-shellscript=org.kde.kate.desktop;
+text/x-shellscript=org.kde.kate.desktop;
+text/x-python=org.kde.kate.desktop;
+text/x-csrc=org.kde.kate.desktop;
+text/x-chdr=org.kde.kate.desktop;
+text/x-c++=org.kde.kate.desktop;
+text/x-java=org.kde.kate.desktop;
+text/x-ruby=org.kde.kate.desktop;
+text/x-perl=org.kde.kate.desktop;
+text/x-makefile=org.kde.kate.desktop;
+text/x-patch=org.kde.kate.desktop;
+text/x-diff=org.kde.kate.desktop;
+
+# --- LaTeX, TeX & Scientific Documents ---
+application/x-latex=org.kde.kate.desktop;
+application/x-tex=org.kde.kate.desktop;
+application/x-bibtex=org.kde.kate.desktop;
+application/x-texinfo=org.kde.kate.desktop;
 
 
 # ---------------------------------------------------------------------
-# Calendar (Default: Gnome Calendar)
+# Calendar (Default: Kate fallback — no KDE calendar app installed)
 # ---------------------------------------------------------------------
-text/calendar=org.gnome.Calendar.desktop;
-application/x-vcalendar=org.gnome.Calendar.desktop;
-application/x-extension-ics=org.gnome.Calendar.desktop;
+text/calendar=org.kde.kate.desktop;
+application/x-vcalendar=org.kde.kate.desktop;
+application/x-extension-ics=org.kde.kate.desktop;
+
 
 # ---------------------------------------------------------------------
-# Contacts (Default: Gnome Contacts)
+# Contacts (Default: Kate fallback — no KDE contacts app installed)
 # ---------------------------------------------------------------------
-text/vcard=org.gnome.Contacts.desktop
-application/vcard=org.gnome.Contacts.desktop
-application/x-vcard=org.gnome.Contacts.desktop
-application/x-extension-vcf=org.gnome.Contacts.desktop
+text/vcard=org.kde.kate.desktop;
+application/vcard=org.kde.kate.desktop;
+application/x-vcard=org.kde.kate.desktop;
+application/x-extension-vcf=org.kde.kate.desktop;
+
 
 # ---------------------------------------------------------------------
 # Web & URI Handling (Default: Vivaldi)
 # ---------------------------------------------------------------------
 text/html=com.vivaldi.Vivaldi.desktop;
-text/xml=com.vivaldi.Vivaldi.desktop;
 application/xhtml_xml=com.vivaldi.Vivaldi.desktop;
 application/xhtml+xml=com.vivaldi.Vivaldi.desktop;
-application/rdf+xml=com.vivaldi.Vivaldi.desktop;
-application/rss+xml=com.vivaldi.Vivaldi.desktop;
-application/atom+xml=com.vivaldi.Vivaldi.desktop;
 
-# Web URL Schemes
+# Web URL Schemes (browser-only; app-specific schemes left unset)
 x-scheme-handler/ftp=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/http=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/https=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mailto=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/about=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/chrome=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/unknown=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/webcal=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/calendar=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/news=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/feed=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mid=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mms=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/ircs=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/irc=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/tel=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/sip=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/callto=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/skype=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/slack=com.vivaldi.Vivaldi.desktop;
 
 # Web File Extensions
 application/x-extension-htm=com.vivaldi.Vivaldi.desktop;
@@ -66,7 +71,6 @@ application/x-extension-xhtml=com.vivaldi.Vivaldi.desktop;
 application/x-mimearchive=com.vivaldi.Vivaldi.desktop;
 application/mhtml=com.vivaldi.Vivaldi.desktop;
 application/x-mhtml=com.vivaldi.Vivaldi.desktop;
-message/rfc822=com.vivaldi.Vivaldi.desktop;
 
 # WebApps & Progressive Web Apps
 application/x-web-app-manifest+json=com.vivaldi.Vivaldi.desktop;
@@ -74,11 +78,12 @@ application/manifest+json=com.vivaldi.Vivaldi.desktop;
 
 
 # ---------------------------------------------------------------------
-# Torrent Files (Default: Ktorrents)
+# Torrent Files (Default: KTorrent)
 # ---------------------------------------------------------------------
 application/x-bittorrent=org.kde.ktorrent.desktop;
 x-scheme-handler/magnet=org.kde.ktorrent.desktop;
 x-scheme-handler/dht=org.kde.ktorrent.desktop;
+
 
 # ---------------------------------------------------------------------
 # Documents & eBooks (Default: Okular)
@@ -91,6 +96,49 @@ application/vnd.amazon.ebook=org.kde.okular.desktop;
 image/vnd.djvu=org.kde.okular.desktop;
 application/x-cbz=org.kde.okular.desktop;
 application/x-cbr=org.kde.okular.desktop;
+application/postscript=org.kde.okular.desktop;
+application/x-dvi=org.kde.okular.desktop;
+
+
+# ---------------------------------------------------------------------
+# Archives & Compression (Default: Ark)
+# ---------------------------------------------------------------------
+application/zip=org.kde.ark.desktop;
+application/x-zip=org.kde.ark.desktop;
+application/x-zip-compressed=org.kde.ark.desktop;
+application/x-tar=org.kde.ark.desktop;
+application/x-gtar=org.kde.ark.desktop;
+application/gzip=org.kde.ark.desktop;
+application/x-gzip=org.kde.ark.desktop;
+application/x-bzip2=org.kde.ark.desktop;
+application/x-xz=org.kde.ark.desktop;
+application/x-lzma=org.kde.ark.desktop;
+application/x-lzip=org.kde.ark.desktop;
+application/x-7z-compressed=org.kde.ark.desktop;
+application/x-rar=org.kde.ark.desktop;
+application/x-rar-compressed=org.kde.ark.desktop;
+application/x-compressed-tar=org.kde.ark.desktop;
+application/x-bzip-compressed-tar=org.kde.ark.desktop;
+application/x-xz-compressed-tar=org.kde.ark.desktop;
+application/x-lzma-compressed-tar=org.kde.ark.desktop;
+application/x-tzo=org.kde.ark.desktop;
+application/x-lzip-compressed-tar=org.kde.ark.desktop;
+application/zstd=org.kde.ark.desktop;
+application/x-zstd=org.kde.ark.desktop;
+application/x-zstd-compressed-tar=org.kde.ark.desktop;
+application/x-cpio=org.kde.ark.desktop;
+application/x-cpio-compressed=org.kde.ark.desktop;
+application/x-cabinet=org.kde.ark.desktop;
+application/vnd.ms-cab-compressed=org.kde.ark.desktop;
+application/x-stuffit=org.kde.ark.desktop;
+application/x-arj=org.kde.ark.desktop;
+application/x-lha=org.kde.ark.desktop;
+application/x-lzh-compressed=org.kde.ark.desktop;
+application/x-iso9660-image=org.kde.ark.desktop;
+application/x-cd-image=org.kde.ark.desktop;
+application/x-deb=org.kde.ark.desktop;
+application/x-ar=org.kde.ark.desktop;
+
 
 # ---------------------------------------------------------------------
 # Audio Formats (Default: Elisa)
@@ -137,13 +185,13 @@ audio/x-pn-aiff=org.kde.elisa.desktop;
 audio/x-pn-au=org.kde.elisa.desktop;
 audio/x-pn-wav=org.kde.elisa.desktop;
 audio/x-wav=org.kde.elisa.desktop;
-audio/basic=org.kde.elisa.desktop; # Covers older .au and .snd formats
+audio/basic=org.kde.elisa.desktop;
 
 # --- Lossless & Compressed Formats ---
 audio/x-flac=org.kde.elisa.desktop;
 audio/x-ape=org.kde.elisa.desktop;
 audio/x-wavpack=org.kde.elisa.desktop;
-audio/x-shorten=org.kde.elisa.desktop; # SHN (Shorten) lossless format
+audio/x-shorten=org.kde.elisa.desktop;
 
 # --- Ogg & Vorbis Variants ---
 audio/x-opus+ogg=org.kde.elisa.desktop;
@@ -160,8 +208,8 @@ audio/x-mod=org.kde.elisa.desktop;
 audio/x-s3m=org.kde.elisa.desktop;
 audio/x-xm=org.kde.elisa.desktop;
 audio/x-stm=org.kde.elisa.desktop;
-audio/x-med=org.kde.elisa.desktop; # Amiga MED tracker format
-audio/x-mtm=org.kde.elisa.desktop; # MultiTracker MOD format
+audio/x-med=org.kde.elisa.desktop;
+audio/x-mtm=org.kde.elisa.desktop;
 
 # --- Additional MIDI Variants ---
 audio/x-mid=org.kde.elisa.desktop;
@@ -182,13 +230,13 @@ audio/vnd.dts=org.kde.elisa.desktop;
 audio/vnd.dts.hd=org.kde.elisa.desktop;
 audio/vnd.audible.aax=org.kde.elisa.desktop;
 audio/vnd.audible.aa=org.kde.elisa.desktop;
-audio/x-caf=org.kde.elisa.desktop; # Apple Core Audio Format
-audio/x-ms-asf=org.kde.elisa.desktop; # ASF audio (Windows Media)
-audio/x-voc=org.kde.elisa.desktop; # Creative Voice File (VOC)
+audio/x-caf=org.kde.elisa.desktop;
+audio/x-ms-asf=org.kde.elisa.desktop;
+audio/x-voc=org.kde.elisa.desktop;
 
 
 # ---------------------------------------------------------------------
-# Video Formats (Default: VLC)
+# Video Formats (Default: Haruna)
 # ---------------------------------------------------------------------
 
 # --- Ogg-Based Video ---
@@ -207,7 +255,7 @@ video/x-ms-wmx=org.kde.haruna.desktop;
 video/x-ms-wvx=org.kde.haruna.desktop;
 video/x-ms-wmp=org.kde.haruna.desktop;
 video/x-ms-wvxvideo=org.kde.haruna.desktop;
-video/x-ms-dvr=org.kde.haruna.desktop;  # Windows Media DVR (DVR-MS)
+video/x-ms-dvr=org.kde.haruna.desktop;
 video/x-ms-vob=org.kde.haruna.desktop;
 
 # --- AVI-Based Formats ---
@@ -231,7 +279,6 @@ video/x-m4v=org.kde.haruna.desktop;
 
 # --- QuickTime & Apple Formats ---
 video/quicktime=org.kde.haruna.desktop;
-video/x-caf=org.kde.haruna.desktop; # Apple Core Audio Format (CAF)
 video/x-quicktime=org.kde.haruna.desktop;
 
 # --- Matroska / WebM Formats ---
@@ -248,7 +295,7 @@ video/3gpp2=org.kde.haruna.desktop;
 # --- Streaming & Broadcast Formats ---
 video/vnd.mpegurl=org.kde.haruna.desktop;
 video/vnd.dlna.mpeg-tts=org.kde.haruna.desktop;
-video/x-totem-stream=org.gnome.Totem.desktop;
+video/x-totem-stream=org.kde.haruna.desktop;
 video/iso.segment=org.kde.haruna.desktop;
 
 # --- Digital Video (DV) Formats ---
@@ -275,19 +322,20 @@ video/divx=org.kde.haruna.desktop;
 video/vnd.divx=org.kde.haruna.desktop;
 video/x-divx=org.kde.haruna.desktop;
 video/x-vid=org.kde.haruna.desktop;
-video/x-nsv=org.kde.haruna.desktop;  # Nullsoft Streaming Video (NSV)
-video/x-nut=org.kde.haruna.desktop;  # NUT Open Container Format
-video/x-ivf=org.kde.haruna.desktop;  # IVF Intel Indeo Video Format
+video/x-nsv=org.kde.haruna.desktop;
+video/x-nut=org.kde.haruna.desktop;
+video/x-ivf=org.kde.haruna.desktop;
 video/x-sgi-movie=org.kde.haruna.desktop;
-video/x-mve=org.kde.haruna.desktop;  # Interplay MVE video format
-video/x-pva=org.kde.haruna.desktop;  # PVA container format
+video/x-mve=org.kde.haruna.desktop;
+video/x-pva=org.kde.haruna.desktop;
 
-# --- H.264, H.265 / HEVC Formats ---
+# --- H.264, H.265 / HEVC, AV1 Formats ---
 video/x-h264=org.kde.haruna.desktop;
 video/x-h265=org.kde.haruna.desktop;
 video/h264=org.kde.haruna.desktop;
 video/h265=org.kde.haruna.desktop;
 video/hevc=org.kde.haruna.desktop;
+video/av1=org.kde.haruna.desktop;
 
 # --- DVD & VCD Formats ---
 video/x-vcd=org.kde.haruna.desktop;
@@ -308,6 +356,7 @@ image/jpg=org.kde.gwenview.desktop;
 image/pjpeg=org.kde.gwenview.desktop;
 image/png=org.kde.gwenview.desktop;
 image/x-png=org.kde.gwenview.desktop;
+image/apng=org.kde.gwenview.desktop;
 image/webp=org.kde.gwenview.desktop;
 image/avif=org.kde.gwenview.desktop;
 image/jxl=org.kde.gwenview.desktop;
@@ -343,7 +392,6 @@ image/x-xcf=org.kde.gwenview.desktop;
 image/x-tga=org.kde.gwenview.desktop;
 image/x-rgb=org.kde.gwenview.desktop;
 image/x-eps=org.kde.gwenview.desktop;
-image/x-icb=org.kde.gwenview.desktop;
 image/x-vnd.adobe.photoshop=org.kde.gwenview.desktop;
 
 # RAW Camera Formats
@@ -462,10 +510,10 @@ application/vnd.sun.xml.impress.template=org.onlyoffice.desktopeditors.desktop;
 application/mspowerpoint=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.presentation=org.onlyoffice.desktopeditors.desktop;
-application/vnd-ms-powerpoint-slideshow-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.slideshow.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint.presentation.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.template=org.onlyoffice.desktopeditors.desktop;
-application/vnd-ms-powerpoint-template-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.template.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.slide=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.slideshow=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint.addin.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
@@ -478,12 +526,6 @@ application/x-iwork-keynote-sffkey=org.onlyoffice.desktopeditors.desktop;
 application/x-iwork-pages-sffpages=org.onlyoffice.desktopeditors.desktop;
 application/x-iwork-numbers-sffnumbers=org.onlyoffice.desktopeditors.desktop;
 
-# --- LaTeX, TeX & Scientific Documents ---
-application/x-latex=org.onlyoffice.desktopeditors.desktop;
-application/x-tex=org.onlyoffice.desktopeditors.desktop;
-application/x-bibtex=org.onlyoffice.desktopeditors.desktop;
-application/x-texinfo=org.onlyoffice.desktopeditors.desktop;
-
 # --- Microsoft Visio ---
 application/vnd.visio=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-visio.drawing=org.onlyoffice.desktopeditors.desktop;
@@ -493,45 +535,4 @@ application/vnd.ms-visio.stencil=org.onlyoffice.desktopeditors.desktop;
 # --- Other Office Formats ---
 text/docxf=org.onlyoffice.desktopeditors.desktop;
 text/oform=org.onlyoffice.desktopeditors.desktop;
-application/postscript=org.onlyoffice.desktopeditors.desktop;
-application/x-dvi=org.onlyoffice.desktopeditors.desktop;
 x-scheme-handler/oo-office=org.onlyoffice.desktopeditors.desktop;
-
-
-# ---------------------------------------------------------------------
-# Font Formats (Default: Gnome Font Viewer)
-# ---------------------------------------------------------------------
-
-# TrueType Fonts
-application/x-font-ttf=org.gnome.font-viewer.desktop;
-application/x-font-truetype=org.gnome.font-viewer.desktop;
-font/ttf=org.gnome.font-viewer.desktop;
-
-# OpenType Fonts
-application/x-font-otf=org.gnome.font-viewer.desktop;
-font/otf=org.gnome.font-viewer.desktop;
-
-# PostScript Fonts
-application/x-font-type1=org.gnome.font-viewer.desktop;
-application/x-font-pfb=org.gnome.font-viewer.desktop;
-application/x-font-afm=org.gnome.font-viewer.desktop;
-application/x-font-pfa=org.gnome.font-viewer.desktop;
-
-# Web Fonts
-font/woff=org.gnome.font-viewer.desktop;
-font/woff2=org.gnome.font-viewer.desktop;
-
-# Bitmap Fonts
-application/x-font-bdf=org.gnome.font-viewer.desktop;
-application/x-font-pcf=org.gnome.font-viewer.desktop;
-application/x-font-snf=org.gnome.font-viewer.desktop;
-application/x-font-linux-psf=org.gnome.font-viewer.desktop;
-
-# Miscellaneous Font Formats
-application/x-font-ghostscript=org.gnome.font-viewer.desktop;
-application/x-font-dos=org.gnome.font-viewer.desktop;
-application/x-font-opentype=org.gnome.font-viewer.desktop;
-application/vnd.ms-fontobject=org.gnome.font-viewer.desktop;  # Embedded OpenType (EOT)
-application/font-sfnt=org.gnome.font-viewer.desktop;
-application/font-woff=org.gnome.font-viewer.desktop;
-
