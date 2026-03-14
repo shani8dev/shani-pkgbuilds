@@ -21,37 +21,37 @@ post_install() {
   _create_snap_symlink
 }
 
+
 pre_remove() {
   /usr/lib/snapd/snap-mgmt --purge || :
 }
 
-post_remove() {
-  _remove_snap_symlink
-}
-
 post_upgrade() {
   # since 2.39+ void permission bits are 111 instead of 000
-  chmod 111 /var/lib/snapd/void 2>/dev/null || true
-
+  chmod 111 /var/lib/snapd/void || true
   # since 2.62, snapd generates cgroup device files under /var/lib/snapd/cgroup/
-  if (( $(vercmp "$2" '2.62-1') < 0 )); then
+  # which are needed in order to start any snaps, suggest to restart snapd if
+  # we're upgrading from a version older than 2.62
+  if (( $(vercmp "$2" '2.62-1') < 0)); then
     echo
-    echo ">>> The snapd.service requires a restart for snaps to continue working."
+    echo ">>> The snapd.service requires a restart for snaps to continue working. "
     echo ">>> Run the following command after the update:"
     echo ">>>    systemctl restart snapd.service"
     echo
   fi
 
   _set_snap_confine_caps
-  _create_snap_symlink
 
-  if (( $(vercmp "$2" '2.70-1') < 0 )); then
+  if (( $(vercmp "$2" '2.70-1') < 0)); then
     if aa-status --enabled > /dev/null 2>&1; then
       echo
-      echo ">>> The AppArmor profiles of snapd-confine need to be reloaded."
+      echo ">>> The AppArmor profiles of snapd-confine needs to be reloaded."
       echo ">>> Run the following command after the update:"
       echo ">>>    systemctl restart apparmor.service"
       echo
     fi
   fi
 }
+
+# vim:set ts=2 sw=2 et:
+
