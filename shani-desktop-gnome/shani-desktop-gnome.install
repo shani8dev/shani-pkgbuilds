@@ -1,32 +1,38 @@
-# Font-icon directories
-FONT_DIRS="/usr/share/fonts/TTF /usr/share/fonts/OTF /usr/share/fonts/misc"
+FONT_DIRS=("/usr/share/fonts/TTF" "/usr/share/fonts/OTF" "/usr/share/fonts/misc")
 ICON_DIR="/usr/share/icons/hicolor"
-GLIB_SCHEMA_DIR="usr/share/glib-2.0/schemas"
+GLIB_SCHEMA_DIR="/usr/share/glib-2.0/schemas"
 
-# Font-related commands
 update_fonts() {
-	mkfontscale "$FONT_DIRS" >/dev/null 2>&1
-	mkfontdir "$FONT_DIRS" >/dev/null 2>&1
-	fc-cache -s >/dev/null
+    for dir in "${FONT_DIRS[@]}"; do
+        [[ -d "$dir" ]] || continue
+        mkfontscale "$dir" 2>/dev/null
+        mkfontdir   "$dir" 2>/dev/null
+    done
+    fc-cache -s 2>/dev/null
 }
 
-# GTK related commands
 update_gtk() {
-	glib-compile-schemas $GLIB_SCHEMA_DIR
-	gtk-update-icon-cache -ftq $ICON_DIR
-	/bin/sh -c 'dconf update'
+    [[ -d "$GLIB_SCHEMA_DIR" ]] && glib-compile-schemas "$GLIB_SCHEMA_DIR" 2>/dev/null
+    [[ -d "$ICON_DIR"         ]] && gtk-update-icon-cache -ftq "$ICON_DIR" 2>/dev/null
+    command -v dconf                  &>/dev/null && dconf update 2>/dev/null
+    command -v update-desktop-database &>/dev/null && update-desktop-database --quiet 2>/dev/null
+    command -v update-mime-database    &>/dev/null && update-mime-database /usr/share/mime 2>/dev/null
 }
 
-# Post installation
+safe_enable() {
+    systemctl enable --now "$1" 2>/dev/null \
+        || echo "warning: could not enable $1"
+}
+
 post_install() {
-	post_upgrade
+    post_upgrade
 }
 
 post_upgrade() {
-	systemctl enable gdm.service
-	systemctl enable switcheroo-control.service
-	systemctl enable power-profiles-daemon.service
-	echo "Performing misc postinstall operations..."
-	update_fonts
-	update_gtk
+    safe_enable gdm.service
+    safe_enable switcheroo-control.service
+    safe_enable power-profiles-daemon.service
+    echo "Performing misc postinstall operations..."
+    update_fonts
+    update_gtk
 }

@@ -43,9 +43,15 @@ package() {
   cp -r "$srcdir/$pkgname-${_commit}/etc" "$pkgdir/"
   cp -r "$srcdir/$pkgname-${_commit}/usr" "$pkgdir/"
 
-  # Fix permissions for security
-  chmod -R 750 "$pkgdir/etc/sudoers.d"
-  chmod -R 750 "$pkgdir/usr/share/polkit-1/rules.d"
+  # Fix permissions for security-sensitive configs
+  chmod 750 -R "$pkgdir/etc/sudoers.d"
+  chmod 750 -R "$pkgdir/usr/share/polkit-1/rules.d"
   chown -R root:polkitd "$pkgdir/usr/share/polkit-1/rules.d"
+
+  # Fix skel directory permissions — git does not preserve them
+  chmod 700 "$pkgdir/etc/skel/.ssh"
+  chmod 700 "$pkgdir/etc/skel/.gnupg"
+  chmod 700 "$pkgdir/etc/skel/.config/systemd/user"
+  chmod 700 "$pkgdir/etc/skel/.local/share/keyrings"
 }
 
