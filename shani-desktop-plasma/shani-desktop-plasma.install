@@ -19,11 +19,6 @@ update_gtk() {
     command -v update-mime-database    &>/dev/null && update-mime-database /usr/share/mime 2>/dev/null
 }
 
-safe_enable() {
-    systemctl enable --now "$1" 2>/dev/null \
-        || echo "warning: could not enable $1"
-}
-
 post_install() {
     post_upgrade
 }

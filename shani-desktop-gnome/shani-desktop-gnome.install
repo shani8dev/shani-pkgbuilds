@@ -19,19 +19,14 @@ update_gtk() {
     command -v update-mime-database    &>/dev/null && update-mime-database /usr/share/mime 2>/dev/null
 }
 
-safe_enable() {
-    systemctl enable --now "$1" 2>/dev/null \
-        || echo "warning: could not enable $1"
-}
-
 post_install() {
     post_upgrade
 }
 
 post_upgrade() {
-    safe_enable gdm.service
-    safe_enable switcheroo-control.service
-    safe_enable power-profiles-daemon.service
+    systemctl enable gdm.service
+    systemctl enable switcheroo-control.service
+    systemctl enable power-profiles-daemon.service
     echo "Performing misc postinstall operations..."
     update_fonts
     update_gtk
