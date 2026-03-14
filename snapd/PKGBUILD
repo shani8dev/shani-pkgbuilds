@@ -149,19 +149,13 @@ package() {
   install -m 644 -D "NEWS.md" "$pkgdir/usr/share/doc/snapd/NEWS.md"
 
   # Ship mount ordering drop-ins for ShaniOS immutable root
-  install -Dm644 /dev/stdin \
-      "$pkgdir/usr/lib/systemd/system/snapd.service.d/wait-for-mount.conf" <<EOF
-  [Unit]
-  After=var-lib-snapd.mount
-  Requires=var-lib-snapd.mount
-  EOF
+  printf "[Unit]\nAfter=var-lib-snapd.mount\nRequires=var-lib-snapd.mount\n" \
+  | install -Dm644 /dev/stdin \
+  "$pkgdir/usr/lib/systemd/system/snapd.service.d/wait-for-mount.conf"
 
-  install -Dm644 /dev/stdin \
-      "$pkgdir/usr/lib/systemd/system/snapd.socket.d/wait-for-mount.conf" <<EOF
-  [Unit]
-  After=var-lib-snapd.mount
-  Requires=var-lib-snapd.mount
-  EOF
+  printf "[Unit]\nAfter=var-lib-snapd.mount\nRequires=var-lib-snapd.mount\n" \
+  | install -Dm644 /dev/stdin \
+  "$pkgdir/usr/lib/systemd/system/snapd.socket.d/wait-for-mount.conf"
 
   # these locations are created at runtime but were not part of the packaging
   # previously, thus would trigger a file conflict on upgrade
