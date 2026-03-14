@@ -11,14 +11,12 @@ add_users() {
 	## use awk to print if UID >= $MIN and UID <= $MAX and shell is not /sbin/nologin   ##
 	users=$(awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" | cut -d: -f1)
 	for i in $users; do
-		echo "Adding user '$i' to user-group 'audio,realtime'"
-		usermod -a -G audio "$i"
+		echo "Adding user '$i' to user-group 'realtime'"
 		usermod -a -G realtime "$i"
 	done
 }
 
 add_group() {
-	getent group "audio" &>/dev/null || groupadd -r audio -g 92
 	getent group "realtime" &>/dev/null || groupadd -r realtime
 	add_users
 }
