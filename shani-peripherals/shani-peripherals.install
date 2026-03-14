@@ -20,7 +20,6 @@ add_users() {
 add_group() {
 	getent group "input" &>/dev/null || groupadd -r input -g 97
 	getent group "video" &>/dev/null || groupadd -r video -g 91
-	getent group "power" &>/dev/null || groupadd -r power -g 98
 	add_users
 }
 

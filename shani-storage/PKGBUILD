@@ -33,5 +33,4 @@ depends=(
 	quota-tools
 )
 license=('GPL')
-install="$pkgname.install"
 
