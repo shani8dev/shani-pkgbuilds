@@ -7,4 +7,5 @@ post_upgrade() {
 	systemctl enable ModemManager.service
 	systemctl enable firewalld
 	systemctl enable avahi-daemon.socket
+	systemctl enable dnscrypt-proxy.service
 }
