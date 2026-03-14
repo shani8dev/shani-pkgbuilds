@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=3
+pkgrel=5
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 depends=(
@@ -23,6 +23,7 @@ depends=(
 	geoclue
 	apcupsd
 	usbmuxd
+	upower
 )
 license=('GPL')
 install="$pkgname.install"
