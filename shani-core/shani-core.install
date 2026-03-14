@@ -1,8 +1,41 @@
+add_users() {
+	_l="/etc/login.defs"
+	_p="/etc/passwd"
+
+	## get mini UID limit ##
+	l=$(grep "^UID_MIN" $_l)
+
+	## get max UID limit ##
+	l1=$(grep "^UID_MAX" $_l)
+
+	## use awk to print if UID >= $MIN and UID <= $MAX and shell is not /sbin/nologin   ##
+	users=$(awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" | cut -d: -f1)
+	for i in $users; do
+		echo "Adding user '$i' to user-group 'kvm,libvirt,nixbld,lxc,lxd'"
+		usermod -a -G kvm "$i"
+		usermod -a -G libvirt "$i"
+		usermod -a -G nixbld "$i"
+		usermod -a -G lxc "$i"
+		usermod -a -G lxd "$i"
+	done
+}
+
+add_group() {
+	getent group "kvm" &>/dev/null || groupadd -r kvm -g 78
+	getent group "libvirt"  &>/dev/null || groupadd -r libvirt
+	getent group "nixbld"   &>/dev/null || groupadd -r nixbld
+	getent group "lxc"      &>/dev/null || groupadd -r lxc
+	getent group "lxd"      &>/dev/null || groupadd -r lxd
+	add_users
+}
+
 post_install() {
 	post_upgrade
 }
 
 post_upgrade() {
+	add_group
+
 	systemctl enable apparmor
 	systemctl enable snapd.apparmor.service
 	systemctl enable snapd.socket

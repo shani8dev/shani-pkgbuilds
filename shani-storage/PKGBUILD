@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
 depends=(
@@ -23,6 +23,7 @@ depends=(
 	xfsprogs
 	btrfs-progs
 	udisks2-btrfs
+	udisks2-lvm2
 	fuse-overlayfs
 	nfs-utils
 	samba
@@ -32,4 +33,5 @@ depends=(
 	quota-tools
 )
 license=('GPL')
+install="$pkgname.install"
 
