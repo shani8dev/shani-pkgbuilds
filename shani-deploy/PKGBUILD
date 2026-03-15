@@ -37,8 +37,6 @@ package() {
   cp -r "$srcdir/$pkgname/systemd/system/"* "$pkgdir/usr/lib/systemd/system/"
   cp -r "$srcdir/$pkgname/systemd/user/"* "$pkgdir/usr/lib/systemd/user/"
   
-  # Install autostart files
-  cp -r "$srcdir/$pkgname/autostart/"* "$pkgdir/etc/xdg/autostart/"
 
   # Install scripts with executable permissions, removing the .sh extension
   for script in "$srcdir/$pkgname/scripts/"*; do

@@ -4,6 +4,7 @@ post_install() {
 
 post_upgrade() {
     # Enable deployment-related system services
+    systemctl enable bless-boot.service
     systemctl enable check-boot-failure.service
     systemctl enable check-boot-failure.timer
     systemctl enable mark-boot-in-progress.service
