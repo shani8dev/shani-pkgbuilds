@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
 pkgver=0.5.1
-pkgrel=8
+pkgrel=9
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 _commit='bf7f90c58ed10e6af6371762a1e5c74c7dff17bf'  # Replace with the specific commit hash
@@ -24,6 +24,7 @@ prepare () {
 
     # Apply the patch
     patch -p1 < "$srcdir/fix-execution.patch"
+    patch -p1 < "$srcdir/add-root-password.patch"
 }
 
 build () {
