@@ -2,23 +2,8 @@ _set_snap_confine_caps() {
   /usr/bin/setcap -q - /usr/lib/snapd/snap-confine < /usr/lib/snapd/snap-confine.v2-only.caps
 }
 
-_create_snap_symlink() {
-  # Create /snap -> /var/lib/snapd/snap if it does not exist
-  if [ ! -e /snap ]; then
-    ln -s /var/lib/snapd/snap /snap
-  fi
-}
-
-_remove_snap_symlink() {
-  # Remove only if it is our symlink
-  if [ -L /snap ] && [ "$(readlink /snap)" = "/var/lib/snapd/snap" ]; then
-    rm -f /snap
-  fi
-}
-
 post_install() {
   _set_snap_confine_caps
-  _create_snap_symlink
 }
 
 

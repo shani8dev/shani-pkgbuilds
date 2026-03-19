@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
 pkgver=1.2
-pkgrel=6
+pkgrel=8
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
 depends=(

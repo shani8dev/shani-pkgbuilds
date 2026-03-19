@@ -9,7 +9,7 @@ depends=('squashfs-tools' 'libseccomp' 'libsystemd' 'libcap' 'apparmor')
 optdepends=('bash-completion: bash completion support'
             'xdg-desktop-portal: desktop integration')
 pkgver=2.74.1
-pkgrel=1
+pkgrel=2
 arch=('x86_64' 'i686' 'armv7h' 'aarch64')
 url="https://github.com/snapcore/snapd"
 license=('GPL3')
@@ -147,15 +147,6 @@ package() {
 
   # Install the news file
   install -m 644 -D "NEWS.md" "$pkgdir/usr/share/doc/snapd/NEWS.md"
-
-  # Ship mount ordering drop-ins for ShaniOS immutable root
-  printf "[Unit]\nAfter=var-lib-snapd.mount\nRequires=var-lib-snapd.mount\n" \
-  | install -Dm644 /dev/stdin \
-  "$pkgdir/usr/lib/systemd/system/snapd.service.d/wait-for-mount.conf"
-
-  printf "[Unit]\nAfter=var-lib-snapd.mount\nRequires=var-lib-snapd.mount\n" \
-  | install -Dm644 /dev/stdin \
-  "$pkgdir/usr/lib/systemd/system/snapd.socket.d/wait-for-mount.conf"
 
   # these locations are created at runtime but were not part of the packaging
   # previously, thus would trigger a file conflict on upgrade
