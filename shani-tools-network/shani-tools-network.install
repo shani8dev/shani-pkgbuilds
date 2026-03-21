@@ -4,4 +4,5 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable vnstat.service
+	systemctl enable arpwatch.service
 }

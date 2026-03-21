@@ -6,6 +6,6 @@ post_upgrade() {
 	systemctl enable NetworkManager.service
 	systemctl enable ModemManager.service
 	systemctl enable firewalld
-	systemctl enable sshguard
+	systemctl enable fail2ban
 	systemctl enable avahi-daemon.socket
 }

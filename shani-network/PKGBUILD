@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
 pkgver=1.2
-pkgrel=9
+pkgrel=10
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
 depends=(
@@ -28,7 +28,7 @@ depends=(
     wireless-regdb
     openssh
     firewalld
-    sshguard
+    fail2ban
     nm-connection-editor
     modem-manager-gui
     firewall-config

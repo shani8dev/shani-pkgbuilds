@@ -2,7 +2,7 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=29
+pkgrel=30
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
@@ -19,6 +19,7 @@ depends=(
   'ananicy-cpp'
   'gamemode'
   'irqbalance'
+  'haveged'
   'plymouth'
   'bash-completion'
   'fish'
@@ -41,6 +42,13 @@ package() {
   # Copy configuration files
   cp -r "$srcdir/$pkgname-${_commit}/etc" "$pkgdir/"
   cp -r "$srcdir/$pkgname-${_commit}/usr" "$pkgdir/"
+
+  # Fix permissions for sudoers drop-in files (Lynis AUTH + FILE-7524)
+  # sudo requires 0440 (root:root) — anything else causes sudo to refuse the file
+  chmod 0440 "$pkgdir/etc/sudoers.d/editor"
+  chmod 0440 "$pkgdir/etc/sudoers.d/insults"
+  chmod 0440 "$pkgdir/etc/sudoers.d/pwfeedback"
+  chmod 0440 "$pkgdir/etc/sudoers.d/wheel"
 
   # Fix permissions for security-sensitive configs
   chmod 750 -R "$pkgdir/etc/sudoers.d"
