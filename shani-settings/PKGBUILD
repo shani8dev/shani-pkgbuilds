@@ -2,20 +2,19 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=28
+pkgrel=29
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
 pkgdesc="Shani OS settings"
 
-_commit='984678b736d0fedee5e55b3874cf19b3ccbf547f'
+_commit='732eb69641acaa5bfa17363a377f09df4ea755be'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
 
 depends=(
   'btrfsmaintenance'
   'systemd-oomd-defaults'
-  'profile-sync-daemon'
   'zram-generator'
   'ananicy-cpp'
   'gamemode'

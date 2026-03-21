@@ -13,7 +13,6 @@ post_upgrade() {
 	systemctl enable systemd-timesyncd
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
-	systemctl --global enable psd
 	systemctl --global enable gamemoded
 	plymouth-set-default-theme bgrt
 }
