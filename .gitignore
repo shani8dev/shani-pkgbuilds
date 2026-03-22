@@ -1,1 +1,23 @@
+# ── makepkg build artifacts ───────────────────────────────────────────────────
+# Built packages
+*.pkg.tar.zst
+*.pkg.tar.zst.sig
+*.pkg.tar.xz
+*.pkg.tar.xz.sig
+
+# makepkg working dirs (created inside each package dir)
+*/src/
+*/pkg/
+
+# Downloaded source tarballs
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.tar.zst
+*.zip
+
+# ── Script cache ──────────────────────────────────────────────────────────────
 cache/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
