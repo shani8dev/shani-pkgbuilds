@@ -10,6 +10,10 @@ post_upgrade() {
     systemctl enable mark-boot-in-progress.service
     systemctl enable mark-boot-success.service
 
+    # Enable setup related
+    systemctl enable beesd-setup.service
+    systemctl enable shani-user-setup.path
+
     # Enable system-wide Flatpak update services
     systemctl enable flatpak-update-system.service
     systemctl enable flatpak-update-system.timer
