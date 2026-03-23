@@ -3,6 +3,32 @@ post_install() {
 }
 
 # Post upgrade
+add_users_to_sambashare() {
+	_l="/etc/login.defs"
+	_p="/etc/passwd"
+	## get min UID limit ##
+	l=$(grep "^UID_MIN" $_l)
+	## get max UID limit ##
+	l1=$(grep "^UID_MAX" $_l)
+	## print users with UID in range and a valid login shell ##
+	users=$(awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" \
+		'{ if ( $3 >= min && $3 <= max && $7 != "/sbin/nologin" ) print $0 }' \
+		"$_p" | cut -d: -f1)
+	for i in $users; do
+		echo "Adding user '$i' to group 'sambashare'"
+		usermod -a -G sambashare "$i"
+	done
+}
+
+add_samba_group() {
+	getent group "sambashare" &>/dev/null || groupadd -r sambashare
+	add_users_to_sambashare
+}
+
+post_install() {
+	post_upgrade
+}
+
 post_upgrade() {
 	echo "Attempting to enable services..."
 	systemctl enable btrfs-balance.timer
@@ -16,4 +42,5 @@ post_upgrade() {
 	systemctl enable haveged
 	systemctl --global enable gamemoded
 	plymouth-set-default-theme bgrt
+	add_samba_group
 }
