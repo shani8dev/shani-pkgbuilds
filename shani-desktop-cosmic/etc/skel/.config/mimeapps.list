@@ -3,8 +3,29 @@
 # Text Files (Default: Cosmic Text Editor)
 # ---------------------------------------------------------------------
 text/plain=com.system76.CosmicEdit.desktop;
-text/vnd.trolltech.linguist=com.system76.CosmicEdit.desktop;
 text/markdown=com.system76.CosmicEdit.desktop;
+text/vnd.trolltech.linguist=com.system76.CosmicEdit.desktop;
+text/xml=com.system76.CosmicEdit.desktop;
+application/xml=com.system76.CosmicEdit.desktop;
+application/json=com.system76.CosmicEdit.desktop;
+application/x-shellscript=com.system76.CosmicEdit.desktop;
+text/x-shellscript=com.system76.CosmicEdit.desktop;
+text/x-python=com.system76.CosmicEdit.desktop;
+text/x-csrc=com.system76.CosmicEdit.desktop;
+text/x-chdr=com.system76.CosmicEdit.desktop;
+text/x-c++=com.system76.CosmicEdit.desktop;
+text/x-java=com.system76.CosmicEdit.desktop;
+text/x-ruby=com.system76.CosmicEdit.desktop;
+text/x-perl=com.system76.CosmicEdit.desktop;
+text/x-makefile=com.system76.CosmicEdit.desktop;
+text/x-patch=com.system76.CosmicEdit.desktop;
+text/x-diff=com.system76.CosmicEdit.desktop;
+
+# --- LaTeX, TeX & Scientific Documents ---
+application/x-latex=com.system76.CosmicEdit.desktop;
+application/x-tex=com.system76.CosmicEdit.desktop;
+application/x-bibtex=com.system76.CosmicEdit.desktop;
+application/x-texinfo=com.system76.CosmicEdit.desktop;
 
 
 # ---------------------------------------------------------------------
@@ -14,46 +35,30 @@ text/calendar=org.gnome.Calendar.desktop;
 application/x-vcalendar=org.gnome.Calendar.desktop;
 application/x-extension-ics=org.gnome.Calendar.desktop;
 
+
 # ---------------------------------------------------------------------
 # Contacts (Default: Gnome Contacts)
 # ---------------------------------------------------------------------
-text/vcard=org.gnome.Contacts.desktop
-application/vcard=org.gnome.Contacts.desktop
-application/x-vcard=org.gnome.Contacts.desktop
-application/x-extension-vcf=org.gnome.Contacts.desktop
+text/vcard=org.gnome.Contacts.desktop;
+application/vcard=org.gnome.Contacts.desktop;
+application/x-vcard=org.gnome.Contacts.desktop;
+application/x-extension-vcf=org.gnome.Contacts.desktop;
+
 
 # ---------------------------------------------------------------------
 # Web & URI Handling (Default: Vivaldi)
 # ---------------------------------------------------------------------
 text/html=com.vivaldi.Vivaldi.desktop;
-text/xml=com.vivaldi.Vivaldi.desktop;
 application/xhtml_xml=com.vivaldi.Vivaldi.desktop;
 application/xhtml+xml=com.vivaldi.Vivaldi.desktop;
-application/rdf+xml=com.vivaldi.Vivaldi.desktop;
-application/rss+xml=com.vivaldi.Vivaldi.desktop;
-application/atom+xml=com.vivaldi.Vivaldi.desktop;
 
-# Web URL Schemes
+# Web URL Schemes (browser-only; app-specific schemes left unset)
 x-scheme-handler/ftp=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/http=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/https=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mailto=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/about=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/chrome=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/unknown=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/webcal=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/calendar=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/news=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/feed=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mid=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/mms=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/ircs=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/irc=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/tel=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/sip=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/callto=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/skype=com.vivaldi.Vivaldi.desktop;
-x-scheme-handler/slack=com.vivaldi.Vivaldi.desktop;
 
 # Web File Extensions
 application/x-extension-htm=com.vivaldi.Vivaldi.desktop;
@@ -66,7 +71,6 @@ application/x-extension-xhtml=com.vivaldi.Vivaldi.desktop;
 application/x-mimearchive=com.vivaldi.Vivaldi.desktop;
 application/mhtml=com.vivaldi.Vivaldi.desktop;
 application/x-mhtml=com.vivaldi.Vivaldi.desktop;
-message/rfc822=com.vivaldi.Vivaldi.desktop;
 
 # WebApps & Progressive Web Apps
 application/x-web-app-manifest+json=com.vivaldi.Vivaldi.desktop;
@@ -80,6 +84,7 @@ application/x-bittorrent=de.haeckerfelix.Fragments.desktop;
 x-scheme-handler/magnet=de.haeckerfelix.Fragments.desktop;
 x-scheme-handler/dht=de.haeckerfelix.Fragments.desktop;
 
+
 # ---------------------------------------------------------------------
 # Documents & eBooks (Default: Papers)
 # ---------------------------------------------------------------------
@@ -91,6 +96,9 @@ application/vnd.amazon.ebook=org.gnome.Papers.desktop;
 image/vnd.djvu=org.gnome.Papers.desktop;
 application/x-cbz=org.gnome.Papers.desktop;
 application/x-cbr=org.gnome.Papers.desktop;
+application/postscript=org.gnome.Papers.desktop;
+application/x-dvi=org.gnome.Papers.desktop;
+
 
 # ---------------------------------------------------------------------
 # Audio Formats (Default: Decibels)
@@ -308,6 +316,7 @@ image/jpg=org.gnome.Loupe.desktop;
 image/pjpeg=org.gnome.Loupe.desktop;
 image/png=org.gnome.Loupe.desktop;
 image/x-png=org.gnome.Loupe.desktop;
+image/apng=org.gnome.Loupe.desktop;
 image/webp=org.gnome.Loupe.desktop;
 image/avif=org.gnome.Loupe.desktop;
 image/jxl=org.gnome.Loupe.desktop;
@@ -343,7 +352,6 @@ image/x-xcf=org.gnome.Loupe.desktop;
 image/x-tga=org.gnome.Loupe.desktop;
 image/x-rgb=org.gnome.Loupe.desktop;
 image/x-eps=org.gnome.Loupe.desktop;
-image/x-icb=org.gnome.Loupe.desktop;
 image/x-vnd.adobe.photoshop=org.gnome.Loupe.desktop;
 
 # RAW Camera Formats
@@ -462,10 +470,10 @@ application/vnd.sun.xml.impress.template=org.onlyoffice.desktopeditors.desktop;
 application/mspowerpoint=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.presentation=org.onlyoffice.desktopeditors.desktop;
-application/vnd-ms-powerpoint-slideshow-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.slideshow.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint.presentation.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.template=org.onlyoffice.desktopeditors.desktop;
-application/vnd-ms-powerpoint-template-macroenabled-12=org.onlyoffice.desktopeditors.desktop;
+application/vnd.ms-powerpoint.template.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.slide=org.onlyoffice.desktopeditors.desktop;
 application/vnd.openxmlformats-officedocument.presentationml.slideshow=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-powerpoint.addin.macroenabled.12=org.onlyoffice.desktopeditors.desktop;
@@ -478,12 +486,6 @@ application/x-iwork-keynote-sffkey=org.onlyoffice.desktopeditors.desktop;
 application/x-iwork-pages-sffpages=org.onlyoffice.desktopeditors.desktop;
 application/x-iwork-numbers-sffnumbers=org.onlyoffice.desktopeditors.desktop;
 
-# --- LaTeX, TeX & Scientific Documents ---
-application/x-latex=org.onlyoffice.desktopeditors.desktop;
-application/x-tex=org.onlyoffice.desktopeditors.desktop;
-application/x-bibtex=org.onlyoffice.desktopeditors.desktop;
-application/x-texinfo=org.onlyoffice.desktopeditors.desktop;
-
 # --- Microsoft Visio ---
 application/vnd.visio=org.onlyoffice.desktopeditors.desktop;
 application/vnd.ms-visio.drawing=org.onlyoffice.desktopeditors.desktop;
@@ -493,8 +495,6 @@ application/vnd.ms-visio.stencil=org.onlyoffice.desktopeditors.desktop;
 # --- Other Office Formats ---
 text/docxf=org.onlyoffice.desktopeditors.desktop;
 text/oform=org.onlyoffice.desktopeditors.desktop;
-application/postscript=org.onlyoffice.desktopeditors.desktop;
-application/x-dvi=org.onlyoffice.desktopeditors.desktop;
 x-scheme-handler/oo-office=org.onlyoffice.desktopeditors.desktop;
 
 
@@ -531,7 +531,6 @@ application/x-font-linux-psf=org.gnome.font-viewer.desktop;
 application/x-font-ghostscript=org.gnome.font-viewer.desktop;
 application/x-font-dos=org.gnome.font-viewer.desktop;
 application/x-font-opentype=org.gnome.font-viewer.desktop;
-application/vnd.ms-fontobject=org.gnome.font-viewer.desktop;  # Embedded OpenType (EOT)
+application/vnd.ms-fontobject=org.gnome.font-viewer.desktop;
 application/font-sfnt=org.gnome.font-viewer.desktop;
 application/font-woff=org.gnome.font-viewer.desktop;
-
