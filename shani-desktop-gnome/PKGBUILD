@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=22
+pkgrel=23
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -32,6 +32,7 @@ depends=(
 	gnome-user-share
 	gnome-remote-desktop
 	gnome-system-monitor
+	gnome-power-manager
 	gnome-keyring
 	gnome-screenshot
 	gnome-nettool
@@ -51,12 +52,12 @@ depends=(
 	gvfs-dnssd
 	gvfs-goa
 	gvfs-gphoto2
-	gvfs-google
 	gvfs-mtp
 	gvfs-nfs
 	gvfs-onedrive
 	gvfs-smb
 	gvfs-wsdd
+	gst-thumbnailers
 	webp-pixbuf-loader
 	libwmf
 	libraw
