@@ -3,25 +3,22 @@ post_install() {
 }
 
 post_upgrade() {
-    # Enable deployment-related system services
-    systemctl enable bless-boot.service
-    systemctl enable check-boot-failure.service
-    systemctl enable check-boot-failure.timer
-    systemctl enable mark-boot-in-progress.service
-    systemctl enable mark-boot-success.service
+    # Boot counting / health tracking
+    systemctl enable mark-boot-in-progress.service   # WantedBy=local-fs.target
+    systemctl enable mark-boot-success.service        # WantedBy=multi-user.target
+    systemctl enable bless-boot.service               # WantedBy=multi-user.target
+    systemctl enable check-boot-failure.timer         # WantedBy=timers.target + emergency.target
 
-    # Enable setup related
-    systemctl enable beesd-setup.service
-    systemctl enable shani-user-setup.path
+    # User setup (path unit activates the service — only enable the path)
+    systemctl enable shani-user-setup.path            # WantedBy=multi-user.target
 
-    # Enable system-wide Flatpak update services
-    systemctl enable flatpak-update-system.service
-    systemctl enable flatpak-update-system.timer
+    # Bees deduplication
+    systemctl enable beesd-setup.service              # WantedBy=multi-user.target
 
-    # Enable user-level Flatpak update services globally
-    systemctl --global enable flatpak-update-user.service
-    systemctl --global enable flatpak-update-user.timer
-    systemctl --global enable shani-update.service
-    systemctl --global enable shani-update.timer
+    # System-wide Flatpak (timer activates the service — only enable the timer)
+    systemctl enable flatpak-update-system.timer      # WantedBy=timers.target
+
+    # User-scope units (timer activates the service — only enable the timer)
+    systemctl --global enable flatpak-update-user.timer   # WantedBy=timers.target
+    systemctl --global enable shani-update.timer          # WantedBy=multi-user.target
 }
-
