@@ -23,6 +23,7 @@ add_users_to_sambashare() {
 add_samba_group() {
 	getent group "sambashare" &>/dev/null || groupadd -r sambashare
 	add_users_to_sambashare
+	chgrp sambashare var/lib/samba/usershare
 }
 
 post_install() {

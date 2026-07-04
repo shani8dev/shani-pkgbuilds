@@ -2,13 +2,13 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=37
+pkgrel=38
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL')
 pkgdesc="Shani OS settings"
 
-_commit='4979fd6184203876e51a9e01003fa74a1f3e07f3'
+_commit='79330f2bc0e059f2d09d4433abd6d8e0e7b4aa78'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
 
@@ -59,5 +59,8 @@ package() {
   # Fix skel directory permissions — git does not preserve them
   chmod 700 "$pkgdir/etc/skel/.ssh"
   chmod 700 "$pkgdir/etc/skel/.gnupg"
+  mkdir -p "$pkgdir/var/lib/samba/usershare"
+  chmod 1770 "$pkgdir/var/lib/samba/usershare"
+
 }
 
