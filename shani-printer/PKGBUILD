@@ -25,7 +25,7 @@ depends=(
     splix
     # Vendor-supported drivers not in official repos
     hplip-minimal
-    epson-inkjet-printer-escpr
+    #epson-inkjet-printer-escpr
     foo2zjs-nightly
     brlaser
     cnijfilter2
