@@ -17,8 +17,8 @@ arch=('x86_64' 'aarch64')
 url='http://support.epson.net/linux/Printer/LSB_distribution_pages/en/escpr.php'
 license=('GPL-2.0-or-later')
 depends=('cups' 'ghostscript')
-source=('https://download-center.epson.com/f/module/e934c1f6-0fc1-43e5-8d3e-0de8f3a3d357/epson-inkjet-printer-escpr-1.8.8-1.src.rpm')
-sha512sums=('85bcaff840fe4dfb256b42e5625e221ad273881b7bbeefafc53cff96ab4ddb91e0045fdfcdcf9e53a469385ec524077bfc40051429fba205b659c95741168a51')
+source=('https://download-center.epson.com/f/module/8d6ed1f3-c325-42b8-b516-65fad395c81b/epson-inkjet-printer-escpr-1.8.8-1.src.rpm')
+sha512sums=('SKIP')
 DLAGENTS=('https::/usr/bin/curl --user-agent Firefox -qgb "" -fLC - --retry 3 --retry-delay 3 -o %o %u')
 
 
