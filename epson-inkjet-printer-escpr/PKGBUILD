@@ -8,7 +8,6 @@
 # Contributor: Heiko Baums <heiko@baums-on-web.de>
 # Contributor: Quentin Foussette <quentinf7@gmail.com>
 # Contributor: MetaNova
-
 pkgname=epson-inkjet-printer-escpr
 pkgver=1.8.8
 pkgrel=1
@@ -17,10 +16,25 @@ arch=('x86_64' 'aarch64')
 url='http://support.epson.net/linux/Printer/LSB_distribution_pages/en/escpr.php'
 license=('GPL-2.0-or-later')
 depends=('cups' 'ghostscript')
-source=('https://download-center.epson.com/f/module/e934c1f6-0fc1-43e5-8d3e-0de8f3a3d357/epson-inkjet-printer-escpr-1.8.8-1.src.rpm')
-sha512sums=('SKIP')
-DLAGENTS=('https::/usr/bin/curl --user-agent Firefox -qgb "" -fLC - --retry 3 --retry-delay 3 -o %o %u')
 
+# VENDORED SOURCE — download-center.epson.com returns HTTP 403 from GitHub
+# Actions runners (and likely other cloud/CI IP ranges); confirmed the file
+# itself is fine when fetched from a non-CI network, so this is an IP-based
+# block on Epson's side, not a broken/expired link.
+#
+# Fix: the .src.rpm is committed directly next to this PKGBUILD instead of
+# being downloaded at build time. No network access needed for this source.
+#
+# To refresh on a version bump:
+#   1. Download the new epson-inkjet-printer-escpr-<ver>-1.src.rpm from
+#      https://epson.com/Support/sl/s (search the model, get the Linux driver)
+#      from a normal (non-CI) network/machine.
+#   2. Replace the file in this directory and bump pkgver above.
+#   3. Run: sha512sum epson-inkjet-printer-escpr-<ver>-1.src.rpm
+#      and paste the result into sha512sums= below.
+
+source=('epson-inkjet-printer-escpr-1.8.8-1.src.rpm')
+sha512sums=('SKIP')
 
 prepare() {
   tar xzf "${pkgname}-${pkgver}-1.tar.gz"
@@ -30,19 +44,15 @@ prepare() {
 
 build() {
   cd "${pkgname}-${pkgver}"
-
   CFLAGS="${CFLAGS} -Wno-implicit-function-declaration"
-
   ./configure \
   	--prefix=/usr \
   	--with-cupsfilterdir=/usr/lib/cups/filter \
   	--with-cupsppddir=/usr/share/ppd
-
   make
 }
 
 package() {
   cd "${pkgname}-${pkgver}"
-
   make DESTDIR="${pkgdir}" install
 }
