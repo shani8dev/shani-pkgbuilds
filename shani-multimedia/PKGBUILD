@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-multimedia
 pkgver=1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Multimedia related packages for Shani OS"
 arch=('any')
 depends=(
@@ -26,6 +26,7 @@ depends=(
 	sof-firmware
 	alsa-firmware
 	wireplumber
+	rtkit
 )
 license=('GPL')
 install="$pkgname.install"

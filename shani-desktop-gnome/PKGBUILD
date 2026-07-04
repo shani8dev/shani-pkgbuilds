@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=23
+pkgrel=24
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -67,6 +67,7 @@ depends=(
 	libultrahdr
 	djvulibre
 	ffmpegthumbnailer
+	gst-thumbnailers
 	xdg-desktop-portal-gnome
 	xdg-user-dirs-gtk
 	xdg-utils

@@ -1,9 +1,10 @@
 [Cursor Options]
 CursorShape=2
-CustomCursorColor=255,0,0
+CustomCursorColor=255,127,80
 UseCustomCursorColor=true
 
 [General]
+ColorScheme=SaturnDark
 Command=/usr/bin/fish
 Name=Shani
 Parent=FALLBACK/
