@@ -1,7 +1,7 @@
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=57
-_commit='06a1375d8d85c51899273277abde0d28c1e3a91a'  # Replace with the specific commit hash
+pkgrel=58
+_commit='bb8534b603f7547b0e8f5514eb378f77994fbf3c'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('x86_64')
