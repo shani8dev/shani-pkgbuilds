@@ -44,6 +44,8 @@ post_upgrade() {
 	systemctl enable waydroid-container.service
 	systemctl enable lxd.socket
 	systemctl enable lxcfs.service
+	systemctl enable libvirtd.socket
+	systemctl enable virtlogd.socket
 	systemctl enable fwupd
 	systemctl enable fwupd-refresh.timer
 }
