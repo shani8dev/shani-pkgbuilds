@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=9
+pkgrel=10
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 depends=(
@@ -16,6 +16,9 @@ depends=(
     ncdu
     sysstat
     smartmontools
+    lm_sensors
+    ddcutil
+    liquidctl
 
     # Scheduling & logging
     cronie
