@@ -68,7 +68,6 @@ depends=(
 	libultrahdr
 	djvulibre
 	ffmpegthumbnailer
-	gst-thumbnailers
 	xdg-desktop-portal-gnome
 	xdg-user-dirs-gtk
 	xdg-utils
