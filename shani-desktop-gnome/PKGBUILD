@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=24
+pkgrel=25
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
@@ -47,6 +47,7 @@ depends=(
 	nautilus-share
 	switcheroo
 	transmageddon
+	deja-dup
 	gvfs
 	gvfs-afc
 	gvfs-dnssd
