@@ -48,6 +48,8 @@ depends=(
     kjournald
     partitionmanager
     converseen
+    kinfocenter
+    kde-inotify-survey
 	kvantum
 	power-profiles-daemon
 	switcheroo-control
