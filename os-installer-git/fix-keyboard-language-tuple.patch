@@ -1,0 +1,13 @@
+diff --git a/src/core/config.py b/src/core/config.py
+index 4fcd0ee..2462ad4 100644
+--- a/src/core/config.py
++++ b/src/core/config.py
+@@ -90,7 +90,7 @@ fallback_values = {
+     'available_translations': ['en_US'],
+     'language_use_fixed': False,
+     'language_chosen': None,
+-    'keyboard_language': ('en_US' 'English (US)'),
++    'keyboard_language': ('en_US', 'English (US)'),
+     'keyboard_layout': ('us', 'English (US)'),
+     'chosen_device': None,
+     'disk_is_partition': False,
