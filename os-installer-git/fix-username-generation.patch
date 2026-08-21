@@ -1,0 +1,13 @@
+diff --git a/src/util/envvar_creator.py b/src/util/envvar_creator.py
+index d449e09..fe3be43 100644
+--- a/src/util/envvar_creator.py
++++ b/src/util/envvar_creator.py
+@@ -37,7 +37,7 @@ def _get_locale():
+ 
+ 
+ def _get_username():
+-    if config.has('user_username'):
++    if config.get('user')['request_username']:
+         return config.get('user_username')
+     else:
+         # This sticks to common linux username rules:
