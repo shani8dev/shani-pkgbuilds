@@ -2,7 +2,7 @@
 
 pkgname=shani-keyring
 pkgver=20241020
-pkgrel=2
+pkgrel=3
 pkgdesc='Shani PGP keyring'
 arch=('any')
 url='https://github.com/shani8dev/shani-keyring/'
