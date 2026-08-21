@@ -123,6 +123,18 @@ Exits non-zero if it finds a `SKIP` that isn't actually pinned. Runs on the host
 
 ---
 
+## Updating a pinned-commit package
+
+If a `PKGBUILD` uses `_commit='<hash>'` for a `git+` source, **changing that
+hash without also bumping `pkgrel` will silently fail to rebuild.**
+`shani-builder`'s `pkg-builder.sh` skips any package whose
+`pkgname-pkgver-pkgrel-arch` combination already exists in the repo — if
+you only update `_commit`, the artifact filename doesn't change, so the
+builder sees it's "already built" and never picks up the new commit.
+Always bump `pkgrel` in the same change that updates `_commit`.
+
+---
+
 ## Caching
 
 | Host path | Container path | Purpose |
@@ -138,10 +150,11 @@ Both directories are created automatically on first run.
 
 | Package | Description |
 |---|---|
+| `args` | Simple header-only C++ argument parser library |
 | `brlaser` | Brother laser printer driver |
 | `cnijfilter2` | Canon inkjet printer driver |
+| `cpr` | C++ Requests HTTP library (Curl for People) |
 | `desktop-entry-hider` | Hide desktop entries via config |
-| `epson-inkjet-printer-escpr2` | Epson ESC/P-R 2 printer driver |
 | `filesystem` | Shani OS base filesystem & branding |
 | `foo2zjs-nightly` | foo2zjs printer driver (nightly) |
 | `game-devices-udev` | udev rules for game controllers |
@@ -160,7 +173,6 @@ Both directories are created automatically on first run.
 | `shani-desktop-cosmic` | COSMIC desktop meta |
 | `shani-desktop-gnome` | GNOME desktop meta |
 | `shani-desktop-plasma` | KDE Plasma desktop meta |
-| `shani-dracut-secureboot` | Dracut + Secure Boot integration |
 | `shani-fonts` | Font collection (Noto, emoji, Indian) |
 | `shani-keyring` | Shani OS signing keyring |
 | `shani-multimedia` | Multimedia codecs meta |
@@ -177,8 +189,10 @@ Both directories are created automatically on first run.
 | `shani-video-guest` | VM guest video drivers meta |
 | `shim-signed` | Signed UEFI shim for Secure Boot |
 | `snapd` | Snap package daemon |
+| `splix` | CUPS drivers for Samsung/Xerox (SPL) printers |
 | `systemd-oomd-defaults` | systemd-oomd default config |
 | `waydroid-helper` | Waydroid setup helper |
+| `zsync2` | Differential update tooling (.zsync control files) |
 
 ---
 
