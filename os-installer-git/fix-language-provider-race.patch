@@ -1,0 +1,22 @@
+diff --git a/src/provider/language_provider.py b/src/provider/language_provider.py
+index a84580c..435aa3b 100644
+--- a/src/provider/language_provider.py
++++ b/src/provider/language_provider.py
+@@ -62,8 +62,17 @@ class LanguageProvider(Preloadable):
+     def __init__(self):
+         super().__init__(self._get_languages)
+ 
++    def preload(self):
++        # Deferred to preload() rather than submitted from __init__: this
++        # class is instantiated as a module-level singleton, which runs at
++        # import time — before Application.do_command_line() has called
++        # config.init() to load the config file. Submitting the thread here
++        # instead ties it to preload_manager.start(), which only runs from
++        # do_activate(), strictly after config.init() has completed, so
++        # _determine_fixed_language() can't read config before it's loaded.
+         future = self.thread_pool.submit(self._determine_fixed_language)
+         config.set('language_use_fixed', future)
++        super().preload()
+ 
+     def _determine_fixed_language(self):
+         fixed_language = config.get('fixed_language')
