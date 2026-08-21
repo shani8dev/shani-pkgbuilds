@@ -20,5 +20,10 @@ post_upgrade() {
 
     # User-scope units (timer activates the service — only enable the timer)
     systemctl --global enable flatpak-update-user.timer   # WantedBy=timers.target
-    systemctl --global enable shani-update.timer          # WantedBy=multi-user.target
+    systemctl --global enable shani-update.timer          # WantedBy=timers.target
+
+    # shani-download-only.timer is intentionally NOT enabled here — it's an
+    # opt-in convenience for fleets that want updates pre-staged ahead of a
+    # maintenance window. Enable explicitly with:
+    #   systemctl enable --now shani-download-only.timer
 }
