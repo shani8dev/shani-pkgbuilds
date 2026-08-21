@@ -12,6 +12,7 @@ All builds run inside a reproducible Docker container (`shrinivasvkumbhar/shani-
 .
 ├── run_in_container.sh   # Generic wrapper – runs any command inside the build container
 ├── make_pkg.sh           # Convenience script – builds one or more packages
+├── check-skip-checksums.sh  # Flags SKIP checksums on non-pinned sources
 ├── <package-name>/
 │   ├── PKGBUILD
 │   └── *.patch / *.install / other sources
@@ -103,6 +104,22 @@ The updated `PKGBUILD` is written back to your host immediately via the bind mou
 # Inspect the container environment
 ./run_in_container.sh env
 ```
+
+---
+
+## Checking for Missing Checksums
+
+`sha256sums=('SKIP')` is only legitimate for a source whose content is already pinned some other way (a `git+`/`svn+`/`hg+`/`bzr+` VCS source, a local file shipped in the package's own directory, or a URL path containing a full commit hash). On a plain versioned tarball or a mutable-branch URL, `SKIP` means the download has no integrity check at all — this has slipped in unnoticed before.
+
+```bash
+# Check every package
+./check-skip-checksums.sh --all
+
+# Check specific packages
+./check-skip-checksums.sh hplip-minimal shani-keyring
+```
+
+Exits non-zero if it finds a `SKIP` that isn't actually pinned. Runs on the host (no container needed) — it only sources each `PKGBUILD` to read its `source=`/`sha256sums=` arrays, it never runs `build()`/`package()`.
 
 ---
 
