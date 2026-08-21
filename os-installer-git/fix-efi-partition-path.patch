@@ -1,0 +1,26 @@
+diff --git a/src/ui/pages/disk.py b/src/ui/pages/disk.py
+index d3b8256..2b61ed5 100644
+--- a/src/ui/pages/disk.py
++++ b/src/ui/pages/disk.py
+@@ -61,7 +61,7 @@ class DiskPage(Gtk.Stack):
+ 
+         can_use_partitions = True
+         is_booted_with_uefi = os.path.isdir("/sys/firmware/efi/efivars")
+-        if is_booted_with_uefi and device.efi_partition is None:
++        if is_booted_with_uefi and not device.efi_partition:
+             expander_row.add_row(NoEfiPartitionRow())
+             can_use_partitions = False
+ 
+diff --git a/src/util/device_info.py b/src/util/device_info.py
+index 699796a..d7dbcbe 100644
+--- a/src/util/device_info.py
++++ b/src/util/device_info.py
+@@ -41,7 +41,7 @@ class Disk(DeviceInfo):
+ 
+         if partitions:
+             efis = [partition for partition in partitions if partition.is_efi]
+-            self.efi_partition = efis[0].name if len(efis) > 0 else ''
++            self.efi_partition = efis[0].device_path if len(efis) > 0 else ''
+             for partition in partitions:
+                 partition.efi_partition = self.efi_partition
+                 if "/" in partition.mount_points:

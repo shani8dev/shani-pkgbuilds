@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
 pkgver=0.5.1
-pkgrel=14
+pkgrel=15
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 _commit='bf7f90c58ed10e6af6371762a1e5c74c7dff17bf'  # Replace with the specific commit hash
@@ -11,8 +11,10 @@ source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
         "improve-summary-page.patch"
         "fix-username-generation.patch"
         "fix-language-provider-race.patch"
-        "fix-keyboard-language-tuple.patch")   # <-- Add patch here
+        "fix-keyboard-language-tuple.patch"
+        "fix-efi-partition-path.patch")   # <-- Add patch here
 sha256sums=('SKIP'
+            'SKIP'
             'SKIP'
             'SKIP'
             'SKIP'
@@ -37,6 +39,7 @@ prepare () {
     patch -p1 < "$srcdir/fix-username-generation.patch"
     patch -p1 < "$srcdir/fix-language-provider-race.patch"
     patch -p1 < "$srcdir/fix-keyboard-language-tuple.patch"
+    patch -p1 < "$srcdir/fix-efi-partition-path.patch"
 }
 
 build () {
