@@ -61,6 +61,9 @@ source=(
   'subgid'
   'subuid'
 )
+# The last two hashes (for subgid/subuid) are the SHA-256 of an empty
+# string — both source files are intentionally 0 bytes, not a copy-paste
+# duplicate.
 sha256sums=('01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b'
             'a903431b1bd86c37e6eadbff25987e77a6bf4b5aecfa4eef8b86f5631da962d8'
             'e653152ffa5fafba72716cc8e91314c859f094c471c5d6d4b5d8645679882dee'
