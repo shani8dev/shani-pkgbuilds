@@ -1,13 +1,13 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=26
+pkgrel=27
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 license=('GPL')
 depends=(
-    plasma-login-manager
     aurorae
+    plasma-login-manager
     bluedevil
     kde-gtk-config
     breeze-gtk
@@ -50,7 +50,6 @@ depends=(
     converseen
     kinfocenter
     kde-inotify-survey
-	kvantum
 	power-profiles-daemon
 	switcheroo-control
 	konsole
@@ -85,6 +84,7 @@ depends=(
 	xdg-user-dirs
 	xdg-utils
 	plasma-setup-git
+    kvantum
 )
 install="$pkgname.install"
 source=()

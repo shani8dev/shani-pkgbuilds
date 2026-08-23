@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "shani@shani.dev",
+                "Name": "Shani OS Team"
+            }
+        ],
+        "Category": "Global Themes (Plasma 6)",
+        "Dependencies": [],
+        "EnabledByDefault": true,
+        "Id": "Saturn-Light",
+        "License": "GPL-3.0-or-later",
+        "Name": "Saturn-Light",
+        "Version": "1.0",
+        "Website": "https://shani.dev"
+    }
+}

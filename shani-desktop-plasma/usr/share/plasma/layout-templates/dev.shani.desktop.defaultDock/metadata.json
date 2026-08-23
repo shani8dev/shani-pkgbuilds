@@ -18,5 +18,5 @@
     "X-Plasma-ContainmentCategories": [
         "panel"
     ],
-    "X-Plasma-Shell": "plasma-shani"
+    "X-Plasma-Shell": "org.kde.plasma.desktop"
 }

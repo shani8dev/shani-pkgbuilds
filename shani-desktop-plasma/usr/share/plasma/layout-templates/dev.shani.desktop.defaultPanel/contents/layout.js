@@ -11,50 +11,60 @@ kbd.group = 'Keyboard'
 kbd.writeEntry('RepeatDelay', 250);
 
 // Create Top Panel
+// Property names/values verified against plasma-workspace shell/scripting/panel.cpp:
+//   floating -> [General] floating (bool)
+//   opacity  -> [General] panelOpacity (int enum; accepts "adaptive"|"opaque"|"translucent")
+//   hiding   -> none | autohide | dodgewindows | windowsgobelow
 const panel = new Panel
 panel.alignment = "left"
-panel.floating = false
+panel.hiding = "none"
+panel.floating = true
+panel.opacity = "adaptive"
 panel.height = Math.round(gridUnit * 1.8);
 panel.location = "top"
 
 
 // The order in which the below Applets are listed will be reflected from Left to Right in the Top Panel. //
 
-// The Kickoff launcher
+// The Kickoff launcher - branded Shani glyph (macOS-style app logo)
 var launcher = panel.addWidget("org.kde.plasma.kickoff")
 launcher.currentConfigGroup = ["General"]
-launcher.writeConfig("icon", "show-grid")
+launcher.writeConfig("icon", "start-here-shani")
 launcher.writeConfig("lengthFirstMargin", 7)
-launcher.currentConfigGroup = ["Shortcuts"]
-launcher.writeConfig("global", "Alt+F1")
+// Widget.globalShortcut - verified against shell/scripting/widget.h
+launcher.globalShortcut = "Alt+F1"
 
 // Window buttons - Using a fork for Plasma 6 (plasma6-applet-window-buttons https://aur.archlinux.org/packages/plasma6-applets-window-buttons)
-var buttons = panel.addWidget("org.kde.windowbuttons")
-buttons.currentConfigGroup = ["General"]
-buttons.writeConfig("buttonSizePercentage", 42)
-buttons.writeConfig("containmentType", "Plasma")
-buttons.writeConfig("inactiveStateEnabled", true)
-buttons.writeConfig("lengthFirstMargin", 6)
-buttons.writeConfig("lengthLastMargin", 6)
-buttons.writeConfig("lengthMarginsLock", false)
-buttons.writeConfig("selectedPlugin", "org.kde.breeze")
-buttons.writeConfig("selectedTheme", "Breeze")
-buttons.writeConfig("spacing", 6)
-buttons.writeConfig("useCurrentDecoration", false)
-buttons.writeConfig("useDecorationMetrics", false)
-buttons.writeConfig("visibility", 2)
+if (knownWidgetTypes.includes("org.kde.windowbuttons")) {
+  var buttons = panel.addWidget("org.kde.windowbuttons")
+  buttons.currentConfigGroup = ["General"]
+  buttons.writeConfig("buttonSizePercentage", 42)
+  buttons.writeConfig("containmentType", "Plasma")
+  buttons.writeConfig("inactiveStateEnabled", true)
+  buttons.writeConfig("lengthFirstMargin", 6)
+  buttons.writeConfig("lengthLastMargin", 6)
+  buttons.writeConfig("lengthMarginsLock", false)
+  buttons.writeConfig("selectedPlugin", "org.kde.kwin.aurorae")
+  buttons.writeConfig("selectedTheme", "__aurorae__svg__Saturn")
+  buttons.writeConfig("spacing", 6)
+  buttons.writeConfig("useCurrentDecoration", true)
+  buttons.writeConfig("useDecorationMetrics", false)
+  buttons.writeConfig("visibility", 2)
+}
 
-// Window Title - Using a fork for Plasma 6 (plasma6-applets-window-title https://aur.archlinux.org/packages/plasma6-applets-window-title)
-var title = panel.addWidget("org.kde.windowtitle")
-title.currentConfigGroup = ["General"]
-title.writeConfig("filterActivityInfo", false)
-title.writeConfig("lengthFirstMargin", 7)
-title.writeConfig("lengthMarginsLock", false)
-title.writeConfig("filterByScreen", true)
-title.currentConfigGroup = ["Appearance"]
-title.writeConfig("altTxt", "Shanios Plasma 🪐 ")
-title.writeConfig("isBold", true)
-title.writeConfig("visible", false)
+// Window Title - Using a fork for Plasma 6 (plasma6-applet-window-title https://aur.archlinux.org/packages/plasma6-applets-window-title)
+if (knownWidgetTypes.includes("org.kde.windowtitle")) {
+  var title = panel.addWidget("org.kde.windowtitle")
+  title.currentConfigGroup = ["General"]
+  title.writeConfig("filterActivityInfo", false)
+  title.writeConfig("lengthFirstMargin", 7)
+  title.writeConfig("lengthMarginsLock", false)
+  title.writeConfig("filterByScreen", true)
+  title.currentConfigGroup = ["Appearance"]
+  title.writeConfig("altTxt", "Shani OS 🪐 ")
+  title.writeConfig("isBold", true)
+  title.writeConfig("visible", false)
+}
 
 // Window AppMenu - NOT PORTED TO PLASMA 6 YET, REPLACED BY GLOBAL MENU BELOW
 //var appmenu = panel.addWidget("org.kde.windowappmenu")
@@ -87,15 +97,27 @@ digitalclock.writeConfig("showWeekNumbers", true)
 var spacer = panel.addWidget("org.kde.plasma.panelspacer")
 
 // Kimpanel
-panel.addWidget("org.kde.plasma.kimpanel");
-// System Tray
-panel.addWidget("org.kde.plasma.systemtray")
+if (knownWidgetTypes.includes("org.kde.plasma.kimpanel")) {
+  panel.addWidget("org.kde.plasma.kimpanel");
+}
+// Media Controls - always-visible playback control, unlike macOS's opt-in Now Playing
+if (knownWidgetTypes.includes("org.kde.plasma.mediacontroller")) {
+  panel.addWidget("org.kde.plasma.mediacontroller");
+}
+// System Tray - surface clipboard history (macOS has nothing like it)
+var tray = panel.addWidget("org.kde.plasma.systemtray")
+tray.currentConfigGroup = ["General"]
+// verified against applets/systemtray/main.xml: shownItems = comma-separated
+// plugin ids forced visible in the main tray area (Klipper is hidden by default)
+tray.writeConfig("shownItems", "org.kde.plasma.clipboard")
 
 // User Switcher
-var switcher = panel.addWidget("org.kde.plasma.userswitcher")
-switcher.currentConfigGroup = ["General"]
-switcher.writeConfig("showFace", true)
-switcher.writeConfig("showName", false)
-switcher.writeConfig("showTechnicalInfo", true)
+if (knownWidgetTypes.includes("org.kde.plasma.userswitcher")) {
+  var switcher = panel.addWidget("org.kde.plasma.userswitcher")
+  switcher.currentConfigGroup = ["General"]
+  switcher.writeConfig("showFace", true)
+  switcher.writeConfig("showName", false)
+  switcher.writeConfig("showTechnicalInfo", true)
+}
 
 // End of Top Panel creation //

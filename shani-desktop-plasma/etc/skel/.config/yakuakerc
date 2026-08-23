@@ -9,5 +9,6 @@ DynamicTabTitles=true
 Height=60
 KeepAbove=false
 ShowOnAllDesktops=false
+Skin=Saturn
 ToggleToFocus=true
 Width=70

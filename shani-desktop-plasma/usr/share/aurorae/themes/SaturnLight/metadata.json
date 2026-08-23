@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "shani@shani.dev",
+                "Name": "Shani OS Team"
+            }
+        ],
+        "Description": "SaturnLight Aurorae - terracotta buttons for light theme",
+        "Id": "SaturnLight",
+        "License": "GPL-3.0-or-later",
+        "Name": "SaturnLight",
+        "Version": "1.0"
+    }
+}

@@ -1,0 +1,157 @@
+[ColorEffects:Disabled]
+color = 150,150,150
+coloramount = 0
+coloreffect = 0
+contrastamount = 0.65
+contrasteffect = 1
+intensityamount = 0.1
+intensityeffect = 2
+
+[ColorEffects:Inactive]
+changeselectioncolor = true
+color = 150,150,150
+coloramount = 0.025
+coloreffect = 2
+contrastamount = 0.1
+contrasteffect = 2
+enable = false
+intensityamount = 0
+intensityeffect = 0
+
+[Colors:Button]
+backgroundalternate = 244,244,244
+backgroundnormal = 253,253,253
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 108,111,113
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Complementary]
+backgroundalternate = 234,234,234
+backgroundnormal = 242,242,242
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 104,107,109
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Header]
+backgroundalternate = 231,231,231
+backgroundnormal = 239,239,239
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 100,103,105
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Tooltip]
+backgroundalternate = 233,233,233
+backgroundnormal = 242,242,242
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 104,107,109
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:View]
+backgroundalternate = 238,238,238
+backgroundnormal = 247,247,247
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 110,113,115
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Window]
+backgroundalternate = 234,234,234
+backgroundnormal = 242,242,242
+decorationfocus = 176,66,26
+decorationhover = 196,84,40
+foregroundactive = 176,66,26
+foregroundinactive = 104,107,109
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Header][Inactive]
+backgroundalternate = 229,229,229
+backgroundnormal = 236,236,236
+decorationfocus = 150,84,26
+decorationhover = 140,76,20
+foregroundactive = 176,66,26
+foregroundinactive = 100,103,105
+foregroundlink = 111,66,193
+foregroundnegative = 176,32,32
+foregroundneutral = 150,84,0
+foregroundnormal = 35,38,39
+foregroundpositive = 0,120,107
+foregroundvisited = 118,70,166
+
+[Colors:Selection]
+backgroundalternate = 204,74,32
+backgroundnormal = 188,62,24
+decorationfocus = 255,255,255
+decorationhover = 255,235,225
+foregroundactive = 255,255,255
+foregroundinactive = 255,235,225
+foregroundlink = 255,255,255
+foregroundnegative = 255,255,255
+foregroundneutral = 255,255,255
+foregroundnormal = 255,255,255
+foregroundpositive = 255,255,255
+foregroundvisited = 255,255,255
+
+[General]
+colorscheme = SaturnLight
+name = SaturnLight
+shadesortcolumn = true
+accentcolor = #ff7f50
+opacity = 0.75
+blur = true
+accentterracotta = #b0421a
+accentrose = #c44a3d
+accentamber = #d4891a
+accentclay = #a85c3a
+
+[KDE]
+contrast = 4
+
+[WM]
+activebackground = 239,239,239
+activeblend = 239,239,239
+activeforeground = 176,66,26
+inactivebackground = 236,236,236
+inactiveblend = 236,236,236
+inactiveforeground = 100,100,100
+activetitlebarbackground = 239,239,239
+inactivetitlebarbackground = 236,236,236
+

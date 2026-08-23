@@ -1,9 +1,99 @@
 [KDE]
-widgetStyle=kvantum-dark
+widgetStyle=kvantum
 LookAndFeelPackage=Saturn
+# Automatic day/night Global Theme cycling (Plasma 6.5+, synced to Night Light)
+# Both themes are designed as a pair - identical icons/cursors/decorations,
+# so the switch only changes colors and wallpaper
+DefaultLightLookAndFeel=Saturn-Light
+DefaultDarkLookAndFeel=Saturn
+AutomaticLookAndFeel=true
 
 [General]
 ColorScheme=SaturnDark
+SingleClick=false
+ShowDeleteCommand=true
+ShowPreview=false
+Font=Noto Sans,10,-1,5,50,0,0,0,0,0
 
 [Icons]
-Theme=breeze-dark
+Theme=Saturn
+
+[KFileDialog Settings]
+ShowHiddenFiles=true
+SortMode=0
+
+[KFileWidget]
+LocationBarUrlMode=true
+
+# Blur/transparency settings for Plasma 6
+[KScreenLocker]
+BackgroundBlur=true
+BackgroundBlurRadius=16
+BackgroundBlurDeviation=32
+BackgroundBlurBrightness=1.1
+BackgroundBlurContrast=1.1
+BackgroundBlurSaturation=1.05
+BackgroundBlurNoise=0.02
+
+[KWin]
+ActiveWindowBlur=true
+InactiveWindowBlur=true
+ActiveBlurRadius=12
+ActiveBlurDeviation=24
+ActiveBlurBrightness=1.05
+ActiveBlurContrast=1.05
+ActiveBlurSaturation=1.05
+ActiveBlurNoise=0.015
+InactiveBlurRadius=14
+InactiveBlurDeviation=28
+InactiveBlurBrightness=1.08
+InactiveBlurContrast=1.08
+InactiveBlurSaturation=1.05
+InactiveBlurNoise=0.015
+
+[KScreen]
+PanelBlur=true
+PanelBlurRadius=16
+PanelBlurDeviation=32
+PanelBlurBrightness=1.1
+PanelBlurContrast=1.1
+PanelBlurSaturation=1.05
+PanelBlurNoise=0.02
+
+# Breeze theme blur settings (for Plasma 6 Breeze theme)
+[Breeze]
+BlurBehindEnabled=true
+BlurBehindRadius=12
+BlurBehindDeviation=24
+BlurBehindBrightness=1.05
+BlurBehindContrast=1.05
+BlurBehindSaturation=1.05
+BlurBehindNoise=0.015
+
+BackgroundBlurEnabled=true
+BackgroundBlurRadius=14
+BackgroundBlurDeviation=28
+BackgroundBlurBrightness=1.08
+BackgroundBlurContrast=1.08
+BackgroundBlurSaturation=1.05
+BackgroundBlurNoise=0.015
+
+TranslucencyEnabled=true
+TranslucencyBlurEnabled=true
+TranslucencyNoise=0.015
+TranslucencyBrightness=1.0
+TranslucencyContrast=1.05
+TranslucencySaturation=1.05
+
+BackgroundBlurEnabled=true
+BackgroundBlurRadius=14
+BackgroundBlurDeviation=28
+BackgroundBlurBrightness=1.08
+BackgroundBlurContrast=1.08
+BackgroundBlurSaturation=1.05
+BackgroundBlurNoise=0.015
+
+BackgroundContrastEnabled=true
+BackgroundContrastContrast=1.25
+BackgroundContrastIntensity=0.35
+BackgroundContrastSaturation=1.15

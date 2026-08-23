@@ -11,5 +11,9 @@
         "License": "CC-BY-SA-4.0",
         "Name": "Saturn"
     },
-    "X-KDE-PlasmaImageWallpaper-AccentColor": "#ff7f50"
+    "X-KDE-PlasmaImageWallpaper-AccentColor": {
+        "Dark": "#ff7f50",
+        "Light": "#bc3e18",
+        "Twilight": "#ff7f50"
+    }
 }

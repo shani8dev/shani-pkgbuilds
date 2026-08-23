@@ -1,13 +1,12 @@
 [Daemon]
 Autolock=true
 LockGrace=60
-Timeout=20
+LockOnResume=true
+Timeout=30
 
 [Greeter]
 Theme=org.kde.breeze
 WallpaperPlugin=org.kde.image
 
 [Greeter][Wallpaper][org.kde.image][General]
-Image=/usr/share/backgrounds/shani/saturn-x.png
-
-
+Image=file:///usr/share/wallpapers/Saturn/contents/images_dark/1920x1080.png

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+  <style id="current-color-scheme" type="text/css">
+    .ColorScheme-Text { color:#ffffff; }
+    .ColorScheme-ButtonFocus { color:#ff7f50; }
+    .ColorScheme-ButtonHover { color:#e8653a; }
+  </style>
+  <!-- Coral circle (matches cursor fill) -->
+  <circle cx="9" cy="9" r="8.5" fill="#ff7f50" opacity="1.0"/>
+  <circle cx="9" cy="9" r="7.5" fill="#ff7f50" opacity="0.95"/>
+  <!-- White glyph (matches cursor outline) -->
+  <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" stroke="#ffffff" stroke-width="1.8" fill="none"/>
+</svg>

@@ -1,5 +1,9 @@
 var plasma = getApiVersion(1)
 
+// Enforce the Saturn Plasma Style (documented scripting global property);
+// belt-and-braces alongside plasmarc written by contents/defaults
+theme = 'Saturn-dark'
+
 // Center Krunner on screen - requires relogin
 const krunner = ConfigFile('krunnerrc')
 krunner.group = 'General'

@@ -1,0 +1,10 @@
+[General]
+ButtonHeight=18
+ButtonWidth=18
+BorderSize=None
+DisabledButtonOpacity=60
+TitleAlignment=Left
+TitleEdgeTopMargin=5
+TitleEdgeBottomMargin=5
+TitleEdgeLeftMargin=12
+TitleEdgeRightMargin=12

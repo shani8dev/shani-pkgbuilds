@@ -1,3 +1,6 @@
+[Appearance]
+BlurBehind=true
+
 [Cursor Options]
 CursorShape=2
 CustomCursorColor=255,127,80
