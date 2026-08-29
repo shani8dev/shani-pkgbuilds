@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Tools for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools"
 depends=(
     sudo
     which
@@ -25,5 +26,5 @@ depends=(
     bc
     bsd-games
 )
-license=('GPL')
+license=('GPL-3.0-only')
 

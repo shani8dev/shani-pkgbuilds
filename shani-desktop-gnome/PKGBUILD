@@ -1,10 +1,11 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gnome
 pkgver=1.2
-pkgrel=25
+pkgrel=26
 pkgdesc="GNOME desktop environment for Shani OS"
 arch=('any')
-license=('GPL')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gnome"
+license=('GPL-3.0-only')
 depends=(
 	gdm
 	mutter

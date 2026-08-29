@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-printer
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Printer support tools and drivers for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-printer"
 depends=(
     # Core printing stack
     cups
@@ -30,6 +31,6 @@ depends=(
     brlaser
     cnijfilter2
 )
-license=('GPL')
+license=('GPL-3.0-only')
 install="$pkgname.install"
 

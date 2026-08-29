@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-video"
 depends=(
     mesa
     vulkan-mesa-layers
@@ -25,4 +26,4 @@ depends=(
     nvidia-utils
     nvidia-open
 )
-license=('GPL')
+license=('GPL-3.0-only')

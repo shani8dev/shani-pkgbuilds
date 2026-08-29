@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
 pkgver=1.2
-pkgrel=6
+pkgrel=7
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-storage"
 depends=(
 	lvm2
 	dmraid
@@ -33,5 +34,5 @@ depends=(
 	ndctl
 	quota-tools
 )
-license=('GPL')
+license=('GPL-3.0-only')
 

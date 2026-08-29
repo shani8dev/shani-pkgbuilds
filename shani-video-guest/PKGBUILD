@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video-guest
 pkgver=1.2
-pkgrel=3
+pkgrel=4
 pkgdesc="Video Guest drivers and related packages for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-video-guest"
 depends=(
     spice-vdagent
     qemu-guest-agent
@@ -14,7 +15,7 @@ depends=(
 optdepends=(
     'xf86-input-vmmouse: VMware mouse'
 )
-license=('GPL')
+license=('GPL-3.0-only')
 source=('shani-video-guest.target')
 sha256sums=('SKIP')
 install="$pkgname.install"

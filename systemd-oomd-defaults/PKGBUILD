@@ -7,7 +7,7 @@ pkgrel=2
 pkgdesc="Configuration files for systemd-oomd"
 url="https://src.fedoraproject.org/rpms/systemd"
 arch=('any')
-license=('LGPL2.1')
+license=('LGPL-2.1-or-later')
 depends=('systemd')
 source=("https://src.fedoraproject.org/rpms/systemd/raw/${_commit}/f/10-oomd-defaults.conf"
         "https://src.fedoraproject.org/rpms/systemd/raw/${_commit}/f/10-oomd-per-slice-defaults.conf")

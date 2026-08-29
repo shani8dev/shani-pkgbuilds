@@ -34,17 +34,27 @@ if [[ "${1:-}" == "__extract" ]]; then
     pkgbuild="$2"
     # shellcheck disable=SC1090
     source "$pkgbuild"
+    # makepkg accepts any one of these checksum-array algorithms per
+    # source= — a PKGBUILD only ever defines the one(s) it actually uses.
+    # This used to hardcode sha256sums only, silently skipping every
+    # package that uses b2sums/sha512sums/sha1sums/md5sums instead —
+    # confirmed live: game-devices-udev's SKIP'd b2sums (a real,
+    # already-documented issue — see "game-devices-udev lost GPG tag
+    # verification" below) was never even inspected by this script before.
     for suffix in "" _x86_64 _i686 _aarch64; do
         src_var="source${suffix}"
-        sum_var="sha256sums${suffix}"
         [[ -v "$src_var" ]] || continue
-        [[ -v "$sum_var" ]] || continue
         declare -n _srcs="$src_var"
-        declare -n _sums="$sum_var"
-        for i in "${!_srcs[@]}"; do
-            printf '%s\x1e%s\n' "${_srcs[$i]}" "${_sums[$i]:-MISSING}"
+        for algo in cksums md5sums sha1sums sha224sums sha256sums sha384sums sha512sums b2sums; do
+            sum_var="${algo}${suffix}"
+            [[ -v "$sum_var" ]] || continue
+            declare -n _sums="$sum_var"
+            for i in "${!_srcs[@]}"; do
+                printf '%s\x1e%s\n' "${_srcs[$i]}" "${_sums[$i]:-MISSING}"
+            done
+            unset -n _sums
         done
-        unset -n _srcs _sums
+        unset -n _srcs
     done
     exit 0
 fi
@@ -75,9 +85,20 @@ fi
 # its content is already immutably pinned some other way.
 is_pinned_source() {
     local url="$1"
-    # VCS source (git+/svn+/hg+/bzr+) — the #commit=/#tag= fragment is the
-    # integrity anchor.
-    [[ "$url" =~ ^(git|svn|hg|bzr)\+ ]] && return 0
+    # git+ is only truly pinned when the fragment names an immutable
+    # 40-hex-char commit SHA — a #tag=<ref> (or a bare git+ URL with no
+    # fragment at all) can move: upstream can force-move a tag to a
+    # different commit without the PKGBUILD ever changing, so SKIP isn't
+    # safe there. Confirmed two real false negatives this caught:
+    # game-devices-udev and os-installer both use `#tag=$pkgver` with SKIP.
+    if [[ "$url" =~ ^git\+ ]]; then
+        [[ "$url" =~ \#commit=[0-9a-fA-F]{40}([^0-9a-fA-F]|$) ]] && return 0
+        return 1
+    fi
+    # svn+/hg+/bzr+ — no known mutable-ref case in this repo (none are
+    # currently used here); keep the previous blanket-pinned behavior for
+    # these rather than guess at each VCS's own immutable-ref syntax.
+    [[ "$url" =~ ^(svn|hg|bzr)\+ ]] && return 0
     # No URL scheme at all — a bare filename shipped in the package's own
     # directory. There's no network fetch to protect against; its integrity
     # is exactly this git repo's integrity, same as the PKGBUILD itself.

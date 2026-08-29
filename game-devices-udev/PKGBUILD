@@ -2,7 +2,7 @@
 
 pkgname=game-devices-udev
 pkgver=1.0
-pkgrel=0.1
+pkgrel=1
 pkgdesc="Udev rules for controllers"
 url='https://codeberg.org/fabiscafe/game-devices-udev'
 arch=('any')
@@ -14,8 +14,27 @@ makedepends=(
 )
 provides=('nintendo-udev')
 install="install"
-source=("git+${url}.git#tag=$pkgver"
+# Pinned to the commit tag 1.0 actually points at (resolved via
+# `git ls-remote --tags` — the annotated tag object dereferences to this
+# commit), not the tag itself: a tag can be force-moved upstream without
+# this PKGBUILD ever changing, which check-skip-checksums.sh correctly
+# flags for a bare `#tag=` git+ source. `?signed` restores real GPG
+# verification on top of that same immutable commit pin — makepkg verifies
+# a signed *commit* (not just a signed tag) the same way, confirmed live
+# with `makepkg --nobuild --nodeps` after importing the key below: "Passed
+# (WARNING: the key has expired.)". The key is genuinely expired (verified
+# separately via `git verify-commit`/`git verify-tag` against the real
+# upstream repo — both return "Good signature ... [expired]", not a forged
+# or wrong key), which is almost certainly why this has toggled between a
+# signed tag and an unverified SKIP form across many prior commits — but
+# makepkg treats an expired key as a warning, not a hard failure, so real
+# verification is still strictly better than none. If a future rebuild
+# starts hard-failing here, it means upstream rotated to a new key with
+# nothing in `validpgpkeys` yet, not that this pin is stale.
+_commit='aaaf684043b33a330630335a3782b02ecf87a52e'
+source=("git+${url}.git?signed#commit=$_commit"
         "uinput.conf")
+validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229') # Fabian Bornschein <fabiscafe@mailbox.org>
 b2sums=('SKIP'
         'SKIP')
 

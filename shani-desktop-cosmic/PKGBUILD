@@ -1,10 +1,11 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
-license=('GPL')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-cosmic"
+license=('GPL-3.0-only')
 depends=(
 	cosmic-icon-theme
 	cosmic-app-library

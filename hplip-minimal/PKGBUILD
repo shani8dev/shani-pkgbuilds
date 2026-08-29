@@ -2,7 +2,7 @@
 
 pkgname='hplip-minimal'
 pkgver=3.25.6
-pkgrel=1
+pkgrel=2
 pkgdesc='Only printer drivers from HPLIP with proprietary binary plugin'
 arch=('x86_64')
 url='https://developers.hp.com/hp-linux-imaging-and-printing/'
@@ -15,16 +15,27 @@ backup=('etc/hp/hplip.conf' 'var/lib/hp/hplip.state')
 optdepends=('cups: for printing support')
 source=(https://downloads.sourceforge.net/hplip/hplip-$pkgver.tar.gz
 		    hplip-pserror-c99.patch
-        hplip-missing-drivers.patch)    
-sha256sums=('SKIP'
+        hplip-missing-drivers.patch)
+sha256sums=('a6af314a7af0572f2ab6967b2fe68760e64d74628ef0e6237f8504d81047edbe'
 			      'SKIP'
             'SKIP')
 options=(!makeflags)
 
+# The proprietary HP plugin is not distributable and has no PKGBUILD
+# source= entry makepkg can checksum for us (its URL requires a spoofed
+# User-Agent to avoid a 403), so it's downloaded and verified by hand here
+# against a hash pinned at packaging time. Never remove this check or run
+# the installer before it passes.
+_plugin_sha256='0cd770036532a2d706c0f449ee1e3ef9b4de7b6cea5aaf2e76fe2da3f97f6ffc'
+
 prepare() {
   curl -A "Mozilla/0.0 (Linux x86_64) Chromium/0.0.0.0" -O https://developers.hp.com/sites/default/files/2025-08/hplip-$pkgver-plugin.run
+
+  echo "${_plugin_sha256}  hplip-$pkgver-plugin.run" | sha256sum -c -
+  chmod +x "hplip-$pkgver-plugin.run"
+
   sh "hplip-$pkgver-plugin.run" --target "$srcdir/hplip-$pkgver" --noexec
-  
+
   cd "hplip-$pkgver"
   patch -Np1 -i ../hplip-pserror-c99.patch
   patch -Np1 -i ../hplip-missing-drivers.patch

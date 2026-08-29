@@ -2,12 +2,13 @@
 
 pkgname=os-installer-config
 pkgver=0.0.1
-pkgrel=87
-_commit='a76296a84183e0efdd6a2dedb3cded1d72da6693'  # Replace with the specific commit hash
+pkgrel=89
+_commit='1ff9907584b14927ecf7b7c9eb76459c662c3d76'  # Replace with the specific commit hash
 pkgdesc="Default Shani OS configuration files for the os-installer"
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
-arch=('x86_64')
-license=('BSD')
+arch=('any')
+license=('BSD-3-Clause')
+depends=('bash' 'python' 'python-yaml')
 
 # Using a specific commit from GitHub as the source
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")

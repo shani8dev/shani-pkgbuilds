@@ -2,15 +2,15 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=40
+pkgrel=41
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
-license=('GPL')
+license=('GPL-3.0-only')
 pkgdesc="Shani OS settings"
 
-_commit='e4a60077d4be5c9d91689e6224ec92e6f45aa79d'
+_commit='b31787bf101008772a6e92309845a72246b314cd'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
-sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum after running updpkgsums
+sha256sums=('SKIP')
 
 depends=(
   'btrfsmaintenance'
@@ -19,7 +19,6 @@ depends=(
   'ananicy-cpp'
   'gamemode'
   'irqbalance'
-  'haveged'
   'plymouth'
   'bash-completion'
   'fish'
@@ -63,4 +62,3 @@ package() {
   chmod 1770 "$pkgdir/var/lib/samba/usershare"
 
 }
-

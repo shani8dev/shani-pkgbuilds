@@ -1,6 +1,6 @@
-# Shani OS – Custom Package Repository
+# Shanios – Custom Package Repository
 
-This repository contains custom and patched PKGBUILDs used to build packages for [Shani OS](https://github.com/shaniOS), an Arch-based Linux distribution.
+This repository contains custom and patched PKGBUILDs used to build packages for [Shanios](https://github.com/shani8dev), an Arch-based Linux distribution.
 
 All builds run inside a reproducible Docker container (`shrinivasvkumbhar/shani-builder`) so your host system is never polluted with build dependencies.
 
@@ -49,27 +49,13 @@ Built `.pkg.tar.zst` files appear inside the package subdirectory (bind-mounted 
 ./make_pkg.sh shani-core shani-tools shani-fonts
 ```
 
-### 3 – Sync the pacman DB first, then build
-
-Use `--sync` whenever you want to refresh the container's package database before building (recommended after a long gap or when upstream packages have changed).
-
-```bash
-./make_pkg.sh --sync shani-core
-```
-
-### 4 – Build everything
+### 3 – Build everything
 
 ```bash
 ./make_pkg.sh --all
 ```
 
-Combine with `--sync` to refresh the DB once before the full build:
-
-```bash
-./make_pkg.sh --sync --all
-```
-
-### 5 – Update checksums and build
+### 4 – Update checksums and build
 
 Use `--updpkgsums` to run `updpkgsums` inside the container before `makepkg`. Useful after bumping a version or modifying sources.
 
@@ -77,16 +63,11 @@ Use `--updpkgsums` to run `updpkgsums` inside the container before `makepkg`. Us
 # Update checksums, then build
 ./make_pkg.sh --updpkgsums shani-core
 
-# Sync DB + update checksums + build
-./make_pkg.sh --sync --updpkgsums shani-core
-
 # Update checksums for every package, then build all
 ./make_pkg.sh --updpkgsums --all
 ```
 
 The updated `PKGBUILD` is written back to your host immediately via the bind mount.
-
----
 
 ---
 
@@ -99,7 +80,7 @@ The updated `PKGBUILD` is written back to your host immediately via the bind mou
 ./run_in_container.sh bash
 
 # Run makepkg manually in a specific package dir
-./run_in_container.sh bash -c "cd /home/builduser/build/filesystem && makepkg -s"
+./run_in_container.sh bash -c "cd /build/filesystem && makepkg -s"
 
 # Inspect the container environment
 ./run_in_container.sh env
@@ -148,51 +129,7 @@ Both directories are created automatically on first run.
 
 ## Package List
 
-| Package | Description |
-|---|---|
-| `args` | Simple header-only C++ argument parser library |
-| `brlaser` | Brother laser printer driver |
-| `cnijfilter2` | Canon inkjet printer driver |
-| `cpr` | C++ Requests HTTP library (Curl for People) |
-| `desktop-entry-hider` | Hide desktop entries via config |
-| `filesystem` | Shani OS base filesystem & branding |
-| `foo2zjs-nightly` | foo2zjs printer driver (nightly) |
-| `game-devices-udev` | udev rules for game controllers |
-| `gnome-shell-extension-gsconnect` | GSConnect GNOME extension |
-| `hplip-minimal` | HP printing/scanning support (minimal) |
-| `lsb-release` | LSB release identification |
-| `os-installer` | OS installer frontend |
-| `os-installer-config` | Shani OS installer configuration |
-| `os-installer-git` | OS installer (git version) |
-| `plasma6-applets-window-title` | KDE Plasma window title applet |
-| `plasma-setup-git` | Shani KDE Plasma setup |
-| `shani-accessibility` | Accessibility packages meta |
-| `shani-bluetooth` | Bluetooth support meta |
-| `shani-core` | Core system meta-package |
-| `shani-deploy` | Deployment tooling |
-| `shani-desktop-cosmic` | COSMIC desktop meta |
-| `shani-desktop-gnome` | GNOME desktop meta |
-| `shani-desktop-plasma` | KDE Plasma desktop meta |
-| `shani-fonts` | Font collection (Noto, emoji, Indian) |
-| `shani-keyring` | Shani OS signing keyring |
-| `shani-multimedia` | Multimedia codecs meta |
-| `shani-network` | Network tools meta |
-| `shani-peripherals` | Peripheral support meta |
-| `shani-printer` | Printer support meta |
-| `shani-scanner` | Scanner support meta |
-| `shani-settings` | System settings meta |
-| `shani-storage` | Storage tools meta |
-| `shani-tools` | Core tools meta |
-| `shani-tools-extra` | Extra tools meta |
-| `shani-tools-network` | Network tools meta |
-| `shani-video` | Video drivers meta |
-| `shani-video-guest` | VM guest video drivers meta |
-| `shim-signed` | Signed UEFI shim for Secure Boot |
-| `snapd` | Snap package daemon |
-| `splix` | CUPS drivers for Samsung/Xerox (SPL) printers |
-| `systemd-oomd-defaults` | systemd-oomd default config |
-| `waydroid-helper` | Waydroid setup helper |
-| `zsync2` | Differential update tooling (.zsync control files) |
+PKGBUILDs and accompanying files live at the repository root, each in their own directory (e.g., `shani-core/`, `shani-tools/`, `filesystem/`). Each directory contains a `PKGBUILD` and any associated patches or install scripts.
 
 ---
 
@@ -205,5 +142,30 @@ Add your user to the docker group: `sudo usermod -aG docker $USER`, then log out
 The container uses `CUSTOM_MIRROR` for Arch packages. If the mirror is unreachable, edit `CUSTOM_MIRROR` in `run_in_container.sh`.
 
 **Build fails with missing dependencies**
-Run with `--sync` to refresh the package database: `./make_pkg.sh --sync <pkg>`.
+The script automatically syncs the pacman database before the first build. If dependencies are still missing, ensure the package directory exists and contains a `PKGBUILD`.
 
+---
+
+## Adding a New Package
+
+1. Create a directory named after the package: `mkdir my-package/`
+2. Write the `PKGBUILD` following the conventions of neighbouring packages:
+   - `arch=('x86_64')`
+   - Pin sources by commit/tag, not a moving branch
+   - Prefer `source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")` style renaming so cached sources stay unique
+3. If the package ships services/groups, add a `$pkgname.install` with
+   idempotent `post_install`/`post_upgrade` hooks (guard `groupadd` with
+   `getent`, guard `systemctl enable` — systemd makes re-enabling safe)
+4. Generate checksums inside the container:
+
+   ```bash
+   ./make_pkg.sh --updpkgsums my-package
+   ```
+5. Build it: `./make_pkg.sh my-package` — the container produces the `.pkg.tar.zst` and publishes via `pkg-builder.sh` if credentials are configured
+6. For metapackages that other profiles depend on, update the relevant `image_profiles/*/package-list.txt` in shani-install-media **in the same change**
+
+### Review expectations
+
+- No network access at package time beyond declared `source=`/`makedepends`
+- `SKIP` checksums are accepted only for `-git`/`-nightly` packages where upstream has no stable tarballs; everything else pins real sums
+- Install scripts must be idempotent and must not fail on upgrade paths (test `pacman -U` over an installed previous version)

@@ -1,9 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
-
 pkgname=plasma-setup-git
 _pkgname=plasma-setup
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Initial setup wizard for KDE Plasma (git version, pinned commit)"
 arch=('x86_64')
 url="https://invent.kde.org/plasma/plasma-setup"
@@ -65,4 +64,3 @@ package() {
 }
 
 # vim: ts=2 sw=2 et:
-

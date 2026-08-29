@@ -10,7 +10,7 @@ pkgrel=2
 pkgdesc="LSB version query program"
 arch=('any')
 url="https://refspecs.linuxfoundation.org/lsb.shtml"
-license=('GPL')
+license=('GPL-2.0-or-later')
 depends=('sh')
 makedepends=('git')
 source=("git+https://github.com/LinuxStandardBase/lsb-samples.git#commit=$_commit"

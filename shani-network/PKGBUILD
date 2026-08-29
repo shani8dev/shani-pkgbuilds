@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-network
 pkgver=1.2
-pkgrel=10
+pkgrel=11
 pkgdesc="Network related packages for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-network"
 depends=(
     networkmanager
     networkmanager-l2tp
@@ -33,5 +34,5 @@ depends=(
     modem-manager-gui
     firewall-config
 )
-license=('GPL')
+license=('GPL-3.0-only')
 install="$pkgname.install"

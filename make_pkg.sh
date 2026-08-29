@@ -93,7 +93,13 @@ for pkg in "${PACKAGES[@]}"; do
 
     # The container mounts SCRIPT_DIR as /build,
     # so the package subdir is at /build/<pkg_name>
-    BUILD_CMD="${SYNC_CMD}cd /build/${pkg_name} && makepkg -s --noconfirm --noprogressbar"
+    # printf %q shell-quotes pkg_name before it's embedded in a string that
+    # itself becomes a `bash -c` argument — pkg_name comes from a directory
+    # name a caller passes on the command line (or, for --all, from `find`),
+    # so an unquoted interpolation here is a real command-injection shape
+    # (e.g. `./make_pkg.sh 'foo; rm -rf /'`) and silently breaks on an
+    # ordinary directory name containing a space.
+    BUILD_CMD="${SYNC_CMD}cd /build/$(printf '%q' "$pkg_name") && makepkg -s --noconfirm --noprogressbar"
 
     if "$RUNNER" bash -c "$BUILD_CMD"; then
         BUILT+=("${pkg_name}")

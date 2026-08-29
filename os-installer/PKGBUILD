@@ -1,13 +1,19 @@
 # Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
 pkgname=os-installer
 pkgver=0.5.1
-pkgrel=2
+pkgrel=3
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
-source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#tag=$pkgver")
-sha256sums=('SKIP')
+# Pinned to the commit tag 0.5.1 actually points at (resolved via
+# `git ls-remote --tags` — the annotated tag object dereferences to this
+# commit), not the tag itself: a tag can be force-moved upstream without
+# this PKGBUILD ever changing. check-skip-checksums.sh now correctly
+# flags a bare `#tag=` git+ source with SKIP as unverified — see AGENTS.md.
+_commit='fc558178e79e4abd0408b296dc5e66b1ff3fdbdf'
+source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#commit=$_commit")
+sha256sums=("SKIP")
 arch=('x86_64')
-license=('GPL3')
+license=('GPL-3.0-or-later')
 makedepends=('meson' 'appstream-glib' 'blueprint-compiler')
 depends=('gnome-desktop-4' 'gtk4' 'libadwaita' 'libgweather-4' 'python-yaml' 'udisks2' 'vte4' 'python-gobject')
 optdepends=('epiphany: online assistance'
@@ -27,4 +33,3 @@ package() {
 	cd $srcdir/$pkgname
 	meson install -C build --destdir $pkgdir
 }
-

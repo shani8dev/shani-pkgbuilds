@@ -1,7 +1,7 @@
 pkgbase = plasma-setup-git
-	pkgdesc = Initial setup wizard for KDE Plasma (git version)
-	pkgver = r310.072a568
-	pkgrel = 1
+	pkgdesc = Initial setup wizard for KDE Plasma (git version, pinned commit)
+	pkgver = 0.1.0
+	pkgrel = 2
 	url = https://invent.kde.org/plasma/plasma-setup
 	arch = x86_64
 	license = BSD-2-Clause
@@ -26,7 +26,7 @@ pkgbase = plasma-setup-git
 	depends = plasma-desktop
 	provides = plasma-setup
 	conflicts = plasma-setup
-	source = plasma-setup::git+https://invent.kde.org/plasma/plasma-setup.git
-	md5sums = SKIP
+	source = plasma-setup::git+https://invent.kde.org/plasma/plasma-setup.git#commit=3cbe755150d3b9aaab72649c1ccbf74686064e95
+	sha256sums = SKIP
 
 pkgname = plasma-setup-git

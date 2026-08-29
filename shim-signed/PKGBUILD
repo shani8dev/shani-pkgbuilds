@@ -9,8 +9,8 @@ arch=('any')
 license=('BSD-2-Clause')
 options=('!strip' '!debug')
 install="${pkgname}.install"
-source=("http://archive.ubuntu.com/ubuntu/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_amd64.deb"
-        "http://ports.ubuntu.com/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_arm64.deb")
+source=("https://archive.ubuntu.com/ubuntu/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_amd64.deb"
+        "https://ports.ubuntu.com/pool/main/s/shim-signed/shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_arm64.deb")
 noextract=("shim-signed_${pkgver##*+ubuntu+}+${pkgver%%+ubuntu*}-0ubuntu1_arm64.deb")
 sha256sums=('ba9b5d80e5d886c30664f2bebfb5c2fcce3b9b40f16fc46cba49c19a91c8059c'
             '58b0f8a0f43bdff2122af8f52b05a5eb73b1964079e36e3eed8d06b4d5164917')

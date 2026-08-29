@@ -1,14 +1,17 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=desktop-entry-hider
 pkgver=0.0.1
-pkgrel=4
+pkgrel=6
 pkgdesc="Hide unwanted desktop entry files (.desktop)"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/desktop-entry-hider"
 license=('MIT')  # Adjust as needed
 source=(
     "desktop-entry-hider"
     "desktop-entry-hider.hook"
 )
-sha256sums=('SKIP' 'SKIP')
+sha256sums=("SKIP"
+            "SKIP")
 
 package() {
     install -d "$pkgdir/usr/bin/"
@@ -21,4 +24,3 @@ package() {
     # Copy the local configs directory from the PKGBUILD directory ($startdir)
     cp -r "$startdir/configs" "$pkgdir/etc/desktop-entry-hider/"
 }
-

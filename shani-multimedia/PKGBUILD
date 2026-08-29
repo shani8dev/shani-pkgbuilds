@@ -1,9 +1,10 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-multimedia
 pkgver=1.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Multimedia related packages for Shani OS"
 arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-multimedia"
 depends=(
 	pipewire
 	pipewire-alsa
@@ -28,6 +29,6 @@ depends=(
 	wireplumber
 	rtkit
 )
-license=('GPL')
+license=('GPL-3.0-only')
 install="$pkgname.install"
 
