@@ -105,19 +105,32 @@ computed correctly gives false confidence.
   `os-installer`'s pinned source was confirmed to actually clone at that
   commit (full build skipped — its GTK4/libadwaita/vte4 deps are unrelated
   to this fix and not worth installing just to prove a git checkout works).
-- **foo2zjs-nightly HTTP firmware — FIXED.** `foo2zjs-nightly/PKGBUILD` had
-  26 firmware URLs plus its own `url=` field on plain `http://`, even
-  though the PKGBUILD's own `pkgver()` function already used `https://` for
-  the same host. Verified HTTPS is actually served before changing anything
-  (`curl -sI https://foo2zjs.linkevich.net/...` on 6 different paths, all
-  200) and that content is identical to the HTTP version, not just that the
-  scheme resolves: downloaded one firmware file over HTTPS and its sha256
-  matched the PKGBUILD's already-recorded checksum exactly
-  (`f2fffb9adb0d3a9be617fb760ee2ad416cf5a0473f8a7637a591355ef50cf029` for
-  `foo2hiperc/icm/okic301.tar.gz`) — so the existing checksums needed no
-  changes. All 26 firmware URLs + `url=` switched to `https://`, `pkgrel`
-  bumped, `.SRCINFO` regenerated and diffed to confirm it changed only the
-  scheme (nothing else).
+- **foo2zjs-nightly firmware URL scheme — flipped twice; `http://` is the
+  actually-correct state, verified by really running the drift check, not
+  just by checking a scheme resolves.** An earlier pass switched all 26
+  `_firmware` URLs (plus `url=`) from `http://` to `https://`, reasoning
+  that HTTPS resolved and served byte-identical content to the existing
+  checksums — true, but **not what actually matters here**: `prepare()`'s
+  drift check doesn't care what scheme resolves, it diffs the hardcoded
+  `_firmware` array text against a live `./listweb all` scrape (the exact
+  same tool CI runs), and `listweb` — generated from upstream's own
+  `getweb.in` template — emits `http://`, not `https://`. Switching to
+  `https://` made every real CI build fail `prepare()` with "A failure
+  occurred in prepare()", which is the failure that led to this
+  correction. Confirmed by actually running `prepare()` for real inside
+  the builder container against the live site both before and after:
+  with `https://` it printed a fresh `_firmware=(...)` block (all
+  `http://`, identical paths/order, scheme-only diff) and exited 1; after
+  reverting all 26 URLs to `http://`, the identical real run completed
+  with "Sources are ready" and no drift-check failure. Content is
+  byte-identical either way (confirmed via sha256 on both schemes for
+  `foo2hiperc/icm/okic301.tar.gz`), so existing checksums and `pkgrel`
+  needed no changes — `.SRCINFO` regenerated via a real
+  `makepkg --printsrcinfo` run and diffed to confirm the scheme was the
+  only change. **Lesson for next time:** when a PKGBUILD has a live
+  drift/consistency check like this one, verify a URL-scheme change
+  against what the check itself compares against, not just against
+  "does this URL work" — the two can disagree.
 - **`pkg_name` interpolation — FIXED.** `make_pkg.sh:96` built
   `BUILD_CMD="...cd /build/${pkg_name} && makepkg ..."` with `pkg_name`
   (a caller-supplied CLI argument, or a `find`-derived name for `--all`)
@@ -142,6 +155,32 @@ computed correctly gives false confidence.
 - **os-installer-git missing `git` makedepends — FIXED.** `makedepends` now includes `git`, matching the `git+` `source=`.
 - **Non-SPDX `license=()` identifiers across 27 PKGBUILDs — FIXED.** Was: `namcap` flags this at ERROR level (confirmed on `os-installer-config`: "E: BSD is not a valid SPDX license identifier"). Each of the 27 was researched individually (not blanket-substituted) to find the package's *actual* license, not just reformat the legacy shorthand: `os-installer-config` → `BSD-3-Clause` (verified — this repo's own local `LICENSE` file is BSD-3-Clause, contradicting the PKGBUILD's bare `'BSD'`); `lsb-release` → `GPL-2.0-or-later` (Arch's own official `extra` package DB already uses this exact identifier for the same package); `plasma6-applets-window-title` → `GPL-2.0-only` (upstream's real LICENSE file is plain GPLv2 with no explicit "-or-later" declaration found anywhere); `systemd-oomd-defaults` → `LGPL-2.1-or-later` (systemd's own README states this exact identifier for all its code); `os-installer`/`os-installer-git` → `GPL-3.0-or-later` (GNOME upstream's `meson.build` explicitly declares `license: 'GPL-3.0-or-later'`); `snapd` → `GPL-3.0-only` (confirmed via an actual per-file copyright header in snapd's own source — "under the terms of the GNU General Public License version 3", no "or later" clause — not just the ambiguous generic COPYING boilerplate, which contains that phrase regardless of the project's real choice); `shani-deploy` and the 19 `shani-*` meta-packages → `GPL-3.0-only` (first-party, matches this repo's own top-level `LICENSE` and no explicit "-or-later" declaration exists anywhere in the ecosystem). `.SRCINFO` regenerated for the 3 affected packages that track one (`lsb-release`, `plasma6-applets-window-title`, `snapd` — diffed against the pre-change file each time to confirm the license line was the *only* change) via a real `makepkg --printsrcinfo` run in the builder container.
 - **game-devices-udev lost GPG tag verification — FIXED, non-obviously.** Was: `source=("git+${url}.git#tag=$pkgver" ...)` had been changed to `#commit=<40-hex-sha>` in an earlier fix for a *different* real problem (a `#tag=` reference can be force-moved upstream without this PKGBUILD ever changing — `check-skip-checksums.sh` correctly flags this), but that fix accidentally dropped `validpgpkeys` and the `?signed` URL suffix entirely, leaving zero cryptographic verification. The two fixes looked mutually exclusive (makepkg's git-source PGP verification is normally tied to `#tag=`, not `#commit=`) — but verified live, `?signed` **does** work with a `#commit=<sha>` fragment too: `source=("git+${url}.git?signed#commit=$_commit" ...)` plus `validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229')` gets both properties at once (immutable commit pin *and* real GPG verification), confirmed via an actual `makepkg --nobuild --nodeps` run in the builder container: "Verifying source file signatures with gpg... game-devices-udev git repo ... Passed (WARNING: the key has expired.)". The key genuinely is expired (`git verify-tag`/`git verify-commit` against the real upstream repo both return "Good signature ... [expired]", not a wrong/forged key — almost certainly why this toggled back and forth across many prior commits) — but makepkg treats an expired key as a warning, not a hard failure, so this is still strictly better than the unverified SKIP state it replaces. Also ran a full real `makepkg -f --nodeps` (not just `--nobuild`) to confirm the package actually still builds end-to-end with this source form; re-ran `check-skip-checksums.sh --all` afterward to confirm nothing else regressed.
+
+- **shani-desktop-cosmic depended on a nonexistent package — FIXED.**
+  `shani-desktop-cosmic/PKGBUILD`'s `depends=()` listed `gvfs-google`,
+  which is not a real Arch package (confirmed via `pacman -Ss "^gvfs"`
+  inside the actual builder image — the real list is `gvfs`,
+  `gvfs-afc`, `gvfs-dnssd`, `gvfs-goa`, `gvfs-gphoto2`, `gvfs-mtp`,
+  `gvfs-nfs`, `gvfs-onedrive`, `gvfs-smb`, `gvfs-wsdd`, no `-google`
+  variant), causing every CI build to fail with "target not found:
+  gvfs-google". Confirmed it was a stray erroneous entry, not an
+  intentional third-party AUR dependency the packager forgot to declare
+  as such, by diffing against the otherwise-identical
+  `shani-desktop-gnome/PKGBUILD` dependency list, which has every other
+  `gvfs-*` entry but not this one. Removed; `pkgrel` left unchanged since
+  no artifact was ever actually published at that `pkgrel` (the build had
+  always failed).
+- **game-devices-udev "unknown public key" CI failure — root cause was in
+  `shani-builder`, not here; this PKGBUILD was already correct.** Worth
+  cross-referencing so a future pass doesn't re-diagnose this file: the
+  `validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229')` entry
+  documented in the "game-devices-udev lost GPG tag verification" fix
+  above is genuinely correct (its trailing 16 hex chars match the CI
+  error's "unknown public key D6A4F386B4881229" exactly) — the actual gap
+  was that nothing in `shani-builder/pkg-builder.sh` ever imported a
+  PKGBUILD's `validpgpkeys` into the build container's keyring before
+  `makepkg` ran. Fixed there, generally, not by touching this PKGBUILD —
+  see `shani-builder/AUDIT-HISTORY.md`.
 
 **Still open (don't re-verify these as if they were new — they're already confirmed, just not yet fixed):**
 
