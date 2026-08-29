@@ -32,31 +32,31 @@ _patches=(
 )
 
 _firmware=(
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic301.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic310.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic3200.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic3400.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic511.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic5600.tar.gz
-        https://foo2zjs.linkevich.net/foo2hiperc/icm/okic810.tar.gz
-        https://foo2zjs.linkevich.net/foo2hp/icm/hp1215.tar.gz
-        https://foo2zjs.linkevich.net/foo2hp/icm/hpclj2500.tar.gz
-        https://foo2zjs.linkevich.net/foo2hp/icm/hpclj2600n.tar.gz
-        https://foo2zjs.linkevich.net/foo2lava/icm/km-1600.tar.gz
-        https://foo2zjs.linkevich.net/foo2lava/icm/km2530.tar.gz
-        https://foo2zjs.linkevich.net/foo2qpdl/icm/samclp300.tar.gz
-        https://foo2zjs.linkevich.net/foo2qpdl/icm/samclp315.tar.gz
-        https://foo2zjs.linkevich.net/foo2slx/icm/lexc500.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1000.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1005.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1018.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1020.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1005.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1006.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1505.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/icm/dl2300.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/icm/hp-cp1025.tar.gz
-        https://foo2zjs.linkevich.net/foo2zjs/icm/km2430.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic301.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic310.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic3200.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic3400.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic511.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic5600.tar.gz
+        http://foo2zjs.linkevich.net/foo2hiperc/icm/okic810.tar.gz
+        http://foo2zjs.linkevich.net/foo2hp/icm/hp1215.tar.gz
+        http://foo2zjs.linkevich.net/foo2hp/icm/hpclj2500.tar.gz
+        http://foo2zjs.linkevich.net/foo2hp/icm/hpclj2600n.tar.gz
+        http://foo2zjs.linkevich.net/foo2lava/icm/km-1600.tar.gz
+        http://foo2zjs.linkevich.net/foo2lava/icm/km2530.tar.gz
+        http://foo2zjs.linkevich.net/foo2qpdl/icm/samclp300.tar.gz
+        http://foo2zjs.linkevich.net/foo2qpdl/icm/samclp315.tar.gz
+        http://foo2zjs.linkevich.net/foo2slx/icm/lexc500.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1000.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1005.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1018.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihp1020.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1005.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1006.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/firmware/sihpP1505.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/icm/dl2300.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/icm/hp-cp1025.tar.gz
+        http://foo2zjs.linkevich.net/foo2zjs/icm/km2430.tar.gz
 )
 
 pkgver() {

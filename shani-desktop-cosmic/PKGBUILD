@@ -41,7 +41,6 @@ depends=(
 	gvfs-dnssd
 	gvfs-goa
 	gvfs-gphoto2
-	gvfs-google
 	gvfs-mtp
 	gvfs-nfs
 	gvfs-onedrive
