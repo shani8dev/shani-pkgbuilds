@@ -1,0 +1,28 @@
+pkgbase = shani-deploy
+	pkgdesc = Safe transactional deployment system for Shani OS
+	pkgver = 0.0.1
+	pkgrel = 68
+	url = https://github.com/shani8dev/shani-deploy
+	install = shani-deploy.install
+	arch = any
+	license = GPL-3.0-only
+	makedepends = git
+	depends = btrfs-progs
+	depends = zstd
+	depends = sbsigntools
+	depends = efitools
+	depends = dracut
+	depends = systemd
+	depends = jq
+	depends = zsync
+	depends = zsync2
+	depends = wget
+	depends = flatpak
+	depends = yad
+	depends = duperemove
+	depends = compsize
+	depends = bees
+	source = git+https://github.com/shani8dev/shani-deploy.git#commit=8a330e03aa69c4cd5e158812bce197daa274d662
+	sha256sums = SKIP
+
+pkgname = shani-deploy
