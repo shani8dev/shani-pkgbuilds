@@ -1,0 +1,60 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+#
+# shani-desktop-gnome depends on gnome-shell-extension-shani-circle-to-search
+# (its enabled-extensions gschema.override references the same UUID), but no
+# PKGBUILD existed anywhere to actually build/publish it - a fresh pacstrap
+# would fail exactly like the broadcom-wl incident. Only DEBIAN/ packaging
+# existed here; this converts it to a real Arch package, translating
+# dependency names (gir1.2-gtk-4.0 -> gtk4, libgtk4-layer-shell0 ->
+# gtk4-layer-shell, tesseract-ocr -> tesseract, python3-gi -> python-gobject).
+
+pkgname=gnome-shell-extension-shani-circle-to-search
+pkgver=1.0.13
+pkgrel=1
+pkgdesc="Circle to Search feature with OCR and Google Lens integration for Shanios (GNOME Shell extension)"
+arch=('any')
+url="https://github.com/Inled-Pulsar-OS/Shotzy"
+license=('GPL-3.0-only')
+depends=(
+    'gnome-shell'
+    'python'
+    'python-gobject'
+    'gtk4'
+    'gdk-pixbuf2'
+    'gtk4-layer-shell'
+    'tesseract'
+    'tesseract-data-eng'
+    'wl-clipboard'
+    'xdg-utils'
+)
+optdepends=(
+    'grim: alternate screenshot backend'
+    'gnome-screenshot: alternate screenshot backend'
+    'ydotool: trigger the overlay via a synthetic keypress instead of gnome-screenshot'
+)
+install="$pkgname.install"
+
+package() {
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/applications"
+    install -d "$pkgdir/usr/share/glib-2.0/schemas"
+    install -d "$pkgdir/usr/share/gnome-shell/extensions/shani-circle-to-search@inled.es"
+
+    install -Dm755 "$startdir/usr/bin/shani-circle-to-search" \
+        "$pkgdir/usr/bin/shani-circle-to-search"
+
+    install -Dm644 "$startdir/usr/share/applications/shani-circle-to-search.desktop" \
+        "$pkgdir/usr/share/applications/shani-circle-to-search.desktop"
+
+    install -Dm644 "$startdir/usr/share/glib-2.0/schemas/org.gnome.shell.extensions.shani-circle-to-search.gschema.xml" \
+        "$pkgdir/usr/share/glib-2.0/schemas/org.gnome.shell.extensions.shani-circle-to-search.gschema.xml"
+
+    # The source tree has an inconsistent extension.js permission (0660, no
+    # world-read - would be unreadable by gnome-shell running as a regular
+    # user once installed root:root); install explicitly instead of `cp -r`
+    # so every file gets a known-good 0644 regardless of the source perms.
+    for f in "$startdir"/usr/share/gnome-shell/extensions/shani-circle-to-search@inled.es/*; do
+        install -Dm644 "$f" \
+            "$pkgdir/usr/share/gnome-shell/extensions/shani-circle-to-search@inled.es/$(basename "$f")"
+    done
+}

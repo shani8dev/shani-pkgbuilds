@@ -28,6 +28,7 @@ depends=(
 	gnome-shell-extension-appindicator
 	gnome-shell-extension-caffeine
 	gnome-shell-extension-gsconnect
+	gnome-shell-extension-shani-circle-to-search
 	gnome-session
 	gnome-settings-daemon
 	gnome-user-share
