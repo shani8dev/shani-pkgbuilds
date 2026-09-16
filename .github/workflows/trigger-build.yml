@@ -1,0 +1,40 @@
+name: Trigger package rebuild
+#
+# shani-pkgbuilds has no build/publish automation of its own - packages
+# here only actually get built and published to repo.shani.dev by
+# shani-builder's "Build and Package" workflow (pkg/pkg-builder.sh),
+# which otherwise only runs on its own daily midnight-UTC cron. Without
+# this trigger, a PKGBUILD fix pushed here can sit live-but-unpublished
+# for up to 24h with no visible indication anything is wrong - this is
+# exactly what happened with the 2026-09-16 broadcom-wl fix, caught only
+# because it was manually re-verified the same day.
+#
+# Required repo secret (not provisioned by this workflow - must be added
+# manually in shani8dev/shani-pkgbuilds's repo settings):
+#   CROSS_REPO_PAT - a fine-grained PAT (or GitHub App token) with
+#                    actions:write on shani8dev/shani-builder. The default
+#                    GITHUB_TOKEN is scoped only to this repo and can't
+#                    trigger a workflow in a different one.
+# Until that secret exists, this step fails loudly (not silently) so the
+# gap stays visible instead of quietly doing nothing.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/PKGBUILD'
+      - '**/*.install'
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger shani-builder's Build and Package workflow
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+        run: |
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::CROSS_REPO_PAT is not set - see this file's header comment. A PKGBUILD just changed but nothing will rebuild it until the next daily cron (or a manual 'gh workflow run build.yaml --repo shani8dev/shani-builder')."
+            exit 1
+          fi
+          gh workflow run build.yaml --repo shani8dev/shani-builder
