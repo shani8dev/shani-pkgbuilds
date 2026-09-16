@@ -21,7 +21,7 @@ makedepends=('git')
 backup=()
 options=()
 install=$pkgname.install
-source=("git+file:///host/shani-backup#commit=399acef08386aa32b475e941c1e711885a137be2")
+source=("git+https://github.com/shani8dev/shani-backup.git#commit=399acef08386aa32b475e941c1e711885a137be2")
 sha256sums=('SKIP')
 
 package() {
