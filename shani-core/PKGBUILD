@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=16
+pkgrel=17
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -35,9 +35,6 @@ depends=(
     tpm2-tools
     tpm2-tss
     fwupd
-
-    # Wireless
-    broadcom-wl
 
     # Flatpak (@flatpak subvolume)
     flatpak
