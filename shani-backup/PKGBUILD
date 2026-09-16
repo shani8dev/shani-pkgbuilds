@@ -1,0 +1,59 @@
+# shani-backup PKGBUILD
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-backup
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="Backup utility for Shanios with Btrfs snapshots, restic, and rclone"
+arch=('x86_64')
+url="https://github.com/shani8dev/shani-backup"
+license=('GPL-3.0-only')
+depends=(
+    'btrfs-progs'
+    'restic'
+    'rclone'
+    'gtk4'
+    'libadwaita'
+    'python3'
+    'python-gobject'
+)
+makedepends=('git')
+backup=()
+options=()
+install=$pkgname.install
+source=("git+file:///host/shani-backup#commit=399acef08386aa32b475e941c1e711885a137be2")
+sha256sums=('SKIP')
+
+package() {
+    # Install the application source
+    install -d "$pkgdir/usr/share/$pkgname"
+    cp -r "$srcdir/$pkgname/src" "$pkgdir/usr/share/$pkgname/"
+    cp -r "$srcdir/$pkgname/data" "$pkgdir/usr/share/$pkgname/"
+
+    # The git checkout's file modes aren't guaranteed (this repo's working
+    # tree had world-writable 0666 files) - normalize to a known-safe 0644
+    # rather than installing whatever the source happened to have. A
+    # world-writable file under /usr/share would let any local user tamper
+    # with code every user of this app runs.
+    find "$pkgdir/usr/share/$pkgname" -type d -exec chmod 755 {} +
+    find "$pkgdir/usr/share/$pkgname" -type f -exec chmod 644 {} +
+
+    # Install the wrapper script
+    install -Dm755 /dev/stdin "$pkgdir/usr/bin/$pkgname" <<EOF
+#!/usr/bin/env python3
+import sys
+import os
+sys.path.insert(0, "/usr/share/$pkgname/src")
+from shani_backup.cli import main
+if __name__ == "__main__":
+    main()
+EOF
+
+    # Install the desktop entry
+    install -Dm644 "$srcdir/$pkgname/data/shani-backup.desktop" \
+        "$pkgdir/usr/share/applications/$pkgname.desktop"
+
+    # Install the GSettings schema
+    install -Dm644 "$srcdir/$pkgname/data/org.shani.backup.gschema.xml" \
+        "$pkgdir/usr/share/glib-2.0/schemas/org.shani.backup.gschema.xml"
+}
