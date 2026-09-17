@@ -1,0 +1,23 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'shani-keyring/PKGBUILD'
+      - 'scripts/check-keyring-sync.sh'
+      - 'tests/test-check-keyring-sync.sh'
+      - '.github/workflows/security.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'shani-keyring/PKGBUILD'
+      - 'scripts/check-keyring-sync.sh'
+      - 'tests/test-check-keyring-sync.sh'
+      - '.github/workflows/security.yml'
+
+jobs:
+  security:
+    uses: shani8dev/shani-ci-commons/.github/workflows/security.yml@main
+    with:
+      scan-type: checksum

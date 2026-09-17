@@ -1,0 +1,21 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.sh'
+      - '**/*.bash'
+      - '.github/workflows/lint.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.sh'
+      - '**/*.bash'
+      - '.github/workflows/lint.yml'
+
+jobs:
+  lint:
+    uses: shani8dev/shani-ci-commons/.github/workflows/lint.yml@main
+    with:
+      language: bash
