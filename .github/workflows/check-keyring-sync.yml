@@ -1,0 +1,48 @@
+name: Check keyring checksum sync
+#
+# Verifies that shani-keyring/ file checksums match what
+# shani-pkgbuilds/shani-keyring/PKGBUILD declares in its sha256sums=()
+# array. A drift between the two breaks every clean install with a
+# checksum-mismatch error and is currently invisible until someone tries
+# a fresh install. See AGENTS.md "Cross-repo impact".
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/check-keyring-sync.sh'
+      - 'tests/test-check-keyring-sync.sh'
+      - 'shani-keyring/PKGBUILD'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/check-keyring-sync.sh'
+      - 'tests/test-check-keyring-sync.sh'
+      - 'shani-keyring/PKGBUILD'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout shani-keyring sibling repo
+        uses: actions/checkout@v4
+        with:
+          repository: shani8dev/shani-keyring
+          path: ../shani-keyring
+          fetch-depth: 0
+
+      - name: Run checksum-sync test harness
+        run: bash tests/test-check-keyring-sync.sh
+
+      - name: Shellcheck the checker
+        run: |
+          if command -v shellcheck &>/dev/null; then
+            shellcheck scripts/check-keyring-sync.sh
+          else
+            echo "shellcheck not available — skipping"
+          fi

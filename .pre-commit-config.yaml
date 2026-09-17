@@ -22,3 +22,11 @@ repos:
         language: script
         files: ^[^/]+/PKGBUILD$
         pass_filenames: false
+
+      - id: check-keyring-sync
+        name: check-keyring-sync
+        description: Verify shani-keyring checksums match PKGBUILD sha256sums.
+        entry: ./scripts/check-keyring-sync.sh --keyring-repo ../shani-keyring shani-keyring/PKGBUILD
+        language: script
+        files: ^shani-keyring/PKGBUILD$
+        pass_filenames: false
