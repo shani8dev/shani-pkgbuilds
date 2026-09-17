@@ -68,10 +68,7 @@ computed correctly gives false confidence.
   checksum itself was only ever captured once by hand — prefer `https://`
   wherever upstream supports it, especially for anything in the
   Secure-Boot-adjacent trust chain (`shim-signed` and similar).
-- **`run_in_container.sh` needs a runtime check before passing
-  `--userns=keep-id`** — that flag is Podman-specific and breaks under
-  plain Docker. If you're extending this script, keep detecting which
-  runtime is actually in use rather than assuming one.
+- **`run_in_container.sh` runtime check** — resolved via symlink to shani-install-media's copy which detects `--userns=keep-id` automatically. See `../shani-install-media/run_in_container.sh`.
 
 ## Audit-verified known issues (confirmed present)
 
@@ -218,9 +215,7 @@ its PKGBUILD here" as a real, unflagged failure mode, not a hypothetical.
 `shani-keyring` repo's actual key/trust files — a checksum here that
 doesn't match that repo's current content breaks every clean install.
 
-`run_in_container.sh` exists duplicated (not shared) in both this repo and
-`shani-install-media` — see that repo's `AGENTS.md` for the same note in
-reverse.
+`run_in_container.sh` is a symlink to `shani-install-media/run_in_container.sh` — see that repo's `AGENTS.md` for the full script. The symlink uses `BASH_SOURCE`-aware `HOST_WORK_DIR` detection so bind-mounts resolve to shani-pkgbuilds's directory. Any fix to shani-install-media's copy automatically applies here.
 
 ## Where things are documented
 
