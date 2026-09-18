@@ -6,25 +6,25 @@ pkgdesc="Networking tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-network"
 depends=(
-	iftop  
+	iftop
 	bandwhich
-	ethtool  
-	net-tools  
-	nmap    
-	traceroute  
-	whois  
-	wireless_tools  
-	tcpdump  
+	ethtool
+	net-tools
+	nmap
+	traceroute
+	whois
+	wireless_tools
+	tcpdump
 	vnstat
 	arpwatch
-	inetutils  
-	usbutils  
-	bind  
-	openbsd-netcat  
-	curl  
-	wget 
+	inetutils
+	usbutils
+	bind
+	openbsd-netcat
+	curl
+	wget
 	aria2
-	nbd  
+	nbd
 	rsync
 	zsync
 	iperf3

@@ -4,15 +4,15 @@ config_dir='/etc/desktop-entry-hider/configs'
 # Iterate over each config file in the config directory
 for config in "$config_dir"/*; do
     f=$(basename "$config")
-    
+
     # Skip if the corresponding desktop file does not exist
     if [[ ! -f "/usr/share/applications/$f" ]]; then
         continue
     fi
-    
+
     # Source the config file (it should define a variable named "contain")
     source "$config"
-    
+
     # Append the required string if not already present (using fixed string search)
     if ! grep -qF "$contain" "/usr/share/applications/$f"; then
         echo "Configuring $f"
@@ -23,4 +23,3 @@ for config in "$config_dir"/*; do
 done
 
 exit 0
-

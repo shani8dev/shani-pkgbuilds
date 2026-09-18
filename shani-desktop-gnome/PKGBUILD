@@ -113,4 +113,3 @@ package() {
 
     echo "</wallpapers>" >> "$xml_file"
 }
-

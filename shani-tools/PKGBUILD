@@ -27,4 +27,3 @@ depends=(
     bsd-games
 )
 license=('GPL-3.0-only')
-

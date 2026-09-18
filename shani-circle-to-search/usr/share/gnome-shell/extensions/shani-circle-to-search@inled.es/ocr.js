@@ -668,7 +668,7 @@ export class ScreenshotOCRController {
 
         const query = encodeURIComponent(this._activeBoxText);
         let url;
-        
+
         switch (this._ocrConfig.searchEngine) {
         case 'bing':
             url = `https://www.bing.com/search?q=${query}`;
@@ -684,7 +684,7 @@ export class ScreenshotOCRController {
             url = `https://www.google.com/search?q=${query}`;
             break;
         }
-        
+
         try {
             Gio.app_info_launch_default_for_uri(url, null);
             this._hideCopyMenu();

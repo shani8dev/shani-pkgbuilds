@@ -84,7 +84,7 @@ check() {
 	make check
 	popd
 
-	pushd cmdtocanonij3 
+	pushd cmdtocanonij3
 	make check
 	popd
 
@@ -131,7 +131,7 @@ package() {
 	make DESTDIR="$pkgdir/" install
 	popd
 
-	pushd cmdtocanonij3 
+	pushd cmdtocanonij3
 	make DESTDIR="$pkgdir/" install
 	popd
 

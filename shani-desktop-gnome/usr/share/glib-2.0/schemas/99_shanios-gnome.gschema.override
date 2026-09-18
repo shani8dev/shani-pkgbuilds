@@ -169,4 +169,3 @@ bracket-matching=true
 
 [org.gnome.gedit.plugins]
 active-plugins=['time', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo', 'codecomment', 'bracketcompletion']
-

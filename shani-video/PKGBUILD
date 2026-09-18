@@ -19,7 +19,7 @@ depends=(
     vulkan-gfxstream
     libva-intel-driver
     intel-media-driver
-    vpl-gpu-rt 
+    vpl-gpu-rt
     libvdpau-va-gl
     libva-nvidia-driver
     nvidia-prime

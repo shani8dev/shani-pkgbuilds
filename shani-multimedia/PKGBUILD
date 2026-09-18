@@ -18,7 +18,7 @@ depends=(
 	gst-libav
 	gst-plugin-va
 	gst-plugin-pipewire
-	gst-plugin-libcamera 
+	gst-plugin-libcamera
 	gst-plugins-base
 	gst-plugins-good
 	gst-plugins-bad
@@ -31,4 +31,3 @@ depends=(
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
-

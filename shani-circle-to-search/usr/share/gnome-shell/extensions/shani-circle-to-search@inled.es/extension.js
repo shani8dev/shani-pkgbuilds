@@ -226,7 +226,7 @@ export default class ShotzyExtension extends Extension {
         }
 
         const ui = Main.screenshotUI;
-        
+
         if (ui) {
             if (this._uiClosedId) {
                 ui.disconnect(this._uiClosedId);
@@ -242,7 +242,7 @@ export default class ShotzyExtension extends Extension {
         if (this._lensWrapper) {
             if (ui && ui._panel) {
                 ui._panel.remove_child(this._lensWrapper);
-                
+
                 if (ui._typeButtonContainer && ui._bottomRowContainer) {
                     if (this._lensInnerVBox) {
                         this._lensInnerVBox.remove_child(ui._typeButtonContainer);
@@ -688,7 +688,7 @@ for s in candidate_sockets:
         const texture = content.get_texture();
 
         const stream = Gio.MemoryOutputStream.new_resizable();
-        
+
         try {
             const pixbuf = await Shell.Screenshot.composite_to_stream(
                 texture,
@@ -702,7 +702,7 @@ for s in candidate_sockets:
             ui.close();
 
             const filename = GLib.build_filenamev([GLib.get_tmp_dir(), `shotzy_${Date.now()}.png`]);
-            
+
             if (pixbuf.savev(filename, 'png', [], [])) {
                 Main.notify('Shotzy', 'Uploading screenshot...');
                 this._uploader.upload(filename).catch(e => {

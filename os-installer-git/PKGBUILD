@@ -51,4 +51,3 @@ package() {
     cd "$srcdir/os-installer"
     meson install -C build --destdir "$pkgdir"
 }
-

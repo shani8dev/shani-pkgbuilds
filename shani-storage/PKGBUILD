@@ -35,4 +35,3 @@ depends=(
 	quota-tools
 )
 license=('GPL-3.0-only')
-

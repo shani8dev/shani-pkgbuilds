@@ -55,7 +55,7 @@ depends=(
 	switcheroo-control
 	konsole
 	yakuake
-	sweeper 
+	sweeper
 	kbackup
 	qrca
 	ark
@@ -99,4 +99,3 @@ package() {
     cp -r "$startdir/etc" "$pkgdir/"
     cp -r "$startdir/usr" "$pkgdir/"
 }
-

@@ -17,4 +17,3 @@ depends=(
 	ibus-unikey
 )
 license=('GPL-3.0-only')
-

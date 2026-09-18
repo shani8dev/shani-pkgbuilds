@@ -74,4 +74,3 @@ package() {
     cp -r "$startdir/etc" "$pkgdir/"
     cp -r "$startdir/usr" "$pkgdir/"
 }
-

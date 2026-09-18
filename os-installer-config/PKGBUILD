@@ -18,4 +18,3 @@ package() {
   install -d "$pkgdir/etc/os-installer"
   cp -r "$srcdir/$pkgname"/* "$pkgdir/etc/os-installer"
 }
-
