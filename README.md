@@ -11,7 +11,7 @@ All builds run inside a reproducible Docker container (`shrinivasvkumbhar/shani-
 ```
 .
 ├── run_in_container.sh   # Generic wrapper – runs any command inside the build container
-├── make_pkg.sh           # Convenience script – builds one or more packages
+├── make_pkg.sh           # Builds packages and/or refreshes checksums (--updpkgsums/--sums-only)
 ├── check-skip-checksums.sh  # Flags SKIP checksums on non-pinned sources
 ├── <package-name>/
 │   ├── PKGBUILD
@@ -55,32 +55,35 @@ Built `.pkg.tar.zst` files appear inside the package subdirectory (bind-mounted 
 ./make_pkg.sh --all
 ```
 
-### 4 – Update checksums and build
+### 4 – Update checksums (with or without building)
 
-Use `--updpkgsums` to run `updpkgsums` inside the container before `makepkg`. Useful after bumping a version or modifying sources.
+Use `--updpkgsums` to run `updpkgsums` inside the container before `makepkg`, or `--sums-only` to refresh checksums without building. Useful after bumping a version or modifying sources.
 
 ```bash
 # Update checksums, then build
 ./make_pkg.sh --updpkgsums shani-core
 
+# Update checksums only (no build)
+./make_pkg.sh --sums-only shani-core
+
 # Update checksums for every package, then build all
 ./make_pkg.sh --updpkgsums --all
 ```
 
-The updated `PKGBUILD` is written back to your host immediately via the bind mount.
+The updated `PKGBUILD` (and regenerated `.SRCINFO`) is written back to your host immediately via the bind mount.
 
 ---
 
 ## Running Arbitrary Commands
 
-`run_in_container.sh` is a generic wrapper around `docker run`. Pass any command and it executes inside the container with the repo bind-mounted.
+`run_in_container.sh` is a generic wrapper around `docker run`. Pass any command and it executes inside the container with the repo bind-mounted at `/home/builduser/build`. Non-absolute commands are resolved *inside* that mount, so a bare `bash` would look for `/home/builduser/build/bash` — use the absolute `/bin/bash` for shell invocations.
 
 ```bash
 # Open an interactive shell
-./run_in_container.sh bash
+./run_in_container.sh /bin/bash
 
 # Run makepkg manually in a specific package dir
-./run_in_container.sh bash -c "cd /build/filesystem && makepkg -s"
+./run_in_container.sh /bin/bash -c "cd /home/builduser/build/filesystem && makepkg -s"
 
 # Inspect the container environment
 ./run_in_container.sh env

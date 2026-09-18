@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-printer
 pkgver=1.2
-pkgrel=8
+pkgrel=9
 pkgdesc="Printer support tools and drivers for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-printer"
@@ -26,11 +26,11 @@ depends=(
     splix
     # Vendor-supported drivers not in official repos
     hplip-minimal
-    #epson-inkjet-printer-escpr
+    epson-inkjet-printer-escpr
+    epson-inkjet-printer-escpr2
     foo2zjs-nightly
     brlaser
     cnijfilter2
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
-

@@ -3,6 +3,12 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        # `.patch` files have structural whitespace: a unified-diff context
+        # line of a single space is NOT trailing whitespace to trim — stripping
+        # it empties the line and breaks `patch`'s hunk parsing (live-caught:
+        # this hook corrupted epson-inkjet-printer-escpr2/bug_x86_64.patch,
+        # causing prepare() Hunk #3 FAILED). Patches must be excluded.
+        exclude: '\.patch$'
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
