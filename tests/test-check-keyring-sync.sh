@@ -47,14 +47,22 @@ echo "G2: corrupted PKGBUILD (expect FAIL / exit 1 + MISMATCH)"
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 cp "$PKGKEYRING" "$tmpdir/PKGBUILD"
-# Corrupt the first declared sha256 (shani.gpg's) so it cannot match reality.
-sed -i 's/03c03d69fd8d281d73ecaa68ac313c3a3f8d2e60d1796573aa3e8a8f54428362/0000000000000000000000000000000000000000000000000000000000000000/' "$tmpdir/PKGBUILD"
-g2_rc=0
-g2_out=$("$SCRIPT" --keyring-repo "$KEYRING_REPO" "$tmpdir/PKGBUILD" 2>&1) || g2_rc=$?
-if [[ $g2_rc -eq 1 && "$g2_out" == *"MISMATCH"* ]]; then
-    ok "G2 mismatch — rejected corrupt checksum (exit 1)"
+# Corrupt the first declared sha256sum so it cannot match reality.
+# Extract the first 64-hex sha256sum from the (unmodified) PKGBUILD and
+# replace it with zeros — a hardcoded hash here silently no-ops if the
+# upstream hash ever changes, which is exactly how this test went red.
+first_hash=$(grep -oE '[0-9a-f]{64}' "$PKGKEYRING" | head -1)
+if [[ -z "$first_hash" ]]; then
+    bad "G2 mismatch — no 64-hex sha256sum found in $PKGKEYRING to corrupt"
 else
-    bad "G2 mismatch — expected exit 1 + MISMATCH (got exit $g2_rc): $g2_out"
+    sed -i "s/$first_hash/0000000000000000000000000000000000000000000000000000000000000000/" "$tmpdir/PKGBUILD"
+    g2_rc=0
+    g2_out=$("$SCRIPT" --keyring-repo "$KEYRING_REPO" "$tmpdir/PKGBUILD" 2>&1) || g2_rc=$?
+    if [[ $g2_rc -eq 1 && "$g2_out" == *"MISMATCH"* ]]; then
+        ok "G2 mismatch — rejected corrupt checksum (exit 1)"
+    else
+        bad "G2 mismatch — expected exit 1 + MISMATCH (got exit $g2_rc): $g2_out"
+    fi
 fi
 
 echo "────────────────────────────────"
