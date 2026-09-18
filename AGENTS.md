@@ -83,6 +83,13 @@ computed correctly gives false confidence.
   Secure-Boot-adjacent trust chain (`shim-signed` and similar).
 - **`run_in_container.sh` runtime check** — resolved via symlink to shani-install-media's copy which detects `--userns=keep-id` automatically. See `../shani-install-media/run_in_container.sh`.
 
+## Commit discipline
+
+Before composing a commit message, run `git log --oneline -20` (and `git
+log -5 -- <touched paths>` for the files you changed) and match the
+existing style — subject shape, scope prefixes, body detail level —
+rather than writing in a generic format.
+
 ## Boundaries
 
 - ✅ **Always**: actually run `makepkg`/`./make_pkg.sh <pkg>` for any
@@ -99,6 +106,7 @@ computed correctly gives false confidence.
   (package name, path) unquoted into a string later run via `bash -c` —
   `make_pkg.sh`'s `pkg_name` injection (fixed below) is the exact shape to
   avoid; use `printf %q` or an array, not string concatenation.
+- 🚫 **Never**: delete or skip a failing test to make a build/CI pass — fix the underlying code, not the test. A red test is signal; silencing it destroys the signal, not the bug.
 
 ## Audit-verified known issues (confirmed present)
 
