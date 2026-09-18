@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=6
+pkgrel=7
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-cosmic"
@@ -17,6 +17,7 @@ depends=(
 	cosmic-idle
 	cosmic-initial-setup
 	cosmic-launcher
+	cosmic-monitor
 	cosmic-notifications
 	cosmic-osd
 	cosmic-panel
@@ -26,6 +27,7 @@ depends=(
 	cosmic-session
 	cosmic-settings
 	cosmic-settings-daemon
+	cosmic-sound-theme
 	cosmic-store
 	cosmic-terminal
 	cosmic-text-editor
