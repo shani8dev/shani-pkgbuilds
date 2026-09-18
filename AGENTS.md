@@ -14,6 +14,14 @@ usually enables the service it ships, so a "missing service" bug reported
 elsewhere often actually belongs here, not in `shani-settings` or an image
 profile.
 
+## Empirical verification (mandatory)
+
+**Reading code is analysis; running code is verification.** A change is not
+verified by reading the diff, running `bash -n`, or confirming it "looks
+correct." It is verified by observing the actual behavior of the real
+thing in the real environment — built, served, deployed, signed, running.
+If you haven't seen it work (or fail) for real, it isn't verified.
+
 ## Rule: a PKGBUILD that looks right and a PKGBUILD that builds are different claims
 
 Don't consider a checksum, URL, or `prepare()`/`build()` change correct
