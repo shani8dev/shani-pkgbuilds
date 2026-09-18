@@ -79,6 +79,11 @@ rm -rf /var/tmp/pmk && mkdir -p /var/tmp/pmk && \
 cp -a \${WORK}/${q_pkg} /var/tmp/pmk/ && \
 chown -R builduser:builduser /var/tmp/pmk/${q_pkg} && \
 cd /var/tmp/pmk/${q_pkg} && \
+# The runner mounts /tmp as a noexec tmpfs (same reason the scratch copy
+# above lives in /var/tmp) — tools that exec their own temp output (Go's
+# go-build, Rust's target dir, etc.) default TMPDIR to /tmp and would die
+# with 'fork/exec ... permission denied' (caught live on snapd's build()).
+export TMPDIR=/var/tmp && \
 $2"
 }
 

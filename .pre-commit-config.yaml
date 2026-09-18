@@ -18,6 +18,13 @@ repos:
     rev: v0.10.0.1
     hooks:
       - id: shellcheck
+        # PKGBUILDs are makepkg manifests, not standalone scripts: shellcheck
+        # flags makepkg-provided vars (pkgdir/srcdir SC2154) and the standard
+        # `cd "$srcdir"`-without-`|| exit` idiom (SC2164) that aborts the build
+        # anyway under `makepkg`'s `set -e`. Same class of structural noise as
+        # the `.patch` trailing-whitespace exclusion below. Real scripts stay
+        # checked; the local check-skip-checksums hook is the PKGBUILD gate.
+        exclude: '/PKGBUILD$'
 
   - repo: local
     hooks:

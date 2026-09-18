@@ -1,8 +1,8 @@
 # Maintainer: Ayushmaan Padhi
 
 pkgname='hplip-minimal'
-pkgver=3.25.6
-pkgrel=2
+pkgver=3.26.4
+pkgrel=1
 pkgdesc='Only printer drivers from HPLIP with proprietary binary plugin'
 arch=('x86_64')
 url='https://developers.hp.com/hp-linux-imaging-and-printing/'
@@ -16,25 +16,24 @@ optdepends=('cups: for printing support')
 source=(https://downloads.sourceforge.net/hplip/hplip-$pkgver.tar.gz
 		    hplip-pserror-c99.patch
         hplip-missing-drivers.patch)
-sha256sums=('a6af314a7af0572f2ab6967b2fe68760e64d74628ef0e6237f8504d81047edbe'
-			      'SKIP'
-            'SKIP')
+sha256sums=('b9c61252754f35b4a237396ca8961e7b3e0c56db76d66a6712b7bf3e30e69463'
+            '02d5fd1a23f13f9879977c34d1c83364402995ef81c8ed04bca2dea5cb6e58cd'
+            '46fcf6398ee16d41f4976c4c4e1e1e483b30fe64bcabd8864077d3f2602c2ece')
+
+# Proprietary binary plugin: pinned and verified before it is ever executed.
+# The acquired installer is a shell archive; without this check prepare()
+# would run an unverified installer downloaded at build time (the exact
+# hplip-minimal incident documented in AGENTS.md).
+_plugin_sha256='199f78f8af7f36894d7180e9090963ce2550a75ec701f8a4ba37665a9746fdf0'
+_plugin_url="https://developers.hp.com/sites/default/files/2026-05/hplip-$pkgver-plugin.run"
+
 options=(!makeflags)
 
-# The proprietary HP plugin is not distributable and has no PKGBUILD
-# source= entry makepkg can checksum for us (its URL requires a spoofed
-# User-Agent to avoid a 403), so it's downloaded and verified by hand here
-# against a hash pinned at packaging time. Never remove this check or run
-# the installer before it passes.
-_plugin_sha256='0cd770036532a2d706c0f449ee1e3ef9b4de7b6cea5aaf2e76fe2da3f97f6ffc'
-
 prepare() {
-  curl -A "Mozilla/0.0 (Linux x86_64) Chromium/0.0.0.0" -O https://developers.hp.com/sites/default/files/2025-08/hplip-$pkgver-plugin.run
-
-  echo "${_plugin_sha256}  hplip-$pkgver-plugin.run" | sha256sum -c -
-  chmod +x "hplip-$pkgver-plugin.run"
-
-  sh "hplip-$pkgver-plugin.run" --target "$srcdir/hplip-$pkgver" --noexec
+  curl -A "Mozilla/0.0 (Linux x86_64) Chromium/0.0.0.0" -o "$srcdir/hplip-$pkgver-plugin.run" "$_plugin_url"
+  echo "$_plugin_sha256  $srcdir/hplip-$pkgver-plugin.run" | sha256sum -c -
+  chmod +x "$srcdir/hplip-$pkgver-plugin.run"
+  sh "$srcdir/hplip-$pkgver-plugin.run" --target "$srcdir/hplip-$pkgver" --noexec
 
   cd "hplip-$pkgver"
   patch -Np1 -i ../hplip-pserror-c99.patch

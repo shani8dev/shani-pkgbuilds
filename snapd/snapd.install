@@ -6,7 +6,6 @@ post_install() {
   _set_snap_confine_caps
 }
 
-
 pre_remove() {
   /usr/lib/snapd/snap-mgmt --purge || :
 }
@@ -39,4 +38,3 @@ post_upgrade() {
 }
 
 # vim:set ts=2 sw=2 et:
-
