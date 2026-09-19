@@ -54,8 +54,9 @@ EOF
 # per makepkg (index i <-> index i).
 if [[ "${1:-}" == "__extract" ]]; then
 pkgbuild="$2"
-    # shellcheck disable=SC1090,SC2154  # sourced by design - PKGBUILD is data to
-    # parse; source=/sha256sums are read from it, not assigned here.
+    # PKGBUILD is data to parse, not a script to execute: it is sourced by
+    # design, and source=/sha256sums are read from it, not assigned here.
+    # shellcheck disable=SC1090,SC2154
     source "$pkgbuild"
     if declare -p source &>/dev/null && declare -p sha256sums &>/dev/null; then
         for i in "${!source[@]}"; do
