@@ -1,0 +1,57 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-desktop-gamescope
+pkgver=1.0
+pkgrel=1
+pkgdesc="Gamescope gaming desktop environment for Shani OS"
+arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
+license=('GPL-3.0-only')
+depends=(
+	# --- Gamescope compositor (from Arch [extra]) ---
+	gamescope
+	# --- Gamescope session framework (ShaniOS reimplementation of
+	#     ChimeraOS's gamescope-session-plus, MIT) ---
+	gamescope-session-plus
+	# --- Vulkan overlay (from Arch [extra]) ---
+	mangohud
+	# --- Audio/video stack for gaming ---
+	pipewire
+	pipewire-alsa
+	pipewire-jack
+	pipewire-pulse
+	pipewire-v4l2
+	# --- Desktop portal / session plumbing ---
+	xdg-desktop-portal-gtk
+	xdg-user-dirs
+	xdg-utils
+	gsettings-desktop-schemas
+	# --- Controller / RGB / peripheral support ---
+	antimicrox
+	openrgb
+	piper
+	goverlay
+	# --- Filesystem helpers for game libraries ---
+	gvfs
+	gvfs-gphoto2
+	gvfs-mtp
+	gvfs-nfs
+	gvfs-smb
+	ntfs-3g
+	exfat-utils
+	btrfs-progs
+)
+install="$pkgname.install"
+source=()
+md5sums=()
+
+package() {
+    # Ensure necessary directories exist
+    install -d "$pkgdir/etc/"
+    install -d "$pkgdir/usr/"
+    # Copy local etc and usr directories (currently empty — this meta-package
+    # is pure dependency aggregation; the session .desktop, gdm autologin,
+    # and ephemeral-home systemd units live in the gamescope image profile
+    # overlay, not here).
+    cp -r "$startdir/etc" "$pkgdir/" 2>/dev/null || true
+    cp -r "$startdir/usr" "$pkgdir/" 2>/dev/null || true
+}

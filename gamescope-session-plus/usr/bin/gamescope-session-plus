@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# gamescope-session-plus — portable gamescope session driver
+#
+# Usage: gamescope-session-plus <session-name>
+#
+# Sources /usr/share/gamescope-session-plus/sessions.d/<session-name> (which
+# must export CLIENTCMD), applies ~/.config/environment.d/*.conf overrides,
+# then execs gamescope in embedded fullscreen mode.
+#
+# This is a ShaniOS reimplementation of the ChimeraOS gamescope-session-plus
+# framework (MIT). Shani is not SteamOS: there is no steamos-session-select,
+# no bootstraplinux tarball, no frzr immutable-etc, and no device-quirks
+# package, so those ChimeraOS-specific pieces are deliberately absent.
+set -euo pipefail
+
+SESSION_NAME="${1:-steam}"
+SESSION_DIR="${GAMESCOPE_SESSION_DIR:-/usr/share/gamescope-session-plus/sessions.d}"
+SESSION_FILE="${SESSION_DIR}/${SESSION_NAME}"
+
+if [[ ! -f "$SESSION_FILE" ]]; then
+    echo "gamescope-session-plus: unknown session '${SESSION_NAME}'" >&2
+    echo "Available sessions:" >&2
+    for f in "$SESSION_DIR"/*; do
+        [[ -f "$f" ]] && echo "  $(basename "$f")" >&2
+    done
+    exit 1
+fi
+
+# Source the session definition (exports CLIENTCMD and optional helpers).
+# shellcheck disable=SC1090
+source "$SESSION_FILE"
+
+if [[ -z "${CLIENTCMD:-}" ]]; then
+    echo "gamescope-session-plus: session '${SESSION_NAME}' did not set CLIENTCMD" >&2
+    exit 1
+fi
+
+# Apply per-user environment overrides from ~/.config/environment.d/*.conf,
+# mirroring the ChimeraOS framework. These can set SCREEN_WIDTH/HEIGHT,
+# INTERNAL_WIDTH/HEIGHT, ADAPTIVE_SYNC, DRM_MODE, CLIENTCMD overrides, etc.
+ENV_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d"
+if [[ -d "$ENV_DIR" ]]; then
+    for conf in "$ENV_DIR"/*.conf; do
+        [[ -f "$conf" ]] || continue
+        # shellcheck disable=SC1090
+        source "$conf"
+    done
+fi
+
+# Resolve render vs. output dimensions.
+SCREEN_WIDTH="${SCREEN_WIDTH:-}"
+SCREEN_HEIGHT="${SCREEN_HEIGHT:-}"
+INTERNAL_WIDTH="${INTERNAL_WIDTH:-$SCREEN_WIDTH}"
+INTERNAL_HEIGHT="${INTERNAL_HEIGHT:-$SCREEN_HEIGHT}"
+
+GAMESCOPE_ARGS=(-e -f --no-xwayland-redirect)
+[[ -n "$INTERNAL_WIDTH" && -n "$INTERNAL_HEIGHT" ]] \
+    GAMESCOPE_ARGS+=(-W "$INTERNAL_WIDTH" -H "$INTERNAL_HEIGHT")
+[[ -n "$SCREEN_WIDTH" && -n "$SCREEN_HEIGHT" ]] \
+    GAMESCOPE_ARGS+=(-w "$SCREEN_WIDTH" -h "$SCREEN_HEIGHT")
+[[ "${ADAPTIVE_SYNC:-0}" == "1" ]] \
+    GAMESCOPE_ARGS+=(--adaptive-sync)
+[[ -n "${DRM_MODE:-}" ]] \
+    GAMESCOPE_ARGS+=(--"$DRM_MODE")
+[[ "${ENABLE_GAMESCOPE_HDR:-0}" == "1" ]] \
+    GAMESCOPE_ARGS+=(--hdr-enabled --hdr-sdr-nits "${GAMESCOPE_HDR_NITS:-400}")
+
+# If the caller gave an explicit gamescope command, use it verbatim.
+if [[ -n "${GAMESCOPECMD:-}" ]]; then
+    exec $GAMESCOPECMD
+fi
+
+exec gamescope "${GAMESCOPE_ARGS[@]}" -- $CLIENTCMD

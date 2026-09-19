@@ -1,0 +1,35 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+# Portable reimplementation of ChimeraOS's gamescope-session-plus framework
+# (https://github.com/ChimeraOS/gamescope-session-plus, MIT) for Shani OS.
+# Shani is not SteamOS: it has no steamos-session-select, no bootstraplinux
+# tarball, no frzr immutable-etc, and no device-quirks package. This PKGBUILD
+# keeps the portable session-framework mechanics (sessions.d + .desktop +
+# ~/.config/environment.d) and drops the SteamOS-specific bits.
+pkgname=gamescope-session-plus
+pkgver=1.0
+pkgrel=1
+pkgdesc="Portable gamescope session framework (ShaniOS flavour)"
+arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/gamescope-session-plus"
+license=('MIT')
+depends=('gamescope' 'bash')
+source=()
+md5sums=()
+
+package() {
+    install -d "$pkgdir/usr/bin"
+    install -d "$pkgdir/usr/share/gamescope-session-plus/sessions.d"
+    install -d "$pkgdir/usr/share/gamescope-session-plus"
+
+    # The session driver: sources the named session file, applies
+    # ~/.config/environment.d/*.conf overrides, then execs gamescope.
+    install -Dm 755 "$startdir/usr/bin/gamescope-session-plus" \
+        "$pkgdir/usr/bin/gamescope-session-plus"
+
+    # A default session that launches the Steam client in Big Picture mode.
+    # Users override CLIENTCMD via ~/.config/environment.d/gamescope-session-plus.conf.
+    install -Dm 644 "$startdir/usr/share/gamescope-session-plus/sessions.d/steam" \
+        "$pkgdir/usr/share/gamescope-session-plus/sessions.d/steam"
+
+    install -Dm 644 "$startdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

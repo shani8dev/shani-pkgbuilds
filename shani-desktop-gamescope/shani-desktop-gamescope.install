@@ -1,0 +1,31 @@
+FONT_DIRS=("/usr/share/fonts/TTF" "/usr/share/fonts/OTF" "/usr/share/fonts/misc")
+ICON_DIR="/usr/share/icons/hicolor"
+GLIB_SCHEMA_DIR="/usr/share/glib-2.0/schemas"
+
+update_fonts() {
+    for dir in "${FONT_DIRS[@]}"; do
+        [[ -d "$dir" ]] || continue
+        mkfontscale "$dir" 2>/dev/null
+        mkfontdir   "$dir" 2>/dev/null
+    done
+    fc-cache -s 2>/dev/null
+}
+
+update_gtk() {
+    [[ -d "$GLIB_SCHEMA_DIR" ]] && glib-compile-schemas "$GLIB_SCHEMA_DIR" 2>/dev/null
+    [[ -d "$ICON_DIR"         ]] && gtk-update-icon-cache -ftq "$ICON_DIR" 2>/dev/null
+    command -v dconf                  &>/dev/null && dconf update 2>/dev/null
+    command -v update-desktop-database &>/dev/null && update-desktop-database --quiet 2>/dev/null
+    command -v update-mime-database    &>/dev/null && update-mime-database /usr/share/mime 2>/dev/null
+}
+
+post_install() {
+    post_upgrade
+}
+
+post_upgrade() {
+    systemctl enable gdm.service
+    echo "Performing misc postinstall operations..."
+    update_fonts
+    update_gtk
+}

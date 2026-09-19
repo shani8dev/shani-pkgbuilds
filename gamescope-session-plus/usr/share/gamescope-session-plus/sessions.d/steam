@@ -1,0 +1,26 @@
+# Steam Big Picture session for gamescope-session-plus.
+#
+# ShaniOS is not SteamOS: there is no steamos-session-select, no
+# bootstraplinux_ubuntu12_32.tar.xz, no frzr immutable-etc, and no
+# device-quirks package. This session keeps only the portable pieces.
+
+# Launch Steam in Big Picture mode. Users can override CLIENTCMD via
+# ~/.config/environment.d/gamescope-session-plus.conf (e.g. set it to
+# `steam -gamepadui` or `lutris` for a non-Steam launcher).
+CLIENTCMD="steam -gamepadui -steamos3 -steampal -steamdeck"
+
+# VRR / tearing controls — harmless on non-VRR displays.
+export STEAM_GAMESCOPE_VRR_SUPPORTED=1
+export STEAM_GAMESCOPE_HAS_TEARING_SUPPORT=1
+export STEAM_GAMESCOPE_TEARING_SUPPORTED=1
+export STEAM_GAMESCOPE_DYNAMIC_FPSLIMITER=1
+export STEAM_GAMESCOPE_NIS_SUPPORTED=1
+export STEAM_ALLOW_DRIVE_UNMOUNT=1
+export STEAM_MULTIPLE_XWAYLANDS=1
+export STEAM_DISABLE_AUDIO_DEVICE_SWITCHING=1
+export SRT_URLOPEN_PREFER_STEAM=1
+export STEAM_ENABLE_VOLUME_HANDLER=1
+
+# Steam input method modules (Steam virtual keyboard).
+export QT_IM_MODULE=steam
+export GTK_IM_MODULE=Steam
