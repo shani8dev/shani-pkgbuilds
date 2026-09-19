@@ -8,6 +8,7 @@ post_upgrade() {
     systemctl enable mark-boot-success.service        # WantedBy=multi-user.target
     systemctl enable bless-boot.service               # WantedBy=multi-user.target
     systemctl enable check-boot-failure.timer         # WantedBy=timers.target + emergency.target
+    systemctl enable shani-auto-rollback.timer        # WantedBy=timers.target + emergency.target
 
     # User setup (path unit activates the service — only enable the path)
     systemctl enable shani-user-setup.path            # WantedBy=multi-user.target
