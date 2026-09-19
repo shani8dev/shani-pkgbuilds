@@ -1,8 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=71
-_commit='6b157b457275ecbd17db6698abe5ee693395dad4'  # Replace with the specific commit hash
+pkgrel=72
+_commit='0f5c6135e43e3cdcdffa8d20f39c2cb0cf11c655'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
