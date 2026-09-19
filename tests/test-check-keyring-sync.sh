@@ -12,7 +12,22 @@ cd "$(dirname "$0")/.."   # repo root — so all paths below resolve
 
 SCRIPT=./scripts/check-keyring-sync.sh
 PKGKEYRING=shani-keyring/PKGBUILD
-KEYRING_REPO=../shani-keyring
+# Auto-detect the keyring layout. Three shapes exist:
+#   * local dev:  sibling checkout at ../shani-keyring
+#   * CI (security.yml / check-keyring-sync.yml): child checkout at
+#     shani-keyring-repo — it CANNOT be `shani-keyring` because shani-pkgbuilds
+#     already tracks its own shani-keyring/ dir (this repo's PKGBUILD + .install),
+#     and actions/checkout@v4 refuses to clone into a non-empty existing dir.
+# Verified live: all three layouts resolve to the same shani.gpg/trusted/revoked.
+if [[ -d ../shani-keyring ]]; then
+    KEYRING_REPO=../shani-keyring
+elif [[ -d shani-keyring-repo ]]; then
+    KEYRING_REPO=shani-keyring-repo
+elif [[ -d shani-keyring ]]; then
+    KEYRING_REPO=shani-keyring
+else
+    KEYRING_REPO=../shani-keyring
+fi
 PASS=0; FAIL=0
 
 ok()  { printf '    ✓ %s\n' "$1"; PASS=$((PASS+1)); }

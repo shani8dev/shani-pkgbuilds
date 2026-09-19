@@ -29,11 +29,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout shani-keyring sibling repo
+      # Checkout as a CHILD path (actions/checkout@v4 rejects any `path`
+      # resolving outside the caller's repo dir — the sibling `../shani-keyring`
+      # layout that worked locally dies in CI). It CANNOT be `shani-keyring`
+      # either: shani-pkgbuilds already tracks its own shani-keyring/ dir (this
+      # repo's PKGBUILD + .install), and checkout@v4 refuses to clone into a
+      # non-empty existing dir. Use the collision-free name instead. The test
+      # harness auto-detects whichever layout it's given.
+      - name: Checkout shani-keyring
         uses: actions/checkout@v4
         with:
           repository: shani8dev/shani-keyring
-          path: ../shani-keyring
+          path: shani-keyring-repo
           fetch-depth: 0
 
       - name: Run checksum-sync test harness
