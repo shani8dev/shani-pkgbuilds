@@ -58,6 +58,7 @@ pkgbuild="$2"
     # design, and source=/sha256sums are read from it, not assigned here.
     # shellcheck disable=SC1090,SC2154
     source "$pkgbuild"
+    # shellcheck disable=SC2154  # source=/sha256sums come from the PKGBUILD, not here
     if declare -p source &>/dev/null && declare -p sha256sums &>/dev/null; then
         # shellcheck disable=SC2154  # source=/sha256sums come from the PKGBUILD, not here
         for i in "${!source[@]}"; do
