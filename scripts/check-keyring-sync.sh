@@ -29,7 +29,6 @@
 
 set -Eeuo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 SCRIPT_NAME="$(basename "$0")"
 
 usage() {
@@ -54,8 +53,9 @@ EOF
 # does heavy work on source). source=() and sha256sums=() are parallel arrays
 # per makepkg (index i <-> index i).
 if [[ "${1:-}" == "__extract" ]]; then
-    pkgbuild="$2"
-    # shellcheck disable=SC1090  # sourced by design - PKGBUILD is data to parse
+pkgbuild="$2"
+    # shellcheck disable=SC1090,SC2154  # sourced by design - PKGBUILD is data to
+    # parse; source=/sha256sums are read from it, not assigned here.
     source "$pkgbuild"
     if declare -p source &>/dev/null && declare -p sha256sums &>/dev/null; then
         for i in "${!source[@]}"; do
