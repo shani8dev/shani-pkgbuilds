@@ -2,7 +2,7 @@
 
 This repository contains custom and patched PKGBUILDs used to build packages for [Shanios](https://github.com/shani8dev), an Arch-based Linux distribution.
 
-All builds run inside a reproducible Docker container (`shrinivasvkumbhar/shani-builder`) so your host system is never polluted with build dependencies.
+All builds run inside a reproducible container (`shrinivasvkumbhar/shani-builder`, Docker or Podman — `run_in_container.sh` auto-detects the runtime) so your host system is never polluted with build dependencies.
 
 ---
 
@@ -136,6 +136,46 @@ PKGBUILDs and accompanying files live at the repository root, each in their own 
 
 ---
 
+## Where services actually get enabled
+
+Before assuming a package or systemd service is "missing" from a
+`shani-install-media` image profile, check **this repo** first:
+
+- `<pkg>/PKGBUILD`'s `depends=()` for transitive packages — a profile's
+  `package-list.txt` only lists top-level meta-packages like
+  `shani-network`/`shani-core`; the real dependency is one level down.
+- `<pkg>/<pkg>.install`'s `post_install`/`post_upgrade` for
+  `systemctl enable` calls — this is where this project actually turns
+  services on, not in `shani-install-media`'s profile customization
+  scripts.
+
+See `shani-install-media/AGENTS.md`'s "Before claiming a package/service
+is missing" section for the full five-layer chain and the real incident
+that established this rule, and `shani-settings/AGENTS.md`'s "Where a
+given config file actually belongs" for where DE-specific vs.
+profile-agnostic config should live.
+
+## Known gaps & design rules
+
+**Still open (confirmed, not yet fixed):**
+- `shani-settings/PKGBUILD:4-5` — `pkgrel` was never reset after the
+  last `pkgver` bump (currently `pkgver=0.0.5`, `pkgrel=41`).
+- `brlaser-debug`/`splix-debug` produce a broken build-id symlink
+  (`namcap`: "E: Symlink ... points to non-existing
+  ../../../cups/filter/rastertobrlaser"). Cosmetic (debug package only).
+
+**Design rules:**
+- A `git+` source is not automatically "pinned" — prefer `#commit=`
+  over `#tag=` when writing a new source; a tag can move upstream even
+  when the PKGBUILD never changes.
+- A source over plain `http://` isn't meaningfully checksummed if the
+  checksum was only ever captured once by hand — prefer `https://`
+  wherever upstream supports it, especially for anything in the
+  Secure-Boot-adjacent trust chain.
+- `run_in_container.sh` detects the container runtime and applies
+  `--userns=keep-id` for Podman automatically — don't assume Docker
+  semantics when debugging a build.
+
 ## Troubleshooting
 
 **`docker: permission denied`**
@@ -166,6 +206,14 @@ The script automatically syncs the pacman database before the first build. If de
    ```
 5. Build it: `./make_pkg.sh my-package` — the container produces the `.pkg.tar.zst` and publishes via `pkg-builder.sh` if credentials are configured
 6. For metapackages that other profiles depend on, update the relevant `image_profiles/*/package-list.txt` in shani-install-media **in the same change**
+7. **For first-party `shani-*` packages, check the source repo too.**
+   Every `shani-*` package here (`shani-deploy`, `shani-settings`,
+   `shani-keyring`, `shani-fonts`, etc.) packages the *actual source
+   repo* of the same name. If that source repo's file layout, install
+   paths, or version changes, this repo's matching PKGBUILD needs a
+   checksum/`pkgrel` bump in the same change — otherwise the packaged
+   artifact silently drifts from what's actually in the source repo.
+   There is currently no automated check that catches this drift.
 
 ### Review expectations
 

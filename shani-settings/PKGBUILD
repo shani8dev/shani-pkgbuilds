@@ -8,7 +8,7 @@ url="https://github.com/shani8dev/$pkgname"
 license=('GPL-3.0-only')
 pkgdesc="Shani OS settings"
 
-_commit='b31787bf101008772a6e92309845a72246b314cd'
+_commit='fabac39ca03e6a58b0f161b65f39bc2b1b8f6c95'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')
 
