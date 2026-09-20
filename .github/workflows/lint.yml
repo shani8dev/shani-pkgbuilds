@@ -19,3 +19,10 @@ jobs:
     uses: shani8dev/shani-ci-commons/.github/workflows/lint.yml@main
     with:
       language: bash
+
+  security:
+    name: Security
+    uses: shani8dev/shani-ci-commons/.github/workflows/security.yml@main
+    with:
+      scan-type: all
+    needs: lint
