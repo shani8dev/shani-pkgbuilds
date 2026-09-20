@@ -180,11 +180,14 @@ rather than writing in a generic format.
   fixes a real (if less severe) pre-existing bug: any legitimate package
   directory name containing a space would have silently broken this same
   line before.
-- **CI status — corrected, was stale.** Four workflows exist:
+- **CI status — corrected, was stale.** Three workflows exist:
   `lint.yml`, `security.yml` (checksum scan via `shani-ci-commons`),
-  `check-keyring-sync.yml`, `trigger-build.yml` — this previously said "no
-  CI workflows," which was wrong at the time it was checked; verification
-  is pre-commit hooks *and* CI, not pre-commit alone.
+  `trigger-build.yml` — this previously said "no CI workflows," which was
+  wrong at the time it was checked; verification is pre-commit hooks
+  *and* CI, not pre-commit alone. Keyring-checksum coverage now lives in
+  `shani-ci-commons`'s `security.yml` (scan-type: checksum); the
+  standalone `check-keyring-sync.yml` was pure duplication and has been
+  removed (its shellcheck step is absorbed by the shared branch).
 - **Stale `.SRCINFO` in 10 of 17 tracked packages — FIXED.** Was: confirmed by actually running `makepkg --printsrcinfo` and diffing against the committed file (real mismatch — `filesystem/.SRCINFO` still described the pre-rebrand "Base Arch Linux files" while `PKGBUILD` was "Base Shani OS files", plus `foo2zjs-nightly`, `game-devices-udev`, `gnome-shell-extension-gsconnect`, `hplip-minimal`, `lsb-release`, `plasma-setup-git`, `shim-signed`, `snapd`, `waydroid-helper`). All 10 regenerated via a real `makepkg --printsrcinfo` run in the builder container (`--user builduser`, a writable scratch copy to work around real-Docker's lack of `--userns=keep-id`) and committed.
 - **19 of 41 PKGBUILDs have no `url=` — FIXED.** Was: confirmed by grep and independently by `namcap` ("E/W: Missing url") on `shani-core`/`shani-network`. All 19 (`desktop-entry-hider`, `shani-accessibility`, `shani-bluetooth`, `shani-core`, `shani-desktop-cosmic`, `shani-desktop-gnome`, `shani-desktop-plasma`, `shani-fonts`, `shani-multimedia`, `shani-network`, `shani-peripherals`, `shani-printer`, `shani-scanner`, `shani-storage`, `shani-tools-extra`, `shani-tools-network`, `shani-tools`, `shani-video-guest`, `shani-video`) now have `url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/<pkgname>"` (they're first-party metapackages with no separate upstream repo, so their own subdirectory in this repo is the correct URL — matching the convention `os-installer-config` already used), `pkgrel` bumped on each.
 - **3 PKGBUILDs have no `# Maintainer:` line — FIXED.** Was: `desktop-entry-hider/PKGBUILD:1`, `plasma-setup-git/PKGBUILD:1`, `shani-deploy/PKGBUILD:1` (namcap-confirmed on the last). All 3 now have the standard `# Maintainer:` line, `pkgrel` bumped.
