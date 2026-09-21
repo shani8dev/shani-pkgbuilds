@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "shani@shani.dev",
+                "Name": "Shani OS Team"
+            }
+        ],
+        "Category": "",
+        "Dependencies": [],
+        "EnabledByDefault": true,
+        "Description": "Saturn theme for Yakuake - Coral accent",
+        "Id": "Saturn",
+        "License": "GPL-3.0-or-later",
+        "Name": "Saturn",
+        "Version": "1.0",
+        "Website": "https://shani.dev"
+    }
+}

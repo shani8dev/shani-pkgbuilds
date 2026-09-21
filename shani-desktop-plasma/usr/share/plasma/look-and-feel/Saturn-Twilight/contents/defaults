@@ -1,26 +1,29 @@
 [kdeglobals][KDE]
 widgetStyle=kvantum
-DefaultLightLookAndFeel=Saturn-Light
-DefaultDarkLookAndFeel=Saturn
+DefaultLightLookAndFeel=Saturn
+DefaultDarkLookAndFeel=Saturn-Dark
 # Twilight is a deliberate fixed mood - do not auto-flip it day/night
 AutomaticLookAndFeel=false
 LookAndFeelPackage=Saturn-Twilight
+AnimationDurationFactor=0.75
 
 [kdeglobals][General]
-ColorScheme=SaturnTwilight
+AccentColor=255,127,80
+ColorScheme=SaturnDark
 SingleClick=false
 ShowDeleteCommand=true
 ShowPreview=false
 Font=Noto Sans,10,-1,5,50,0,0,0,0,0
 
 [kdeglobals][Icons]
-Theme=Saturn
+Theme=breeze-dark
 
 [kvantum.kvconfig][General]
-theme=SaturnTwilight
+theme=SaturnDark
 
 [plasmarc][Theme]
-name=breeze-dark
+name=Saturn-Dark
+theme=SaturnDark
 
 [kscreenlockerrc][Greeter]
 WallpaperPlugin=org.kde.image
@@ -42,58 +45,21 @@ Active=true
 NightTemperature=4300
 
 [kwinrc][Plugins]
-overviewEnabled=true
-coverswitchEnabled=true
-translucencyEnabled=true
-backgroundblurEnabled=true
-backgroundcontrastEnabled=true
 blurEnabled=true
+overviewEnabled=true
+slideEnabled=true
+fadeEnabled=true
+windowapertureEnabled=true
+diminactiveEnabled=true
 wobblywindowsEnabled=true
 magiclampEnabled=true
-desktopgridEnabled=true
 
 [kwinrc][Effect-blur]
 enabled=true
-radius=10
-deviation=20
-brightness=1.05
-contrast=1.05
-saturation=1.05
-noise=0.015
-
-[kwinrc][Effect-translucency]
-enabled=true
-blurEnabled=true
-noise=0.015
-brightness=1.0
-contrast=1.05
-saturation=1.05
-
-[kwinrc][Effect-backgroundblur]
-enabled=true
-radius=14
-deviation=28
-brightness=1.08
-contrast=1.08
-saturation=1.05
-noise=0.015
-
-[kwinrc][Effect-backgroundcontrast]
-enabled=true
-contrast=1.25
-intensity=0.35
-saturation=1.15
-
-[kwinrc][Plugins]
-overviewEnabled=true
-coverswitchEnabled=true
-translucencyEnabled=true
-backgroundblurEnabled=true
-backgroundcontrastEnabled=true
-blurEnabled=true
-wobblywindowsEnabled=true
-magiclampEnabled=true
-desktopgridEnabled=true
+# KWin 6 keys only — Plasma 5's radius/deviation/brightness/contrast are ignored
+BlurStrength=10
+NoiseStrength=0
+Saturation=105
 
 [kwinrc][ElectricBorders]
 ElectricBorderMaximize=true
@@ -115,12 +81,29 @@ LayoutName=org.kde.breeze.desktop
 LayoutName=org.kde.breeze.desktop
 
 [kwinrc][org.kde.kdecoration2]
-library=org.kde.kwin.aurorae
-theme=Saturn
-BorderSize=None
+library=org.kde.breeze
+theme=Breeze
+BorderSize=Normal
 BorderSizeAuto=false
 ButtonsOnLeft=XIA
 ButtonsOnRight=
+
+[breezerc][Common]
+# Breeze reads decoration settings from breezerc, not kwinrc
+RoundedCorners=true
+ShadowSize=ShadowLarge
+ShadowStrength=200
+ShadowColor=0,2,5
+OutlineCloseButton=true
+
+[breezerc][Windeco]
+DrawBackgroundGradient=false
+
+[kwinrc][Effect-windowaperture]
+enabled=true
+radius=120
+borderWidth=2
+borderColor=255,127,80,60
 
 [ElectricBorders]
 ElectricBorderMaximize=true
@@ -135,7 +118,7 @@ gtk-theme-name=Breeze-Dark
 gtk-theme-name=Breeze-Dark
 gtk-application-prefer-dark-theme=true
 gtk-font-name=Noto Sans, 10
-gtk-icon-theme-name=Saturn
+gtk-icon-theme-name=breeze-dark
 gtk-cursor-theme-name=Saturn
 gtk-cursor-theme-size=24
 gtk-decoration-layout=icon:minimize,maximize,close
@@ -148,7 +131,7 @@ gtk-enable-input-feedback-sounds=true
 gtk-theme-name=Breeze-Dark
 gtk-application-prefer-dark-theme=true
 gtk-font-name=Noto Sans, 10
-gtk-icon-theme-name=Saturn
+gtk-icon-theme-name=breeze-dark
 gtk-cursor-theme-name=Saturn
 gtk-cursor-theme-size=24
 gtk-decoration-layout=icon:minimize,maximize,close

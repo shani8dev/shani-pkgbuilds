@@ -1,1 +1,0 @@
-../../../Saturn/contents/splash/Splash.qml

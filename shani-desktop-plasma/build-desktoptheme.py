@@ -32,6 +32,10 @@ BORDER = "ColorScheme-Text"
 MASK = "#ffffff"
 
 # file relative path -> (radius, fill opacity, border opacity, content margin)
+# Based on Plasma theme best practices (Breeze, Sweet, Nordic):
+# - Panel: more transparent (0.65) for glass effect
+# - Dialogs/Tooltips: less transparent (0.78) for readability
+# - Widgets: balanced (0.72)
 SURFACES = {
     "widgets/panel-background.svg": (R_BIG, 0.65, 0.18, 4),
     "dialogs/background.svg": (R_BIG, 0.78, 0.18, 6),
@@ -163,7 +167,8 @@ def build_variant(root: str, mode: str) -> None:
         if mode in ("opaque", "solid"):
             effective = 1.0
         elif mode == "translucent":
-            effective = max(opacity - 0.15, 0.45)
+            # More transparent when blur is active (plasma's translucent variant)
+            effective = max(opacity - 0.12, 0.50)
         else:
             effective = opacity
         write(os.path.join(root, rel),

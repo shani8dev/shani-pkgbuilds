@@ -43,3 +43,11 @@ repos:
         language: script
         files: ^shani-keyring/PKGBUILD$
         pass_filenames: false
+
+      - id: check-contrast
+        name: check-contrast
+        description: WCAG contrast audit for the Saturn colour schemes.
+        entry: python3 shani-desktop-plasma/check-contrast.py
+        language: system
+        files: ^shani-desktop-plasma/.*\.colors$
+        pass_filenames: false

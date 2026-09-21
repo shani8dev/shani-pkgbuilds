@@ -22,22 +22,62 @@ if [ -z "$(kreadconfig6 --file kdeglobals --group General --key widgetStyle 2>/d
   kwriteconfig6 --file kdeglobals --group General --key widgetStyle "kvantum" 2>/dev/null
 fi
 
-# --- KWin decoration + Plasma theme: seed when absent, never overwrite ---
-# A missing aurorae theme= leaves windows with a broken/unstyled fallback
-# (observed live), and a missing Plasma theme leaves the shell on whatever
-# fallback it guesses. An explicitly different value is the user's choice
-# and is left alone.
+# --- KWin decoration: seed Breeze when absent, never overwrite ---
+# Breeze follows the active color scheme (coral accent included) and needs
+# no per-variant theme files. An explicitly different value is the user's
+# choice and is left alone.
 if [ -z "$(kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme 2>/dev/null)" ]; then
-  # Plain theme name: the __aurorae__svg__-prefixed Plasma 5 form is
-  # rejected on write (verified live — the key never lands), v2 wants
-  # the bare name.
-  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "Saturn" 2>/dev/null
+  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library "org.kde.breeze" 2>/dev/null
+  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "Breeze" 2>/dev/null
 fi
 
+# --- Blur: seed when absent, never overwrite ---
+# NOTE (Plasma 6): the old Translucency/BackgroundBlur/BackgroundContrast
+# effects are gone — kwin's built-in `blur` effect (plus Kvantum's
+# translucent_windows+blurring and the translucent Breeze panel) is the
+# entire blur path. Only these keys are live; anything else is dead config.
+seed_kwin() { # $1=group $2=key $3=value
+  if [ -z "$(kreadconfig6 --file kwinrc --group "$1" --key "$2" 2>/dev/null)" ]; then
+    kwriteconfig6 --file kwinrc --group "$1" --key "$2" "$3" 2>/dev/null
+  fi
+}
+seed_kwin Plugins blurEnabled true
+seed_kwin Effect-blur enabled true
+seed_kwin Effect-blur BlurStrength 40
+seed_kwin Effect-blur NoiseStrength 0
+seed_kwin Effect-blur Saturation 105
+# Background contrast for better text readability on blurred backgrounds
+seed_kwin Effect-backgroundcontrast enabled true
+seed_kwin Effect-backgroundcontrast contrast 0.15
+seed_kwin Effect-backgroundcontrast intensity 1.1
+seed_kwin Effect-backgroundcontrast saturation 1.05
+
+# --- Accent: scheme coral is the single source of truth ---
+# Every Saturn .colors file declares accentcolor=#ff7f50 (255,127,80).
+# A custom AccentColor/LastUsedCustomAccentColor left in kdeglobals (e.g.
+# from an old System Settings pick) overrides that scheme value and tints
+# selection/focus/link away from coral — force the scheme value so the
+# whole desktop matches the Bibata cursor.
+seed_accent() {
+  if [ "$(kreadconfig6 --file kdeglobals --group General --key AccentColor 2>/dev/null)" != "255,127,80" ]; then
+    kwriteconfig6 --file kdeglobals --group General --key AccentColor "255,127,80" 2>/dev/null
+  fi
+}
+seed_accent
+
+# Normalize legacy aliases to canonical schemes
 case "$scheme" in
-  SaturnDark)     kvantum_target=Saturn;         gtk_dark=true;  gtk_icons=Saturn;      konsole_scheme=SaturnDark     ;;
-  SaturnLight)    kvantum_target=SaturnLight;    gtk_dark=false; gtk_icons=SaturnLight; konsole_scheme=SaturnLight    ;;
-  SaturnTwilight) kvantum_target=SaturnTwilight; gtk_dark=true;  gtk_icons=Saturn;      konsole_scheme=SaturnTwilight ;;
+  SaturnLight)
+    scheme="Saturn"
+    ;;
+  SaturnTwilight)
+    scheme="SaturnDark"
+    ;;
+esac
+
+case "$scheme" in
+  SaturnDark)     kvantum_target=SaturnDark;      gtk_dark=true;  gtk_icons=breeze-dark; konsole_scheme=SaturnDark  ;;
+  Saturn)         kvantum_target=Saturn;          gtk_dark=false; gtk_icons=breeze;      konsole_scheme=Saturn ;;
   *) exit 0 ;;
 esac
 

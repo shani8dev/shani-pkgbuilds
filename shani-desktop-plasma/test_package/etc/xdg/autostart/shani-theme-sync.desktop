@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Shani Theme Sync
+Comment=Keeps Kvantum, GTK app style, and Konsole colors in sync with the active Saturn color scheme
+Exec=/usr/lib/shani/shani-theme-sync.sh
+OnlyShowIn=KDE;
+NoDisplay=true
+X-KDE-autostart-phase=1
