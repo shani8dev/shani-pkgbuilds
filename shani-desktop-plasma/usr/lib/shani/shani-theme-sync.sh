@@ -9,6 +9,31 @@
 
 scheme=$(kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null)
 
+# NOTE: do NOT try to seed a missing ColorScheme key via kwriteconfig6 —
+# a live Plasma session strips that key back out immediately (verified:
+# written value reads back via kreadconfig but never lands in the file),
+# so persist nothing and just default in memory.
+if [ -z "$scheme" ]; then
+  scheme="SaturnDark"
+fi
+# Unlike ColorScheme, widgetStyle DOES stick — and without it Qt apps
+# ignore Kvantum entirely even when its theme is correctly selected.
+if [ -z "$(kreadconfig6 --file kdeglobals --group General --key widgetStyle 2>/dev/null)" ]; then
+  kwriteconfig6 --file kdeglobals --group General --key widgetStyle "kvantum" 2>/dev/null
+fi
+
+# --- KWin decoration + Plasma theme: seed when absent, never overwrite ---
+# A missing aurorae theme= leaves windows with a broken/unstyled fallback
+# (observed live), and a missing Plasma theme leaves the shell on whatever
+# fallback it guesses. An explicitly different value is the user's choice
+# and is left alone.
+if [ -z "$(kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme 2>/dev/null)" ]; then
+  # Plain theme name: the __aurorae__svg__-prefixed Plasma 5 form is
+  # rejected on write (verified live — the key never lands), v2 wants
+  # the bare name.
+  kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "Saturn" 2>/dev/null
+fi
+
 case "$scheme" in
   SaturnDark)     kvantum_target=Saturn;         gtk_dark=true;  gtk_icons=Saturn;      konsole_scheme=SaturnDark     ;;
   SaturnLight)    kvantum_target=SaturnLight;    gtk_dark=false; gtk_icons=SaturnLight; konsole_scheme=SaturnLight    ;;

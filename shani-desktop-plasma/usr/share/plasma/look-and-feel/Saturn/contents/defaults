@@ -115,7 +115,7 @@ LayoutName=org.kde.breeze.desktop
 
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.kwin.aurorae
-theme=__aurorae__svg__Saturn
+theme=Saturn
 BorderSize=None
 BorderSizeAuto=false
 ButtonsOnLeft=XIA

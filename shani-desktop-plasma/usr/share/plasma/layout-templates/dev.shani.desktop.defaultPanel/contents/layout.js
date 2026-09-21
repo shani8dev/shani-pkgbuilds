@@ -45,7 +45,7 @@ if (knownWidgetTypes.includes("org.kde.windowbuttons")) {
   buttons.writeConfig("lengthLastMargin", 6)
   buttons.writeConfig("lengthMarginsLock", false)
   buttons.writeConfig("selectedPlugin", "org.kde.kwin.aurorae")
-  buttons.writeConfig("selectedTheme", "__aurorae__svg__Saturn")
+  buttons.writeConfig("selectedTheme", "Saturn")
   buttons.writeConfig("spacing", 6)
   buttons.writeConfig("useCurrentDecoration", true)
   buttons.writeConfig("useDecorationMetrics", false)
