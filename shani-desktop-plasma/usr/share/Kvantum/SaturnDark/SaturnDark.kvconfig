@@ -1,9 +1,9 @@
 # Saturn (ShaniOS) Kvantum theme
 # Derived from MacTahoe KDE theme (c) Vince Liuice, GPL-3.0
 [%General]
-theme=Saturn
+theme=SaturnDark
 author=Shani OS Team; original MacTahoe by Vince Liuice
-comment=Saturn (ShaniOS) light theme with translucency; derived from MacTahoe (c) Vince Liuice
+comment=Saturn Dark (ShaniOS); derived from MacTahoe (c) Vince Liuice
 
 x11drag=all
 alt_mnemonic=true
@@ -70,29 +70,29 @@ menu_blur_radius=8
 tooltip_blur_radius=6
 
 [GeneralColors]
-window.color=#242424
-inactive.window.color=#242424
-base.color=#242424
-inactive.base.color=#242424
-alt.base.color=#2d2d2d
-inactive.alt.base.color=#282828
-button.color=#656565
-light.color=#5a5a5a
-mid.light.color=#555555
-dark.color=#202020
-mid.color=#3c3c3c
+window.color=#f5f5f5
+inactive.window.color=#f5f5f574
+base.color=#ffffff
+inactive.base.color=#ffffff74
+alt.base.color=#fafafa
+inactive.alt.base.color=#fafafa74
+button.color=#ffffff
+light.color=#ffffff
+mid.light.color=#eeeeee
+dark.color=#bbbbbb
+mid.color=#dddddd
 highlight.color=#ff7f50
 inactive.highlight.color=#ff7f50
-text.color=#dedede
-inactive.text.color=#bfbfbf
-window.text.color=#dedede
-inactive.window.text.color=#bfbfbf
-button.text.color=#dedede
-disabled.text.color=#bfbfbf
-tooltip.base.color=#333333
-tooltip.text.color=#dedede
+text.color=#333333
+inactive.text.color=#666666
+window.text.color=#333333
+inactive.window.text.color=#666666
+button.text.color=#333333
+disabled.text.color=#33333374
+tooltip.base.color=#f5f5f5
+tooltip.text.color=#333333
 highlight.text.color=#ffffff
-inactive.highlight.text.color=#f5f5f5
+inactive.highlight.text.color=#343434
 link.color=#ff7f50
 link.visited.color=#452886
 progress.indicator.text.color=#ffffff
@@ -134,11 +134,11 @@ frame.left=3
 frame.right=3
 interior=true
 interior.element=button
-text.normal.color=#dedede
-text.focus.color=#dedede
-text.press.color=#ffffff
+text.normal.color=#333333
+text.focus.color=#242424
+text.press.color=#242424
 text.toggle.color=#ffffff
-text.normal.inactive.color=#dedede74
+text.normal.inactive.color=#33333374
 text.toggle.inactive.color=#ffffff74
 text.shadow=false
 text.margin=6
@@ -168,22 +168,22 @@ frame.element=menuitem
 interior=true
 interior.element=menuitem
 indicator.element=arrow
-text.normal.color=#dedede
-text.focus.color=#ffffff
-text.press.color=#ffffff
+text.normal.color=#333333
+text.focus.color=#242424
+text.press.color=#242424
 text.toggle.color=#ffffff
-text.normal.inactive.color=#dedede74
+text.normal.inactive.color=#33333374
 
 [MenuBar]
 frame=true
 frame.element=menubar
 interior=true
 interior.element=menubar
-text.normal.color=#dedede
-text.focus.color=#ffffff
-text.press.color=#ffffff
+text.normal.color=#333333
+text.focus.color=#242424
+text.press.color=#242424
 text.toggle.color=#ffffff
-text.normal.inactive.color=#dedede74
+text.normal.inactive.color=#33333374
 frame.expansion=0
 text.bold=false
 
@@ -200,11 +200,11 @@ frame=true
 frame.element=menubaritem
 interior=true
 interior.element=menubaritem
-text.normal.color=#dedede
-text.focus.color=#ffffff
-text.press.color=#ffffff
+text.normal.color=#333333
+text.focus.color=#242424
+text.press.color=#242424
 text.toggle.color=#ffffff
-text.normal.inactive.color=#dedede74
+text.normal.inactive.color=#33333374
 
 # --- Remaining sections preserved manually ---
 # Run: python3 build-kvantum.py --regenerate-svg to update SVG opacities
