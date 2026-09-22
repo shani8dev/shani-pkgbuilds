@@ -25,7 +25,7 @@ depends=(
     'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('e466e65c6e5616da0593c1dbcaada19cb0515b2f17d947d392ac53d35c97f30f')
+sha256sums=('SKIP')
 makedepends=('git')
 
 package() {
