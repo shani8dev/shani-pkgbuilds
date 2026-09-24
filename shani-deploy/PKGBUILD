@@ -2,7 +2,7 @@
 pkgname=shani-deploy
 pkgver=0.0.1
 pkgrel=83
-_commit='473cc0544bbd89fb0a62e7dbb5c934773bfb8245'  # Replace with the specific commit hash
+_commit='de7c68c8dde96082ea7fa70e3521b1b4a0ba491d'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
@@ -25,7 +25,7 @@ depends=(
     'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('ab4d87fc56d4fe889dc1ef939457b933f3f44643bc2c52d9f2b53e61bc991ce1')
+sha256sums=('88138af43988a8cd614292e0d6bcf75ab6bcc5f32b963378e837ca7fc0ef8758')
 makedepends=('git')
 
 package() {

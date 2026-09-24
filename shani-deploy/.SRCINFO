@@ -22,7 +22,7 @@ pkgbase = shani-deploy
 	depends = duperemove
 	depends = compsize
 	depends = bees
-	source = git+https://github.com/shani8dev/shani-deploy.git#commit=473cc0544bbd89fb0a62e7dbb5c934773bfb8245
-	sha256sums = ab4d87fc56d4fe889dc1ef939457b933f3f44643bc2c52d9f2b53e61bc991ce1
+	source = git+https://github.com/shani8dev/shani-deploy.git#commit=de7c68c8dde96082ea7fa70e3521b1b4a0ba491d
+	sha256sums = 88138af43988a8cd614292e0d6bcf75ab6bcc5f32b963378e837ca7fc0ef8758
 
 pkgname = shani-deploy
