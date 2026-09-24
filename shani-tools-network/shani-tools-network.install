@@ -4,5 +4,7 @@ post_install() {
 
 post_upgrade() {
 	systemctl enable vnstat.service
-	systemctl enable arpwatch.service
+	# Arch ships only the arpwatch@.service template (no plain arpwatch.service);
+	# eth0 matches the documented default in docs/networking/arpwatch.md.
+	systemctl enable arpwatch@eth0.service
 }
