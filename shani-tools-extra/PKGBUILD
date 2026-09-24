@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=11
+pkgrel=12
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-extra"
@@ -32,6 +32,9 @@ depends=(
     jq
     micro
     texinfo
+    tealdeer      # `tldr <cmd>` example pages
+    ripgrep       # rg; was only on Plasma, pulled in transitively by KTextEditor
+    man-pages     # Linux/POSIX section 2/3/7 pages (man-db alone has none)
 
     # Version control
     subversion

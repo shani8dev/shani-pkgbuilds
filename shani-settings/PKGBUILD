@@ -2,13 +2,13 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=41
+pkgrel=42
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL-3.0-only')
 pkgdesc="Shani OS settings"
 
-_commit='fabac39ca03e6a58b0f161b65f39bc2b1b8f6c95'
+_commit='2b6703e68bf9226305f0340ddbcae2de60e9a5c5'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')
 
@@ -30,10 +30,17 @@ depends=(
   'starship'
   'fzf'
   'mcfly'
+  # referenced by the shipped shell/git configs (usr/share/shani/shell,
+  # etc/gitconfig): delta is git's pager, so it must be present
+  'git-delta'
+  'bat'
+  'eza'
+  'fd'
+  'zoxide'
   'samba'
 )
 makedepends=('polkit')
-backup=(etc/sudoers.d/{editor,insults,pwfeedback})
+backup=(etc/sudoers.d/{editor,insults,pwfeedback} etc/gitconfig etc/tmux.conf)
 install="$pkgname.install"
 
 package() {
@@ -43,17 +50,17 @@ package() {
   cp -r "$srcdir/$pkgname-${_commit}/etc" "$pkgdir/"
   cp -r "$srcdir/$pkgname-${_commit}/usr" "$pkgdir/"
 
-  # Fix permissions for sudoers drop-in files (Lynis AUTH + FILE-7524)
-  # sudo requires 0440 (root:root) — anything else causes sudo to refuse the file
-  chmod 0440 "$pkgdir/etc/sudoers.d/editor"
-  chmod 0440 "$pkgdir/etc/sudoers.d/insults"
-  chmod 0440 "$pkgdir/etc/sudoers.d/pwfeedback"
-  chmod 0440 "$pkgdir/etc/sudoers.d/wheel"
-
-  # Fix permissions for security-sensitive configs
-  chmod 750 -R "$pkgdir/etc/sudoers.d"
-  chmod 750 -R "$pkgdir/usr/share/polkit-1/rules.d"
-  chown -R root:polkitd "$pkgdir/usr/share/polkit-1/rules.d"
+  # Permissions for security-sensitive configs (Lynis AUTH + FILE-7524).
+  # Directory modes are set on the directories ONLY: a recursive
+  # `chmod 750 -R` here used to run after the per-file modes and reset every
+  # sudoers drop-in to 0750 (executable; `visudo -c`: "bad permissions,
+  # should be mode 0440") and every polkit rule to 0750.
+  chmod 750 "$pkgdir/etc/sudoers.d"
+  chmod 0440 "$pkgdir"/etc/sudoers.d/*
+  # rules.d itself is owned by Arch's polkit package as 755 root:root;
+  # a different mode/owner here is a pacman "permissions differ" conflict.
+  chmod 755 "$pkgdir/usr/share/polkit-1/rules.d"
+  chmod 0644 "$pkgdir"/usr/share/polkit-1/rules.d/*
 
   # Fix skel directory permissions — git does not preserve them
   chmod 700 "$pkgdir/etc/skel/.ssh"

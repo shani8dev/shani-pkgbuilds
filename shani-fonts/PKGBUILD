@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-fonts
 pkgver=1.3
-pkgrel=4
+pkgrel=5
 pkgdesc="Fonts for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-fonts"
@@ -15,6 +15,13 @@ depends=(
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
+    # Nerd Font glyphs as a fontconfig fallback for monospace fonts (GTK
+    # terminals): the starship prompt, eza icons and the tmux status bar
+    ttf-nerd-fonts-symbols-mono
+    # Terminal font (20 MiB; JetBrains Mono Nerd is 232 MiB). Qt (Konsole,
+    # Yakuake) does no fallback for BMP private-use glyphs, so the Konsole
+    # profile needs a Nerd-patched font, not just the symbols fallback
+    otf-firamono-nerd
 )
 license=('GPL-3.0-only')
 package() {
