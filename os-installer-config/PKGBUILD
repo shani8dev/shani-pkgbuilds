@@ -2,8 +2,8 @@
 
 pkgname=os-installer-config
 pkgver=0.0.1
-pkgrel=91
-_commit='b64ccdaa0b9fcb4a63d639ca8cb88548a8e7a107'  # Replace with the specific commit hash
+pkgrel=92
+_commit='80c2f4405ff4e776726caf90f0e4066e46d9c11c'  # Replace with the specific commit hash
 pkgdesc="Default Shani OS configuration files for the os-installer"
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
 arch=('any')
@@ -12,7 +12,7 @@ depends=('bash' 'python' 'python-yaml')
 
 # Using a specific commit from GitHub as the source
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('SKIP')  # Replace 'SKIP' with actual checksum if desired
+sha256sums=('941c7b427eea36e5a78083fbd1f11c5e01ae44282a7f41c7bf819b8d2e2d3b14')
 makedepends=('git')
 package() {
   install -d "$pkgdir/etc/os-installer"
