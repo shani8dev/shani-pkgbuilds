@@ -9,21 +9,23 @@ AnimationDurationFactor=0.75
 
 [kdeglobals][General]
 AccentColor=255,127,80
-ColorScheme=SaturnDark
+ColorScheme=Saturn
 SingleClick=false
 ShowDeleteCommand=true
 ShowPreview=false
 Font=Noto Sans,10,-1,5,50,0,0,0,0,0
+# system fixed-width font (Konsole, Yakuake, Kate...): Nerd-patched, since Qt
+# does no fallback for the prompt's private-use glyphs
+fixed=FiraMono Nerd Font,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 
 [kdeglobals][Icons]
-Theme=breeze-dark
+Theme=breeze
 
 [kvantum.kvconfig][General]
-theme=SaturnDark
+theme=Saturn
 
 [plasmarc][Theme]
 name=Saturn-Dark
-theme=SaturnDark
 
 [kscreenlockerrc][Greeter]
 WallpaperPlugin=org.kde.image
@@ -32,7 +34,7 @@ WallpaperPlugin=org.kde.image
 Image=file:///usr/share/wallpapers/Saturn/contents/images_twilight/1920x1080.png
 
 [Wallpaper]
-Image=file:///usr/share/wallpapers/Saturn/contents/images_twilight/1920x1080.png
+Image=Saturn-Twilight
 
 [kcminputrc][Mouse]
 cursorTheme=Saturn
@@ -55,9 +57,8 @@ wobblywindowsEnabled=true
 magiclampEnabled=true
 
 [kwinrc][Effect-blur]
-enabled=true
 # KWin 6 keys only — Plasma 5's radius/deviation/brightness/contrast are ignored
-BlurStrength=10
+BlurStrength=15
 NoiseStrength=0
 Saturation=105
 
@@ -81,12 +82,12 @@ LayoutName=org.kde.breeze.desktop
 LayoutName=org.kde.breeze.desktop
 
 [kwinrc][org.kde.kdecoration2]
-library=org.kde.breeze
-theme=Breeze
+library=org.kde.kwin.aurorae.v2
+theme=__aurorae__svg__Saturn
 BorderSize=Normal
 BorderSizeAuto=false
 ButtonsOnLeft=XIA
-ButtonsOnRight=
+ButtonsOnRight=SFBLHM
 
 [breezerc][Common]
 # Breeze reads decoration settings from breezerc, not kwinrc
@@ -99,12 +100,6 @@ OutlineCloseButton=true
 [breezerc][Windeco]
 DrawBackgroundGradient=false
 
-[kwinrc][Effect-windowaperture]
-enabled=true
-radius=120
-borderWidth=2
-borderColor=255,127,80,60
-
 [ElectricBorders]
 ElectricBorderMaximize=true
 ElectricBorderTiling=true
@@ -112,13 +107,13 @@ ElectricBorderCornerTiling=true
 ElectricBorderCornerRatio=0.25
 
 [.gtkrc-2.0]
-gtk-theme-name=Breeze-Dark
+gtk-theme-name=Breeze
 
 [gtk-3.0/settings.ini][Settings]
-gtk-theme-name=Breeze-Dark
-gtk-application-prefer-dark-theme=true
+gtk-theme-name=Breeze
+gtk-application-prefer-dark-theme=false
 gtk-font-name=Noto Sans, 10
-gtk-icon-theme-name=breeze-dark
+gtk-icon-theme-name=breeze
 gtk-cursor-theme-name=Saturn
 gtk-cursor-theme-size=24
 gtk-decoration-layout=icon:minimize,maximize,close
@@ -128,10 +123,10 @@ gtk-enable-event-sounds=true
 gtk-enable-input-feedback-sounds=true
 
 [gtk-4.0/settings.ini][Settings]
-gtk-theme-name=Breeze-Dark
-gtk-application-prefer-dark-theme=true
+gtk-theme-name=Breeze
+gtk-application-prefer-dark-theme=false
 gtk-font-name=Noto Sans, 10
-gtk-icon-theme-name=breeze-dark
+gtk-icon-theme-name=breeze
 gtk-cursor-theme-name=Saturn
 gtk-cursor-theme-size=24
 gtk-decoration-layout=icon:minimize,maximize,close

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="16" viewBox="0 0 140 16">
+<style type="text/css" id="current-color-scheme">.ColorScheme-HeaderBackground{color:#2d2c3b;}.ColorScheme-HeaderText{color:#dedee1;}</style>
+<g id="active-center" transform="translate(0 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="#ef4136" fill-opacity="1"/></g>
+<g id="hover-center" transform="translate(20 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="#ef4136" fill-opacity="1"/><path d="M5.3 5.3 L10.7 10.7 M10.7 5.3 L5.3 10.7" fill="none" stroke="#2a1610" stroke-opacity="0.75" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="pressed-center" transform="translate(40 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="#ef4136" fill-opacity="0.7"/><path d="M5.3 5.3 L10.7 10.7 M10.7 5.3 L5.3 10.7" fill="none" stroke="#2a1610" stroke-opacity="0.85" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="inactive-center" transform="translate(60 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="currentColor" class="ColorScheme-HeaderText" fill-opacity="0.22"/></g>
+<g id="hover-inactive-center" transform="translate(80 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="#ef4136" fill-opacity="1"/><path d="M5.3 5.3 L10.7 10.7 M10.7 5.3 L5.3 10.7" fill="none" stroke="#2a1610" stroke-opacity="0.75" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g id="deactivated-center" transform="translate(100 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="currentColor" class="ColorScheme-HeaderText" fill-opacity="0.12"/></g>
+<g id="deactivated-inactive-center" transform="translate(120 0)"><rect width="16" height="16" fill="#000000" fill-opacity="0"/><circle cx="8" cy="8" r="6.5" fill="currentColor" class="ColorScheme-HeaderText" fill-opacity="0.1"/></g>
+</svg>

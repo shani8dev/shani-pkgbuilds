@@ -1,1 +1,0 @@
-../../../Saturn-Dark/contents/splash/Splash.qml

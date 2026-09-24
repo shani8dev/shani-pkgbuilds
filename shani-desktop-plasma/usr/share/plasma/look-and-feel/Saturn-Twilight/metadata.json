@@ -12,8 +12,9 @@
         "EnabledByDefault": true,
         "Id": "Saturn-Twilight",
         "License": "GPL-3.0-or-later",
-        "Name": "Saturn-Twilight",
+        "Name": "Saturn Twilight",
         "Version": "1.0",
-        "Website": "https://shani.dev"
+        "Website": "https://shani.dev",
+        "Description": "Shani at dusk: light apps beneath the night-sky shell, as day turns to night."
     }
 }

@@ -1,7 +1,7 @@
 pkgbase = shani-desktop-plasma
 	pkgdesc = PLASMA desktop environment for Shani OS
 	pkgver = 1.0
-	pkgrel = 34
+	pkgrel = 36
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-plasma
 	install = shani-desktop-plasma.install
 	arch = any

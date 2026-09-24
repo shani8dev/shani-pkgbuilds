@@ -1,18 +1,11 @@
 [Effect-blur]
 # Enable blur effect for windows/panels
-enabled=true
 # KWin 6 keys only — Plasma 5's radius/deviation/brightness/contrast are ignored
-# BlurStrength: 0-255, higher = more blur. 30-50 is a good balance for glass effect.
-BlurStrength=40
+# BlurStrength: 1-15 ONLY (KWin indexes a 15-entry table with it; a larger
+# value reads past it and crashes KWin as soon as blur renders). 15 = strongest.
+BlurStrength=15
 NoiseStrength=0
 Saturation=105
-
-[Effect-backgroundcontrast]
-# Subtle contrast boost for better text readability on blurred backgrounds
-enabled=true
-contrast=0.15
-intensity=1.1
-saturation=1.05
 
 [Effect-wobblywindows]
 Drag=85
@@ -20,33 +13,7 @@ Stiffness=10
 WobblynessLevel=1
 
 [Effect-magiclamp]
-enabled=true
-duration=350
-direction=0
-
-[Effect-overview]
-enabled=true
-blurEnabled=true
-borderWidth=0
-borderColor=0,0,0,180
-scale=0.12
-grid=true
-showDesktops=true
-
-[Effect-windowaperture]
-enabled=true
-radius=120
-borderWidth=2
-borderColor=255,127,80,60
-
-[Effect-slide]
-enabled=true
-
-[Effect-fade]
-enabled=true
-
-[Effect-diminactive]
-enabled=true
+AnimationDuration=350
 
 [Plugins]
 blurEnabled=true
@@ -80,10 +47,13 @@ Scale=1
 [org.kde.kdecoration2]
 BorderSize=Normal
 BorderSizeAuto=false
-ButtonsOnLeft=XAI
-ButtonsOnRight=
-library=org.kde.breeze
-theme=Breeze
+ButtonsOnLeft=XIA
+# every KWin button: on all desktops, keep above/below, shade, help, and the
+# window menu (drawn as the app's icon)
+ButtonsOnRight=SFBLHM
+# Saturn decoration (build-aurorae.py): Aurorae v2, the C++ engine
+library=org.kde.kwin.aurorae.v2
+theme=__aurorae__svg__Saturn-Dark
 
 [DesktopSwitcher]
 LayoutName=org.kde.breeze.desktop

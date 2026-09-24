@@ -1,37 +1,42 @@
 [Description]
 Skin=Saturn
-Author=Shani OS Team
-Email=shani@shani.dev
-Web=https://shani.dev
-Icon=logo.svg
+Author=Shani OS
+Email=shrinivas.v.kumbhar@gmail.com
+Icon=/icon.svg
 
 [Tabs]
-x=36
+x=38
 y=0
-red=223
-green=223
-blue=223
-selected_background=/tabs/tab_selected.svg
-unselected_background=/tabs/tab_unselected.svg
+red=35
+green=38
+blue=39
+selected_text_bold=false
+separator_image=/tabs/separator.svg
+selected_background=/tabs/selected_back.svg
+selected_left_corner=/tabs/selected_left.svg
+selected_right_corner=/tabs/selected_right.svg
+unselected_background=/tabs/unselected_back.svg
+unselected_left_corner=/tabs/unselected_side.svg
+unselected_right_corner=/tabs/unselected_side.svg
 prevent_closing_image=/tabs/lock.svg
-prevent_closing_image_x=0
-prevent_closing_image_y=9
+prevent_closing_image_x=4
+prevent_closing_image_y=10
 
 [Background]
-back_image=/tabs/background_center.svg
-left_corner=/tabs/background_left.svg
-right_corner=/tabs/background_right.svg
+back_image=/tabs/back_image.svg
+left_corner=/tabs/left_corner.svg
+right_corner=/tabs/right_corner.svg
 
 [PlusButton]
-x=2
-y=7
-up_image=/tabs/plus_up.svg
-over_image=/tabs/plus_over.svg
-down_image=/tabs/plus_down.svg
+x=8
+y=4
+up_image=/tabs/add_up.svg
+over_image=/tabs/add_over.svg
+down_image=/tabs/add_down.svg
 
 [MinusButton]
-x=22
-y=7
-up_image=/tabs/minus_up.svg
-over_image=/tabs/minus_over.svg
-down_image=/tabs/minus_down.svg
+x=32
+y=4
+up_image=/tabs/close_up.svg
+over_image=/tabs/close_over.svg
+down_image=/tabs/close_down.svg

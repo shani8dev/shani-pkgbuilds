@@ -9,7 +9,8 @@
         ],
         "Id": "Saturn",
         "License": "CC-BY-SA-4.0",
-        "Name": "Saturn"
+        "Name": "Saturn",
+        "Description": "Shani's raven beneath Saturn, by day and by night."
     },
     "X-KDE-PlasmaImageWallpaper-AccentColor": {
         "Dark": "#ff7f50",

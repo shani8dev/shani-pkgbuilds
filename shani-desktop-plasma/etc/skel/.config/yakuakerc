@@ -9,6 +9,11 @@ DynamicTabTitles=true
 Height=60
 KeepAbove=false
 ShowOnAllDesktops=false
-Skin=Saturn
 ToggleToFocus=true
 Width=70
+
+[Appearance]
+# Yakuake reads Skin from [Appearance] (yakuake.kcfg), not [Window]
+Skin=Saturn-Dark
+# frosted like the other Saturn windows (the profile has BlurBehind)
+Translucency=true

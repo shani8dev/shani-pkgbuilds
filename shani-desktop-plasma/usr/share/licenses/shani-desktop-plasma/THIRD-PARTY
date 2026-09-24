@@ -1,0 +1,19 @@
+Third-party work included in shani-desktop-plasma
+==================================================
+
+Kvantum themes Saturn and SaturnDark (usr/share/Kvantum/Saturn*)
+  Widget artwork and base configuration derived from the MacTahoe KDE theme
+  by Vince Liuice, https://github.com/vinceliuice/MacTahoe-kde
+  (commit cbf6a1f71b591d143184855d62f6272ce533e7c3), licensed LGPL-3.0.
+  Translucency/layout settings adapted from the Utterly-Round Transparent
+  Kvantum template by Himprakash Deka, GPL-2.0-or-later. Recoloured and
+  reconfigured for ShaniOS by build-kvantum.py / build-palette.py.
+
+Plasma styles Saturn and Saturn-Dark (usr/share/plasma/desktoptheme/Saturn*)
+  Utterly-Round Plasma Style by Himprakash Deka,
+  https://github.com/HimDek/Utterly-Round-Plasma-Style
+  (commit 7e011c19382f8afa99daac3226828ce82eaf4f13), licensed
+  GPL-2.0-or-later; full text in the style's LICENSE.md.
+
+Saturn cursors (usr/share/icons/Saturn)
+  Derived from Bibata Modern Amber by Abdulkaiz Khatri, GPL-3.0.

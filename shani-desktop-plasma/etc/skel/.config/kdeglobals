@@ -16,6 +16,9 @@ SingleClick=false
 ShowDeleteCommand=true
 ShowPreview=false
 Font=Noto Sans,10,-1,5,50,0,0,0,0,0
+# system fixed-width font (Konsole, Yakuake, Kate...): Nerd-patched, since Qt
+# does no fallback for the prompt's private-use glyphs
+fixed=FiraMono Nerd Font,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 
 [Icons]
 Theme=breeze-dark

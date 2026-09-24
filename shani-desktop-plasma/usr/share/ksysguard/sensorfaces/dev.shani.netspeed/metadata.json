@@ -1,0 +1,14 @@
+{
+    "KPackageStructure": "KSysguard/SensorFace",
+    "KPlugin": {
+        "Authors": [{"Name": "Shani OS", "Email": "shrinivas.v.kumbhar@gmail.com"}],
+        "Description": "Download and upload rates stacked in two compact lines, sized for a thin panel",
+        "Icon": "network-transmit-receive",
+        "Id": "dev.shani.netspeed",
+        "License": "GPL-3.0-or-later",
+        "Name": "Compact Network Speed",
+        "Version": "1.0",
+        "Website": "https://shani.dev"
+    },
+    "X-KDE-ParentApp": "org.kde.plasmashell"
+}

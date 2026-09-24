@@ -1,3 +1,0 @@
-[org/virt-manager/virt-manager/connections]
-uris=['qemu:///session']
-autoconnect=['qemu:///session']

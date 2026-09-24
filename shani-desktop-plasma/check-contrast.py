@@ -124,6 +124,41 @@ def audit(path: str) -> tuple[list[str], list[str], str]:
     return failures, warnings, scheme
 
 
+def check_konsole(root: str) -> int:
+    """Konsole ANSI colours must be legible on the scheme's own background:
+    4.5:1 for the hues, 3:1 for the slot that mirrors the background (black on
+    dark, white on light), and each intense colour distinct from its normal."""
+    import re
+    fails = 0
+    for path in sorted(glob.glob(os.path.join(root, "usr/share/konsole/*.colorscheme"))):
+        text = open(path, encoding="utf-8").read()
+        col = lambda g: parse_rgb(re.search(rf"\[{g}\]\nColor=([0-9, ]+)", text).group(1))
+        bg = col("Background")
+        dark = relative_luminance(bg) < 0.5
+        print(f"\n== {os.path.basename(path)} (Konsole ANSI) ==")
+        bad = []
+        for i in range(8):
+            normal, intense = col(f"Color{i}"), col(f"Color{i}Intense")
+            # the slot that mirrors the background (black on dark, white on
+            # light) is used for bars/panels: its normal colour need only be
+            # distinguishable (1.2:1); its intense ("bright black" = dim text)
+            # must reach 3:1. Every other colour is text: 4.5:1.
+            bgslot = (dark and i == 0) or (not dark and i == 7)
+            for label, c in (("", normal), ("Intense", intense)):
+                need = (1.2 if label == "" else AA_UI) if bgslot else AA_TEXT
+                r = contrast_ratio(c, bg)
+                if r < need:
+                    bad.append(f"Color{i}{label} {r:.2f} < {need}")
+            if normal == intense:
+                bad.append(f"Color{i}Intense identical to Color{i}")
+        for b in bad:
+            print("  FAIL", b)
+        if not bad:
+            print("  all 16 ANSI colours legible and distinct")
+        fails += len(bad)
+    return fails
+
+
 def main(argv: list[str]) -> int:
     here = os.path.dirname(os.path.abspath(__file__))
     if len(argv) > 1:
@@ -146,6 +181,7 @@ def main(argv: list[str]) -> int:
             print("  all foreground/background pairs meet their minimum ratio")
         hard_fail = hard_fail or bool(failures)
 
+    hard_fail = check_konsole(here) > 0 or hard_fail
     print()
     if hard_fail:
         print("contrast audit FAILED")

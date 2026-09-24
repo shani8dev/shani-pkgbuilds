@@ -1,94 +1,95 @@
 [Background]
-Color=40,40,40
+Color=37,36,52
 
 [BackgroundFaint]
-Color=48,48,48
+Color=45,44,59
 
 [BackgroundIntense]
-Color=56,56,56
+Color=53,52,67
 
 [Color0]
-Color=40,40,40
+Color=69,68,86
 
 [Color0Faint]
-Color=48,48,48
+Color=45,44,59
 
 [Color0Intense]
-Color=48,48,48
+Color=138,137,156
 
 [Color1]
-Color=255,194,194
+Color=255,143,143
 
 [Color1Faint]
 Color=255,194,194
 
 [Color1Intense]
-Color=255,194,194
+Color=255,176,168
 
 [Color2]
-Color=1,237,213
+Color=125,214,170
 
 [Color2Faint]
-Color=1,237,213
+Color=125,214,170
 
 [Color2Intense]
-Color=1,237,213
+Color=168,232,200
 
 [Color3]
-Color=255,198,155
+Color=242,197,114
 
 [Color3Faint]
 Color=255,198,155
 
 [Color3Intense]
-Color=255,198,155
+Color=255,220,156
 
 [Color4]
-Color=215,202,255
+Color=143,180,255
 
 [Color4Faint]
 Color=215,202,255
 
 [Color4Intense]
-Color=215,202,255
+Color=182,206,255
 
 [Color5]
-Color=180,161,239
+Color=201,168,255
 
 [Color5Faint]
 Color=180,161,239
 
 [Color5Intense]
-Color=180,161,239
+Color=220,198,255
 
 [Color6]
-Color=239,240,241
+Color=127,212,224
 
 [Color6Faint]
 Color=239,240,241
 
 [Color6Intense]
-Color=239,240,241
+Color=169,231,238
 
 [Color7]
-Color=223,223,223
+Color=201,200,210
 
 [Color7Faint]
-Color=155,155,155
+Color=153,153,160
 
 [Color7Intense]
-Color=255,197,175
+Color=244,243,247
 
 [Foreground]
-Color=223,223,223
+Color=222,222,225
 
 [ForegroundFaint]
-Color=155,155,155
+Color=153,153,160
 
 [ForegroundIntense]
-Color=255,197,175
+Color=255,255,255
 
 [General]
-Description=Saturn Dark - Coral accent, warm charcoal
-Opacity=1
+Description=Saturn Dark
+Opacity=0.9
 Wallpaper=
+Blur=true

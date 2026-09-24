@@ -1,5 +1,5 @@
 [ColorEffects:Disabled]
-Color = 150,150,150
+Color = 150,148,144
 ColorAmount = 0
 ColorEffect = 0
 ContrastAmount = 0.65
@@ -9,7 +9,7 @@ IntensityEffect = 2
 
 [ColorEffects:Inactive]
 ChangeSelectionColor = true
-Color = 150,150,150
+Color = 150,148,144
 ColorAmount = 0.025
 ColorEffect = 2
 ContrastAmount = 0.1
@@ -19,8 +19,8 @@ IntensityAmount = 0
 IntensityEffect = 0
 
 [Colors:Button]
-BackgroundAlternate = 244,244,244
-BackgroundNormal = 253,253,253
+BackgroundAlternate = 244,240,234
+BackgroundNormal = 253,249,243
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -29,12 +29,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Complementary]
-BackgroundAlternate = 234,234,234
-BackgroundNormal = 242,242,242
+BackgroundAlternate = 234,230,225
+BackgroundNormal = 242,238,233
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -43,12 +43,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Header]
-BackgroundAlternate = 231,231,231
-BackgroundNormal = 239,239,239
+BackgroundAlternate = 231,227,222
+BackgroundNormal = 239,235,230
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -57,12 +57,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Tooltip]
-BackgroundAlternate = 233,233,233
-BackgroundNormal = 242,242,242
+BackgroundAlternate = 233,229,224
+BackgroundNormal = 242,238,233
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -71,12 +71,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:View]
-BackgroundAlternate = 238,238,238
-BackgroundNormal = 247,247,247
+BackgroundAlternate = 238,234,229
+BackgroundNormal = 247,243,237
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -85,12 +85,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Window]
-BackgroundAlternate = 234,234,234
-BackgroundNormal = 242,242,242
+BackgroundAlternate = 234,230,225
+BackgroundNormal = 242,238,233
 DecorationFocus = 255,127,80
 DecorationHover = 255,110,60
 ForegroundActive = 255,197,175
@@ -99,12 +99,12 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Header][Inactive]
-BackgroundAlternate = 229,229,229
-BackgroundNormal = 236,236,236
+BackgroundAlternate = 229,225,220
+BackgroundNormal = 236,232,227
 DecorationFocus = 150,84,26
 DecorationHover = 140,76,20
 ForegroundActive = 255,197,175
@@ -113,22 +113,22 @@ ForegroundLink = 111,66,193
 ForegroundNegative = 176,32,32
 ForegroundNeutral = 150,84,0
 ForegroundNormal = 35,38,39
-ForegroundPositive = 0,120,107
+ForegroundPositive = 30,122,84
 ForegroundVisited = 118,70,166
 
 [Colors:Selection]
 BackgroundAlternate = 204,74,32
 BackgroundNormal = 188,62,24
-DecorationFocus = 255,255,255
+DecorationFocus = 255,251,245
 DecorationHover = 255,235,225
-ForegroundActive = 255,255,255
+ForegroundActive = 255,251,245
 ForegroundInactive = 255,235,225
-ForegroundLink = 255,255,255
-ForegroundNegative = 255,255,255
-ForegroundNeutral = 255,255,255
-ForegroundNormal = 255,255,255
-ForegroundPositive = 255,255,255
-ForegroundVisited = 255,255,255
+ForegroundLink = 255,251,245
+ForegroundNegative = 255,251,245
+ForegroundNeutral = 255,251,245
+ForegroundNormal = 255,251,245
+ForegroundPositive = 255,251,245
+ForegroundVisited = 255,251,245
 
 [General]
 ColorScheme = Saturn
@@ -139,9 +139,9 @@ shadeSortColumn = true
 contrast = 4
 
 [WM]
-activeBackground = 239,239,239
-activeBlend = 239,239,239
+activeBackground = 239,235,230
+activeBlend = 239,235,230
 activeForeground = 176,66,26
-inactiveBackground = 236,236,236
-inactiveBlend = 236,236,236
-inactiveForeground = 100,100,100
+inactiveBackground = 236,232,227
+inactiveBlend = 236,232,227
+inactiveForeground = 100,98,96

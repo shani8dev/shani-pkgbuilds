@@ -44,8 +44,15 @@ if (knownWidgetTypes.includes("org.kde.windowbuttons")) {
   buttons.writeConfig("lengthFirstMargin", 6)
   buttons.writeConfig("lengthLastMargin", 6)
   buttons.writeConfig("lengthMarginsLock", false)
+  // Known limitation (verified 2026-09-23, applet 0.14.0 / Aurorae 6.7): the
+  // applet only treats plugin "org.kde.kwin.aurorae" as Aurorae, but on
+  // Plasma 6.7 SVG themes are listed by "org.kde.kwin.aurorae.v2" (v1 lists
+  // only QML themes). So it can't find the Saturn theme and draws Breeze's
+  // buttons for maximized windows - kept deliberately (maintainer's choice
+  // over keeping title bars). Following the current decoration means a
+  // future applet release that knows v2 picks up the Saturn buttons.
   buttons.writeConfig("selectedPlugin", "org.kde.kwin.aurorae")
-  buttons.writeConfig("selectedTheme", "Saturn")
+  buttons.writeConfig("selectedTheme", "__aurorae__svg__Saturn-Dark")
   buttons.writeConfig("spacing", 6)
   buttons.writeConfig("useCurrentDecoration", true)
   buttons.writeConfig("useDecorationMetrics", false)
@@ -103,6 +110,22 @@ if (knownWidgetTypes.includes("org.kde.plasma.kimpanel")) {
 // Media Controls - always-visible playback control, unlike macOS's opt-in Now Playing
 if (knownWidgetTypes.includes("org.kde.plasma.mediacontroller")) {
   panel.addWidget("org.kde.plasma.mediacontroller");
+}
+// Network Speed - Plasma's own, Plasma-6-native sensor widget (ksystemstats;
+// every third-party one shells out via the Plasma 5 compat layer) with the
+// Saturn compact face (arrows in the scheme's positive/accent colours), no title. Keys verified against libksysguard SensorFaceController and the
+// applet's main.xml (Appearance/chartFace, Sensors/highPrioritySensorIds,
+// the face's own arrows/colours).
+if (knownWidgetTypes.includes("org.kde.plasma.systemmonitor.net")) {
+  var net = panel.addWidget("org.kde.plasma.systemmonitor.net")
+  net.currentConfigGroup = ["Appearance"]
+  // dev.shani.netspeed (usr/share/ksysguard/sensorfaces): download over
+  // upload in two small lines - the stock faces are wide or tiny charts
+  net.writeConfig("chartFace", "dev.shani.netspeed")
+  net.writeConfig("title", "")
+  net.currentConfigGroup = ["Sensors"]
+  net.writeConfig("highPrioritySensorIds", '["network/all/download","network/all/upload"]')
+  // arrow colours come from the colour scheme (the face uses positive/accent)
 }
 // System Tray - surface clipboard history (macOS has nothing like it)
 var tray = panel.addWidget("org.kde.plasma.systemtray")

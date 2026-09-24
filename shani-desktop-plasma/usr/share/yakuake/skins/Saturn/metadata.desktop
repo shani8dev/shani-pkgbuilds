@@ -2,11 +2,10 @@
 Type=Service
 ServiceTypes=Yakuake/Skin
 Name=Saturn
-Comment=Saturn theme for Yakuake - Coral accent, warm charcoal
-X-KDE-PluginInfo-Author=Shani OS Team
-X-KDE-PluginInfo-Email=shani@shani.dev
+Comment=Saturn skin for Yakuake: rounded, coral tab pill, the Saturn palette
+X-KDE-PluginInfo-Author=Shani OS
+X-KDE-PluginInfo-Email=shrinivas.v.kumbhar@gmail.com
 X-KDE-PluginInfo-Name=Saturn
-X-KDE-PluginInfo-Version=1.0
-X-KDE-PluginInfo-Website=https://shani.dev
+X-KDE-PluginInfo-Version=2.0
 X-KDE-PluginInfo-License=GPL-3.0-or-later
 X-KDE-PluginInfo-EnabledByDefault=true

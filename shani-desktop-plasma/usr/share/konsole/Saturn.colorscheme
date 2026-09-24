@@ -1,83 +1,83 @@
 [Background]
-Color=242,242,242
+Color=242,238,233
 
 [BackgroundFaint]
-Color=247,247,247
+Color=247,243,237
 
 [BackgroundIntense]
-Color=238,238,238
+Color=238,234,229
 
 [Color0]
-Color=242,242,242
+Color=43,39,51
 
 [Color0Faint]
-Color=247,247,247
+Color=247,243,237
 
 [Color0Intense]
-Color=234,234,234
+Color=90,86,100
 
 [Color1]
-Color=176,32,32
+Color=179,38,30
 
 [Color1Faint]
 Color=176,32,32
 
 [Color1Intense]
-Color=176,32,32
+Color=150,28,20
 
 [Color2]
-Color=0,120,107
+Color=30,122,84
 
 [Color2Faint]
-Color=0,120,107
+Color=30,122,84
 
 [Color2Intense]
-Color=0,120,107
+Color=26,109,74
 
 [Color3]
-Color=150,84,0
+Color=140,95,0
 
 [Color3Faint]
 Color=150,84,0
 
 [Color3Intense]
-Color=150,84,0
+Color=122,82,0
 
 [Color4]
-Color=111,66,193
+Color=47,95,179
 
 [Color4Faint]
 Color=111,66,193
 
 [Color4Intense]
-Color=111,66,193
+Color=37,82,160
 
 [Color5]
-Color=118,70,166
+Color=122,63,179
 
 [Color5Faint]
 Color=118,70,166
 
 [Color5Intense]
-Color=118,70,166
+Color=108,53,160
 
 [Color6]
-Color=35,38,39
+Color=22,112,126
 
 [Color6Faint]
 Color=35,38,39
 
 [Color6Intense]
-Color=35,38,39
+Color=17,96,108
 
 [Color7]
-Color=35,38,39
+Color=210,205,198
 
 [Color7Faint]
 Color=104,107,109
 
 [Color7Intense]
-Color=176,66,26
+Color=110,106,120
 
 [Foreground]
 Color=35,38,39
@@ -86,9 +86,10 @@ Color=35,38,39
 Color=104,107,109
 
 [ForegroundIntense]
-Color=176,66,26
+Color=20,19,24
 
 [General]
-Description=Saturn Light - Terracotta accent, warm light
-Opacity=1
+Description=Saturn
+Opacity=0.9
 Wallpaper=
+Blur=true

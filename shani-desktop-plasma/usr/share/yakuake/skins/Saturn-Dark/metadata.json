@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "shrinivas.v.kumbhar@gmail.com",
+                "Name": "Shani OS"
+            }
+        ],
+        "Category": "",
+        "Dependencies": [],
+        "EnabledByDefault": true,
+        "Description": "Saturn skin for Yakuake: rounded, coral tab pill, the Saturn palette",
+        "Id": "Saturn-Dark",
+        "License": "GPL-3.0-or-later",
+        "Name": "Saturn Dark",
+        "Version": "2.0",
+        "Website": "https://shani.dev"
+    }
+}

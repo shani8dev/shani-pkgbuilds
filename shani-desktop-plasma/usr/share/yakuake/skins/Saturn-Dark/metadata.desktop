@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=Yakuake/Skin
+Name=Saturn Dark
+Comment=Saturn skin for Yakuake: rounded, coral tab pill, the Saturn palette
+X-KDE-PluginInfo-Author=Shani OS
+X-KDE-PluginInfo-Email=shrinivas.v.kumbhar@gmail.com
+X-KDE-PluginInfo-Name=Saturn-Dark
+X-KDE-PluginInfo-Version=2.0
+X-KDE-PluginInfo-License=GPL-3.0-or-later
+X-KDE-PluginInfo-EnabledByDefault=true

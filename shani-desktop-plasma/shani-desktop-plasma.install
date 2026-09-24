@@ -1,5 +1,5 @@
 FONT_DIRS=("/usr/share/fonts/TTF" "/usr/share/fonts/OTF" "/usr/share/fonts/misc")
-ICON_DIRS=("/usr/share/icons/hicolor" "/usr/share/icons/Saturn" "/usr/share/icons/SaturnLight")
+ICON_DIRS=("/usr/share/icons/hicolor" "/usr/share/icons/Saturn")
 GLIB_SCHEMA_DIR="/usr/share/glib-2.0/schemas"
 
 update_fonts() {
@@ -41,21 +41,26 @@ provision_plasmalogin() {
 ColorScheme=SaturnDark
 
 [Icons]
-Theme=Saturn
+Theme=breeze-dark
 
 [KDE]
 widgetStyle=kvantum
-LookAndFeelPackage=Saturn
+LookAndFeelPackage=Saturn-Dark
 EOF
 
-    cat > "$d/kvantum.kvconfig" <<'EOF'
+    # Kvantum ignores kdedefaults/: it reads $XDG_CONFIG_HOME/Kvantum/kvantum.kvconfig
+    local k=/var/lib/plasmalogin/.config/Kvantum
+    install -d -m 755 -o plasmalogin -g plasmalogin "$k"
+    cat > "$k/kvantum.kvconfig" <<'EOF'
 [General]
-theme=Saturn
+theme=SaturnDark
 EOF
+    chown plasmalogin:plasmalogin "$k/kvantum.kvconfig"
+    rm -f "$d/kvantum.kvconfig"
 
-cat > "$d/plasmarc" <<'EOF'
+    cat > "$d/plasmarc" <<'EOF'
 [Theme]
-name=breeze-dark
+name=Saturn-Dark
 EOF
 
     cat > "$d/kcminputrc" <<'EOF'

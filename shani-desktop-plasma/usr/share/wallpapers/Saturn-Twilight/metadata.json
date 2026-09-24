@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/Wallpaper",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "shrinivas.v.kumbhar@gmail.com",
+                "Name": "Shrinivas Vishnu Kumbhar"
+            }
+        ],
+        "Id": "Saturn-Twilight",
+        "License": "CC-BY-SA-4.0",
+        "Name": "Saturn Twilight",
+        "Description": "Shani's raven beneath Saturn at dusk."
+    },
+    "X-KDE-PlasmaImageWallpaper-AccentColor": "#ff7f50"
+}

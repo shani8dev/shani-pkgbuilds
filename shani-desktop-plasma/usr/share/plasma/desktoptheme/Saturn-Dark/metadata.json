@@ -1,17 +1,22 @@
 {
+    "KPackageStructure": "Plasma/Theme",
     "KPlugin": {
         "Authors": [
             {
                 "Name": "Shani OS",
                 "Email": "shrinivas.v.kumbhar@gmail.com"
+            },
+            {
+                "Name": "Himprakash Deka (Utterly-Round)",
+                "Email": "info@himdek.com"
             }
         ],
         "Category": "",
-        "Description": "Saturn Plasma style - rounded, translucent shell surfaces with proper blur masks",
-        "Id": "default",
-        "License": "GPL-3.0-or-later",
-        "Name": "Saturn",
-        "Name[en_GB]": "Saturn"
+        "Description": "Saturn dark Plasma style: rounded, blurred, translucent (Utterly-Round)",
+        "Id": "Saturn-Dark",
+        "License": "GPL-2.0-or-later",
+        "Name": "Saturn Dark",
+        "Version": "2.1-saturn"
     },
     "X-Plasma-API": "5.0"
 }

@@ -9,4 +9,4 @@ Theme=org.kde.breeze
 WallpaperPlugin=org.kde.image
 
 [Greeter][Wallpaper][org.kde.image][General]
-Image=file:///usr/share/wallpapers/Saturn/contents/images/1920x1080.png
+Image=file:///usr/share/wallpapers/Saturn/contents/images_dark/1920x1080.png
