@@ -1,11 +1,10 @@
 {
     0: (
         name: "Shanios",
-        command: "/usr/bin/fish",
-        syntax_theme_dark: "COSMIC Dark",
-        syntax_theme_light: "COSMIC Light",
+        command: "",
+        syntax_theme_dark: "Saturn Dark",
+        syntax_theme_light: "Saturn",
         tab_title: "",
         working_directory: "",
-        hold: false,
     ),
 }
