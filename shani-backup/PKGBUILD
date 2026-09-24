@@ -3,15 +3,14 @@
 
 pkgname=shani-backup
 pkgver=0.0.1
-pkgrel=1
-pkgdesc="Backup utility for Shanios with Btrfs snapshots, restic, and rclone"
+pkgrel=2
+pkgdesc="Backup utility for Shanios with Btrfs snapshots and restic"
 arch=('x86_64')
 url="https://github.com/shani8dev/shani-backup"
 license=('GPL-3.0-only')
 depends=(
     'btrfs-progs'
     'restic'
-    'rclone'
     'gtk4'
     'libadwaita'
     'python3'
@@ -21,7 +20,7 @@ makedepends=('git')
 backup=()
 options=()
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-backup.git#commit=6a4749af588e149bc57cefa895bdd9ef381375d0")
+source=("git+https://github.com/shani8dev/shani-backup.git#commit=66c932ab50f6c21e4bf6ae06ccfadd3ccc7ce3bb")
 sha256sums=('SKIP')
 
 package() {
