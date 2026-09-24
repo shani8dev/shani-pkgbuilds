@@ -19,5 +19,12 @@
 # ── Script cache ──────────────────────────────────────────────────────────────
 cache/
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# an extracted built package (adbf925 committed one by mistake)
+*/test_package/
+
 # ── Secrets ───────────────────────────────────────────────────────────────────
 .env

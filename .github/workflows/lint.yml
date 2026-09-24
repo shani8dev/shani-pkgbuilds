@@ -6,12 +6,14 @@ on:
     paths:
       - '**/*.sh'
       - '**/*.bash'
+      - '**/*.py'
       - '.github/workflows/lint.yml'
   pull_request:
     branches: [main]
     paths:
       - '**/*.sh'
       - '**/*.bash'
+      - '**/*.py'
       - '.github/workflows/lint.yml'
 
 jobs:
@@ -19,6 +21,16 @@ jobs:
     uses: shani8dev/shani-ci-commons/.github/workflows/lint.yml@main
     with:
       language: bash
+
+  package:
+    name: Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python3 shani-desktop-plasma/check-package.py shani-desktop-plasma
 
   security:
     name: Security

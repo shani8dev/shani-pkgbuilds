@@ -159,7 +159,8 @@ profile-agnostic config should live.
 
 **Still open (confirmed, not yet fixed):**
 - `shani-settings/PKGBUILD:4-5` — `pkgrel` was never reset after the
-  last `pkgver` bump (currently `pkgver=0.0.5`, `pkgrel=41`).
+  last `pkgver` bump (currently `pkgver=0.0.5`, `pkgrel=41` — matches the
+  live PKGBUILD; the AGENTS.md copy of this note was stale at 40).
 - `brlaser-debug`/`splix-debug` produce a broken build-id symlink
   (`namcap`: "E: Symlink ... points to non-existing
   ../../../cups/filter/rastertobrlaser"). Cosmetic (debug package only).

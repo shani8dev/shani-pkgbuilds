@@ -51,3 +51,11 @@ repos:
         language: system
         files: ^shani-desktop-plasma/.*\.colors$
         pass_filenames: false
+
+      - id: check-package
+        name: check-package
+        description: Validate shani-desktop-plasma package structure, theme refs, and assets.
+        entry: python3 shani-desktop-plasma/check-package.py shani-desktop-plasma
+        language: system
+        files: ^shani-desktop-plasma/
+        pass_filenames: false
