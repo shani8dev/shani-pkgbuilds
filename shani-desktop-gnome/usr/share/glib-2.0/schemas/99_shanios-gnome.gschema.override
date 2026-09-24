@@ -74,31 +74,24 @@ logo='/usr/share/pixmaps/shani-logo-text-dark.svg'
 [org.gnome.desktop.app-folders]
 folder-children=['Accessories', 'Games', 'Office', 'System-tools', 'Utilities']
 
-[org.gtk.settings.file-chooser]
+[org.gtk.Settings.FileChooser]
 sort-directories-first=true
 location-mode='filename-entry'
 
-[org.gnome.file-roller.dialogs.extract]
-recreate-folders=true
+[org.gtk.gtk4.Settings.FileChooser]
+sort-directories-first=true
+location-mode='filename-entry'
 
 [org.gnome.nautilus.preferences]
 always-use-location-entry=true
 default-folder-viewer='icon-view'
 show-create-link=true
 
-[org.gnome.nautilus.desktop]
-home-icon-visible = true
-trash-icon-visible = true
-volumes-visible = true
-
 [org.gnome.mutter]
 overlay-key='Super_L'
 dynamic-workspaces = true
 edge-tiling = true
 center-new-windows = true
-
-[org.gnome.TextEditor]
-show-line-numbers = true
 
 [org.gnome.desktop.wm.keybindings]
 close=['<Super>q']
@@ -140,32 +133,3 @@ switch-to-application-6=@as []
 switch-to-application-7=@as []
 switch-to-application-8=@as []
 switch-to-application-9=@as []
-
-[org.gnome.Terminal.Legacy.Profile]
-background-color='rgb(46,52,54)'
-bold-is-bright=true
-cursor-shape='underline'
-custom-command='/bin/fish'
-default-size-columns=110
-default-size-rows=30
-foreground-color='rgb(211,215,207)'
-palette=['rgb(46,52,54)', 'rgb(204,0,0)', 'rgb(78,154,6)', 'rgb(196,160,0)', 'rgb(52,101,164)', 'rgb(117,80,123)', 'rgb(6,152,154)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(239,41,41)', 'rgb(138,226,52)', 'rgb(252,233,79)', 'rgb(114,159,207)', 'rgb(173,127,168)', 'rgb(52,226,226)', 'rgb(238,238,236)']
-use-system-font=false
-use-theme-colors=true
-rewrap-on-resize=true
-use-custom-command=true
-visible-name='Shani'
-
-[org.gnome.gedit.preferences.editor]
-auto-indent=true
-editor-font='Hack 12'
-style-scheme-for-dark-theme-variant='solarized-dark'
-style-scheme-for-light-theme-variant='solarized-light'
-tabs-size=4
-use-default-font=false
-wrap-last-split-mode='word'
-display-line-numbers=true
-bracket-matching=true
-
-[org.gnome.gedit.plugins]
-active-plugins=['time', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo', 'codecomment', 'bracketcompletion']
