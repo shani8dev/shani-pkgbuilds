@@ -21,8 +21,16 @@ post_upgrade() {
 
     # User-scope units (timer activates the service — only enable the timer)
     systemctl --global enable flatpak-update-user.timer   # WantedBy=timers.target
-    systemctl --global enable shani-update.timer          # WantedBy=timers.target
-    systemctl --global enable shani-update-tray.service   # WantedBy=graphical-session.target
+
+    # shani-update was retired 2026-09-25: Shani Cassini's
+    # shani-cassini-agent.timer notifies about updates and boot failures.
+    # An upgrade from an older install still has the retired units enabled
+    # globally, so turn them off here. On a fresh install they never existed
+    # and systemctl says so on stderr — `2>/dev/null` drops exactly that
+    # expected message, `|| true` keeps the already-disabled/absent state from
+    # failing the hook. Nothing else in this hook is silenced.
+    systemctl --global disable shani-update.timer 2>/dev/null || true
+    systemctl --global disable shani-update-tray.service 2>/dev/null || true
 
     # shani-download-only.timer is intentionally NOT enabled here — it's an
     # opt-in convenience for fleets that want updates pre-staged ahead of a
