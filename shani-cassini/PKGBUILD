@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -23,7 +23,7 @@ optdepends=(
     'shani-fleet: the Fleet tab (fleet enrollment)'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=f9ba6e8276edbfb7c3c2e57ae8ecd10963d4170e")
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=eabe1da0479b3f7fb5dcb6b989bdc4ec4e3e47e2")
 sha256sums=('SKIP')
 
 package() {
@@ -49,5 +49,4 @@ PY
 
     install -Dm644 data/dev.shani.cassini.desktop "$pkgdir/usr/share/applications/dev.shani.cassini.desktop"
     install -Dm644 data/dev.shani.cassini.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/dev.shani.cassini.svg"
-    install -Dm644 data/dev.shani.cassini.policy "$pkgdir/usr/share/polkit-1/actions/dev.shani.cassini.policy"
 }
