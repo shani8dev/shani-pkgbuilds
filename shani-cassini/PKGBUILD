@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -16,6 +16,10 @@ depends=(
     'python-httpx'
     'python-keyring'
     'polkit'
+    'libnotify'
+    # every page reads shani-deploy, and the agent (--agent) runs
+    # `shani-deploy --status --check --json` on every timer tick
+    'shani-deploy'
 )
 optdepends=(
     'shani-backup: the Backup tab'
@@ -23,7 +27,8 @@ optdepends=(
     'shani-fleet: the Fleet tab (fleet enrollment)'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=eabe1da0479b3f7fb5dcb6b989bdc4ec4e3e47e2")
+install=$pkgname.install
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=6e75ba1f07ef2edaa034f5f7796861585bf96868")
 sha256sums=('SKIP')
 
 package() {
@@ -49,4 +54,7 @@ PY
 
     install -Dm644 data/dev.shani.cassini.desktop "$pkgdir/usr/share/applications/dev.shani.cassini.desktop"
     install -Dm644 data/dev.shani.cassini.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/dev.shani.cassini.svg"
+    # the background agent (it replaced shani-update); enabled by the .install
+    install -Dm644 data/systemd/shani-cassini-agent.service "$pkgdir/usr/lib/systemd/user/shani-cassini-agent.service"
+    install -Dm644 data/systemd/shani-cassini-agent.timer "$pkgdir/usr/lib/systemd/user/shani-cassini-agent.timer"
 }

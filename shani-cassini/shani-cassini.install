@@ -1,0 +1,14 @@
+post_install() {
+    post_upgrade
+}
+
+post_upgrade() {
+    # update and boot-failure notifications for every user (login + 2-hourly)
+    systemctl --global enable shani-cassini-agent.timer   # WantedBy=timers.target
+}
+
+pre_remove() {
+    # `|| true`: a user (or a previous version) may already have disabled it,
+    # and a unit file that is already gone is not an error worth failing on.
+    systemctl --global disable shani-cassini-agent.timer || true
+}
