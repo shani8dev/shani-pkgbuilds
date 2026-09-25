@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -23,7 +23,7 @@ optdepends=(
     'shani-fleet: the Fleet tab (fleet enrollment)'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=64bf9876a96a3264e552711a0794b09f4cf92ffb")
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=f9ba6e8276edbfb7c3c2e57ae8ecd10963d4170e")
 sha256sums=('SKIP')
 
 package() {
