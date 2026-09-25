@@ -392,6 +392,25 @@ rather than writing in a generic format.
   `gvfs-*` entry but not this one. Removed; `pkgrel` left unchanged since
   no artifact was ever actually published at that `pkgrel` (the build had
   always failed).
+- **`shani-core` declares `libpwquality` but nothing ever loads it — inert
+  dependency, NOT fixed because it needs a policy decision.** The inverse of
+  the `gvfs-google` case above: that entry named a package that does not
+  exist, this one names a package that exists and is never used.
+  `shani-core/PKGBUILD:30` declares `libpwquality`, but no PAM stack anywhere
+  in the overlay references `pam_pwquality` (checked across `shani-settings`,
+  `shani-install-media`, `os-installer-config` and this repo, excluding
+  caches), and neither `shani-settings` nor `os-installer-config` ships an
+  `/etc/pam.d` at all. Net effect: **no password strength policy is enforced
+  on a Shanios install** — the library is installed and inert. Either wire
+  `pam_pwquality.so` into the `password` stack (note that a missing module
+  fails silently rather than erroring, so it needs a deliberate test) or drop
+  the dependency; do not leave it looking enforced. Password *expiry* is a
+  separate axis and is deliberate: shadow defaults apply, so `max-days` is
+  `99999` and `inactive-days` is `-1`, matching the server profile's
+  `/etc/default/useradd` (`EXPIRE=` empty, `INACTIVE=-1`). That matches
+  NIST SP 800-63B, which advises against periodic forced rotation absent
+  evidence of compromise. `shani-docs` now documents the real default
+  (`system/users-groups.md`, commit `7112701`).
 - **game-devices-udev "unknown public key" CI failure — root cause was in
   `shani-builder`, not here; this PKGBUILD was already correct.** Worth
   cross-referencing so a future pass doesn't re-diagnose this file: the
