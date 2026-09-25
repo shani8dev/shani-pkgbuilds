@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -28,7 +28,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=6e75ba1f07ef2edaa034f5f7796861585bf96868")
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=525ac21a7e58159c12a20df9bb56c1164b7395f9")
 sha256sums=('SKIP')
 
 package() {
