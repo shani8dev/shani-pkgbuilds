@@ -1,0 +1,27 @@
+# shani-fleet PKGBUILD - the opt-in fleet agent. Never part of an image
+# (organisations install it deliberately); the repo is private, so the
+# source is fetched over SSH with the builder's deploy key.
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-fleet
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Shanios fleet agent - enrollment, inventory and remote deploys for managed devices (opt-in)"
+arch=('any')
+url="https://shani.dev"
+license=('GPL-3.0-only')
+depends=('bash' 'curl' 'jq' 'gnupg' 'systemd' 'shani-deploy')
+makedepends=('git')
+backup=('etc/shani-fleet.conf')
+source=("git+ssh://git@github.com/shani8dev/shani-fleet.git#commit=c708330499e4b7c252e07706af8aeaa443be40d9")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+    install -Dm755 agent/bin/shani-fleet-agent "$pkgdir/usr/bin/shani-fleet-agent"
+    install -Dm640 agent/shani-fleet.conf.example "$pkgdir/etc/shani-fleet.conf"
+    for u in systemd/*.service systemd/*.timer; do
+        install -Dm644 "$u" "$pkgdir/usr/lib/systemd/system/$(basename "$u")"
+    done
+    # not enabled here: enrollment (shani-fleet-agent enroll) enables the timers
+}

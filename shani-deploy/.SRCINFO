@@ -1,7 +1,7 @@
 pkgbase = shani-deploy
 	pkgdesc = Safe transactional deployment system for Shani OS
 	pkgver = 0.0.1
-	pkgrel = 83
+	pkgrel = 88
 	url = https://github.com/shani8dev/shani-deploy
 	install = shani-deploy.install
 	arch = any
@@ -22,7 +22,7 @@ pkgbase = shani-deploy
 	depends = duperemove
 	depends = compsize
 	depends = bees
-	source = git+https://github.com/shani8dev/shani-deploy.git#commit=de7c68c8dde96082ea7fa70e3521b1b4a0ba491d
-	sha256sums = 88138af43988a8cd614292e0d6bcf75ab6bcc5f32b963378e837ca7fc0ef8758
+	source = git+https://github.com/shani8dev/shani-deploy.git#commit=8dd63b58160ae7c10cee749c8b3a6ebfdb4065aa
+	sha256sums = 51bc48a3a7eff97a8fb1aeff3f1717f6939b781f1d9bc31cf528c4bfb0c0588d
 
 pkgname = shani-deploy

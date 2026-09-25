@@ -1,0 +1,49 @@
+# shani-chronoa PKGBUILD
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-chronoa
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
+arch=('any')
+url="https://github.com/shani8dev/shani-chronoa"
+license=('GPL-3.0-only')
+depends=(
+    'python'
+    'python-gobject'
+    'gtk4'
+    'python-httpx'
+    'pipewire'
+    'wireplumber'
+    'libnotify'
+    'upower'
+    'bubblewrap'
+    'espeak-ng'
+)
+optdepends=(
+    'ollama: run the language model on this computer'
+    'whisper-cpp: voice input (speech recognition)'
+    'rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)'
+    'rhvoice-voice-slt: an English RHVoice voice'
+    'python-numpy: wake-word activation (with python-openwakeword)'
+    'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
+)
+makedepends=('git')
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=5ce1b436f040f500aa8f1efced3806c108b15e5b")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+    install -Dm755 usr/bin/shani-chronoa "$pkgdir/usr/bin/shani-chronoa"
+    install -Dm755 usr/bin/shani-chronoa-mcp "$pkgdir/usr/bin/shani-chronoa-mcp"
+    install -d "$pkgdir/usr/lib"
+    cp -r usr/lib/shani-chronoa "$pkgdir/usr/lib/"
+    install -Dm644 usr/share/applications/shani-chronoa.desktop "$pkgdir/usr/share/applications/shani-chronoa.desktop"
+    install -Dm644 usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml \
+        "$pkgdir/usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml"
+    install -Dm644 usr/share/pixmaps/shani-chronoa.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/shani-chronoa.svg"
+    find "$pkgdir" -type d -name __pycache__ -prune -exec rm -rf {} +
+    find "$pkgdir/usr/lib/shani-chronoa" -type d -exec chmod 755 {} +
+    find "$pkgdir/usr/lib/shani-chronoa" -type f -exec chmod 644 {} +
+    # schemas, icon cache, desktop database: Arch's own pacman hooks
+}

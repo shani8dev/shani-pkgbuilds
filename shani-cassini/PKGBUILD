@@ -1,0 +1,53 @@
+# shani-cassini PKGBUILD
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-cassini
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
+arch=('any')
+url="https://github.com/shani8dev/shani-cassini"
+license=('GPL-3.0-only')
+depends=(
+    'python'
+    'python-gobject'
+    'gtk4'
+    'libadwaita'
+    'python-httpx'
+    'python-keyring'
+    'polkit'
+)
+optdepends=(
+    'shani-backup: the Backup tab'
+    'shani-chronoa: the Chronoa assistant tab'
+    'shani-fleet: the Fleet tab (fleet enrollment)'
+)
+makedepends=('git')
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=64bf9876a96a3264e552711a0794b09f4cf92ffb")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+
+    # The app finds data/catalog and po/ relative to src/ (catalog.py,
+    # i18n.py), so the tree keeps that layout under /usr/share/shani-cassini.
+    install -d "$pkgdir/usr/share/$pkgname/src" "$pkgdir/usr/share/$pkgname/po"
+    cp -r src/shani_cassini "$pkgdir/usr/share/$pkgname/src/"
+    cp -r data "$pkgdir/usr/share/$pkgname/"
+    cp po/*.po "$pkgdir/usr/share/$pkgname/po/"
+    find "$pkgdir/usr/share/$pkgname" -type d -exec chmod 755 {} +
+    find "$pkgdir/usr/share/$pkgname" -type f -exec chmod 644 {} +
+    find "$pkgdir" -type d -name __pycache__ -prune -exec rm -rf {} +
+
+    install -Dm755 /dev/stdin "$pkgdir/usr/bin/$pkgname" <<PY
+#!/usr/bin/python3
+import sys
+sys.path.insert(0, "/usr/share/$pkgname/src")
+from shani_cassini.main import main
+main()
+PY
+
+    install -Dm644 data/dev.shani.cassini.desktop "$pkgdir/usr/share/applications/dev.shani.cassini.desktop"
+    install -Dm644 data/dev.shani.cassini.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/dev.shani.cassini.svg"
+    install -Dm644 data/dev.shani.cassini.policy "$pkgdir/usr/share/polkit-1/actions/dev.shani.cassini.policy"
+}

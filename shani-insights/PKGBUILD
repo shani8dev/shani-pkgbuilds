@@ -1,0 +1,28 @@
+# shani-insights PKGBUILD - the opt-in workforce-analytics collector (the
+# agent only; the server is deployed separately). Never part of an image;
+# private repo, fetched over SSH with the builder's deploy key.
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-insights
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Shanios Insights collector - transparent, policy-driven activity analytics (opt-in)"
+arch=('any')
+url="https://shani.dev"
+license=('GPL-3.0-only')
+depends=('bash' 'curl' 'jq' 'systemd')
+optdepends=('xdotool: active-window tracking on X11'
+            'xprintidle: idle time on X11'
+            'gnome-screenshot: screenshots on GNOME (when the policy enables them)'
+            'scrot: screenshots on other X11 desktops')
+makedepends=('git')
+source=("git+ssh://git@github.com/shani8dev/shani-insights.git#commit=6d53b3117657ec5a727aaa6e9036e528af3fa376")
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+    install -Dm755 agent/bin/shani-insights-collector "$pkgdir/usr/bin/shani-insights-collector"
+    install -Dm755 agent/bin/shani-insights-url "$pkgdir/usr/bin/shani-insights-url"
+    install -Dm644 systemd/user/shani-insights-collector.service \
+        "$pkgdir/usr/lib/systemd/user/shani-insights-collector.service"
+}
