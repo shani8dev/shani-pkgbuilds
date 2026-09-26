@@ -507,12 +507,17 @@ rather than writing in a generic format.
   nothing loads it. Verified by installing `gdm`, `plasma-login-manager`,
   `sddm` and `kscreenlocker` together and grepping **every** file in
   `/etc/pam.d` and `/usr/lib/pam.d`: `pam_u2f` and `pam_krb5` appeared in
-  **zero** stacks, while `pam_fprintd` appeared in exactly two
-  (`gdm-fingerprint`, `kde-fingerprint`) and `pam_pkcs11` in two
-  (`gdm-smartcard`, `kde-smartcard`). The asymmetry that makes this easy to
-  miss: smartcards and fingerprints look supported for the same reason and
-  genuinely are, because `gdm`/`kscreenlocker` ship PAM services referencing
-  them; u2f and krb5 had no such service and nothing in the tree provided one.
+    **zero** stacks, while `pam_fprintd` appeared in exactly two
+    (`gdm-fingerprint`, `kde-fingerprint`) and `pam_pkcs11` in two
+    (`gdm-smartcard`, `kde-smartcard`). **But referencing a module is not the
+    same as shipping it — `pam_pkcs11.so` is provided by no package in the Arch
+    repos at all** (searched every `pam`/`pkcs11`/`opensc`/`smartcard`/`p11`
+    name: nothing owns the file), while both smartcard services load it as
+    `auth required`, so those services cannot succeed and **smartcard login is
+    broken fleet-wide**. An earlier version of this entry called smartcards
+    "genuinely" supported on the strength of the reference count alone; that was
+    wrong in the same way as the u2f claim, one level deeper. Fingerprints are
+    the only one of the three that is both referenced *and* installed.
   **`pam-u2f` — FIXED (2026-09-26).** `shani-settings` now ships
   `etc/pam.d/system-auth` with `auth sufficient pam_u2f.so`, so a FIDO2/U2F
   key works at any graphical login and for `sudo` with no hand-editing. Two
