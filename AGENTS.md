@@ -59,6 +59,31 @@ pre-commit run check-skip-checksums --all-files
 ./make_pkg.sh <package-name>
 ```
 
+### Container runs should mount the pacman cache
+
+`shani-desktop-plasma/tests/plasma-session.sh` needs a full Plasma desktop in
+the container (`plasma-desktop`, `kwin-x11`, `dolphin`, `konsole`, `yakuake`,
+`gtk3-demos`, …) — roughly 2.6G installed. Mounting the cache turns that into
+a cache-hit install: **measured 2026-09-26, a from-scratch run went from ~2G
+of downloads to 681 MiB** with the caches mounted. Mount `cache/pacman_cache/`
+(or the merged cache described in the parent `AGENTS.md`) at
+`/var/cache/pacman/pkg`.
+
+Two habits that cut the cost further, both learned the hard way:
+- **Run every look/variant in one container.** The harness re-seeds a fresh
+  `HOME` per argument and restarts Xvfb, so `Saturn-Dark`, `Saturn` and
+  `Saturn-Twilight` are independent — install once, run all three, instead of
+  paying the install per variant.
+- **Mount the output directory.** `plasma-session.sh` writes screenshots to
+  its `out-dir` argument (default `/tmp/plasma-shots`), which is *inside* the
+  container. With `--rm` those are lost; pass a mounted path and the images
+  survive. This actually happened — a baseline was captured and the
+  screenshots went to an unmounted `/tmp` and were discarded on exit.
+- Check whether `.pkg.tar.zst` already exists and is newer than the newest
+  source before rebuilding, and use `pacman -Si` (sync db) rather than
+  `pacman -Q` (installed) when checking a version in a fresh container — `-Q`
+  returns empty and silent.
+
 A build that completes is necessary but not sufficient — if you pinned or
 changed a checksum, also **prove it actually verifies**: corrupt a local
 copy of the source file, run the identical checksum/signature check the
