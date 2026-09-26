@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -25,10 +25,14 @@ optdepends=(
     'shani-backup: the Backup tab'
     'shani-chronoa: the Chronoa assistant tab'
     'shani-fleet: the Fleet tab (fleet enrollment)'
+    # fprintd + libfprint are in shani-peripherals, not here: the Fingerprint
+    # tab talks to net.reactivated.fprint over D-Bus and shows why it cannot
+    # read anything when that package is absent
+    'shani-peripherals: the Fingerprint tab (fprintd, the fingerprint reader)'
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=525ac21a7e58159c12a20df9bb56c1164b7395f9")
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=5104aa0cae0b3100f09338fc698a72ec20384a33")
 sha256sums=('SKIP')
 
 package() {
