@@ -2,13 +2,13 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=42
+pkgrel=43
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL-3.0-only')
 pkgdesc="Shani OS settings"
 
-_commit='2b6703e68bf9226305f0340ddbcae2de60e9a5c5'
+_commit='2f93eb75a7f71c0608e7df0211188ed8746b145c'
 source=("shani-settings.tar.gz::https://github.com/shani8dev/$pkgname/archive/${_commit}.tar.gz")
 sha256sums=('SKIP')
 
