@@ -540,9 +540,16 @@ rather than writing in a generic format.
   is safe. Also note `shani-settings` `pkgrel` must be bumped whenever
   `shani-peripherals` gains a PAM-referenced module, since the two ship
   independently.
-  **`pam-krb5` — still open.** No stack references it; Kerberos cannot
-  authenticate. Wiring it is not a one-liner the way u2f was: it needs a realm
-  and a keytab, so it is a deployment decision rather than a missing line.
+  **`pam-krb5` — still open, but no longer a safety question.** No stack
+  references it, so Kerberos cannot authenticate. The safety half is settled:
+  adding `auth sufficient pam_krb5.so` above the `pam_u2f` line, with **no realm
+  and no keytab configured**, leaves password auth intact — verified the same
+  way as u2f (compiled libpam client, non-root, correct password 0 / wrong
+  password 7, and the as-shipped baseline re-run in the same session for
+  comparison). So the remaining work is provisioning, not wiring risk: add the
+  one line and supply a realm and keytab per deployment. `pam_krb5` is **not**
+  made a `shani-settings` dependency for the same reason `pam-u2f` is not — it
+  ships in `shani-peripherals`.
   `shani-docs`' `security/hardware-auth.md` now says a FIDO2 key can log in
   and calls Kerberos out separately as unwired.
   Everything else in that package checks out and is genuinely wired: all nine
