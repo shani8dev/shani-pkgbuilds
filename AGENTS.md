@@ -200,7 +200,13 @@ rather than writing in a generic format.
   also never installs this package). Two checker rules now prevent the
   regression, both verified RED→GREEN: every shipped `*.profile` must set
   `Command=`, and `yakuakerc`/`konsolerc` `DefaultProfile` must resolve to a
-  shipped profile. That second one matters because `DefaultProfile` is
+  shipped profile. **The skel fix alone would have left every existing
+  install broken** — it only reaches new users — so `shani-theme-sync.sh`
+  now writes `Command=/usr/bin/fish` into an existing profile when the key
+  is absent, alongside the `ColorScheme`/`Skin` migrations already there. It
+  writes only when absent, so a shell the user chose is never clobbered.
+  Verified against the shipped block (not a rewrite): repairs an old profile,
+  is idempotent on re-run, and preserves a user's `/usr/bin/zsh`. That second one matters because `DefaultProfile` is
   resolved by konsole's `ProfileManager` under
   `GenericDataLocation/konsole` (`~/.local/share/konsole`,
   `/usr/share/konsole`) — **not** a `yakuake/profiles` directory — and a
@@ -354,23 +360,25 @@ rather than writing in a generic format.
 
   **Pre-6.8 baseline captured 2026-09-26** on `plasma-workspace 6.7.5-1`
   (Arch `extra`, version verified with `pacman -Si`, not assumed), running
-  `tests/plasma-session.sh Saturn-Dark` in an Arch container with the package
-  tree at `/pkg`: **12/12 PASS, `HARNESS_EXIT=0`** — screenshots `desktop`,
-  `calendar`, `launcher`, `dolphin`, `maximized`, `konsole`, `lockscreen`,
-  `gtk3`, `gtk4`, `yakuake`, `kvantum`, plus `plasmashell theme warnings
-  PASS (none)`. Those `RESULT` lines are committed verbatim as
-  `shani-desktop-plasma/tests/baseline-plasma-6.7.result`, so a post-6.8 run
-  can be diffed mechanically instead of eyeballed; that file also carries the
-  container recipe. It is inert in the payload — the `package()` function only
-  copies `etc/` and `usr/` into `$pkgdir`, so `tests/` never ships. Diff the
-  `RESULT` lines from a post-6.8 run against that list; any line that is not
-  `PASS` is the regression. Two honest limits on
-  this baseline: it covers **only** the `Saturn-Dark` look (`Saturn` and
-  `Saturn-Twilight` were not baselined — run all three before drawing a
-  conclusion), and the **screenshots were not retained** (the throwaway
-  container was `--rm` and wrote them to an unmounted path), so the baseline
-  is the `RESULT` lines rather than the images. Re-capture with a mounted
-  output directory if visual evidence is wanted.
+  `tests/plasma-session.sh` in an Arch container with the package tree at
+  `/pkg`, **all three looks in one container**: 39 `RESULT` lines, **0
+  failures**, `HARNESS_EXIT=0` for `Saturn-Dark`, `Saturn` **and**
+  `Saturn-Twilight` — screenshots `desktop`, `calendar`, `launcher`,
+  `dolphin`, `maximized`, `konsole`, `lockscreen`, `gtk3`, `gtk4`,
+  `yakuake`, `kvantum`, plus `yakuake shell resolution` and `plasmashell
+  theme warnings`, per look. Those `RESULT` lines are committed verbatim as
+  `shani-desktop-plasma/tests/baseline-plasma-6.7.result` and are
+  byte-identical to the real run, so a post-6.8 run can be diffed
+  mechanically instead of eyeballed; that file also carries the container
+  recipe. It is inert in the payload — the `package()` function only copies
+  `etc/` and `usr/` into `$pkgdir`, so `tests/` never ships. Diff **only**
+  the `RESULT` lines: `DETAIL` lines carry per-shot pixel margins that vary
+  run to run and would produce false diffs. Any `RESULT` line that is not
+  `PASS` is the regression. All three `yakuake-*.log` files are 0 bytes,
+  confirming the empty-`Command` warning is gone on every look.
+  Regenerate with **one** container for all three looks (a ~2.6G install each
+  time otherwise) and a **mounted** `out/` dir, or the screenshots and app
+  logs are lost with `--rm`.
 
 - **check-skip-checksums false negatives — FIXED, and the real gap was
   bigger than documented (Med → both issues now closed).**
