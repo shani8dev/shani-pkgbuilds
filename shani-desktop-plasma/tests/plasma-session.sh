@@ -70,9 +70,9 @@ if [ -n "${DECO:-}" ]; then
   kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
   kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "__aurorae__svg__$DECO"
 fi
-kwin_x11 --replace >/tmp/kwin-$LNF.log 2>&1 &
-sleep 4
-plasmashell >/tmp/plasmashell-$LNF.log 2>&1 &
+  kwin_x11 --replace >"$OUT/kwin-$LNF.log" 2>&1 &
+  sleep 4
+  plasmashell >"$OUT/plasmashell-$LNF.log" 2>&1 &
 sleep 20
 shot() { import -window root "$OUT/$LNF$TAG-$1.png"; }
 # the same surfaces the Utterly-Round screenshots show: desktop widgets,
@@ -120,12 +120,12 @@ for i in 0 1 2 3 4 5 6 7; do printf "\e[4${i}m    \e[0m"; done; for i in 0 1 2 3
 printf "\e[36mcyan: git hunk\e[0m  \e[90mbright black: comment\e[0m  \e[1mbold\e[0m\n"
 sleep 30
 ANSI
-QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} konsole -e bash /tmp/ansi-demo.sh >/tmp/konsole-$LNF.log 2>&1 &
+QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} konsole -e bash /tmp/ansi-demo.sh >"$OUT/konsole-$LNF.log" 2>&1 &
 sleep 5
 import -window root "$OUT/$LNF$TAG-konsole.png"
 pkill konsole
 # the real lock screen (--testing: windowed, unlock with any key/password)
-/usr/lib/kscreenlocker_greet --testing >/tmp/lock-$LNF.log 2>&1 &
+/usr/lib/kscreenlocker_greet --testing >"$OUT/lock-$LNF.log" 2>&1 &
 sleep 6; import -window root "$OUT/$LNF$TAG-lockscreen.png"; pkill -f kscreenlocker_greet
 # GTK: what kde-gtk-config left in the user's GTK colours, and real apps
 echo "gtk3-colors=$(grep -m2 -oE '@define-color theme_bg_color_[a-z]+ #[0-9a-f]+' $HOME/.config/gtk-3.0/colors.css 2>/dev/null | tr '\n' ' ') gtk4-colors=$( [ -e $HOME/.config/gtk-4.0/colors.css ] && grep -m1 -oE '@define-color theme_bg_color_[a-z]+ #[0-9a-f]+' $HOME/.config/gtk-4.0/colors.css || echo MISSING)"
@@ -176,8 +176,9 @@ if grep -qiE "could not find|check your profile" "$OUT/yakuake-$LNF.log" 2>/dev/
   r "$LNF yakuake shell resolution" "FAIL (see yakuake-$LNF.log)"
   grep -iE "could not find|check your profile" "$OUT/yakuake-$LNF.log" | head -3
 else r "$LNF yakuake shell resolution" "PASS (no shell warning)"; fi
-if grep -iE "desktoptheme|Saturn|svg" /tmp/plasmashell-$LNF.log | grep -iE "warn|error|fail|not found" | head -5 | grep -q .; then
-  r "$LNF plasmashell theme warnings" "FAIL (see /tmp/plasmashell-$LNF.log)"
-  grep -iE "desktoptheme|Saturn|svg" /tmp/plasmashell-$LNF.log | grep -iE "warn|error|fail|not found" | head -5
+PSLOG="$OUT/plasmashell-$LNF.log"
+if grep -iE "desktoptheme|Saturn|svg" "$PSLOG" | grep -iE "warn|error|fail|not found" | head -5 | grep -q .; then
+  r "$LNF plasmashell theme warnings" "FAIL (see plasmashell-$LNF.log)"
+  grep -iE "desktoptheme|Saturn|svg" "$PSLOG" | grep -iE "warn|error|fail|not found" | head -5
 else r "$LNF plasmashell theme warnings" "PASS (none)"; fi
 pkill -x Xvfb
