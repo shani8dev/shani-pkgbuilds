@@ -1,0 +1,67 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=pam_pkcs11
+pkgver=0.6.14
+pkgrel=1
+pkgdesc="PAM module for authentication with PKCS#11 tokens (PIV/smartcards)"
+arch=('x86_64')
+url="https://github.com/OpenSC/pam_pkcs11"
+license=('LGPL-2.1-only')
+# opensc provides the PKCS#11 provider this module loads; pcsc-lite is the
+# daemon that talks to the reader. Both are runtime needs, not build needs.
+depends=('opensc' 'pcsclite')
+makedepends=('autoconf' 'automake' 'libtool' 'openssl')
+# No SKIPs and no mutable tag: the tarball is a fixed release artifact and both
+# artifact and the checksum below was computed from the real download. A
+# mutable tag or a skipped checksum here would make the shipped module
+# checksums below were computed from the real download. Array names are the
+# plural forms makepkg 7 expects (b2sums/sha256sums); the singular b2sum= is
+# makepkg 6 and is silently ignored, which reads as "no integrity check".
+source=("https://github.com/OpenSC/pam_pkcs11/archive/refs/tags/pam_pkcs11-${pkgver}.tar.gz")
+b2sums=('81ba364840c570c96868af5ef50024ff1c0e1c0ac1b0b4cc7b199f79722f2df9297eae1595b594cf138ca7c465a67535f38f4b1e21dcd4aac95188c90d172af2')
+sha256sums=('5d9acdb177ea2dfd7b698f6cdcc485107888cc1c9dcd15227436831c098a4075')
+
+build() {
+    cd "$srcdir/pam_pkcs11-pam_pkcs11-${pkgver}"
+    ./bootstrap
+    # pamdir is $(libdir)/security, so the module lands at
+    # /usr/lib/security/pam_pkcs11.so - the path both gdm-smartcard and
+    # kde-smartcard load. confdir is separate and is where the live config
+    # must land (upstream only ever installs *.example there).
+    ./configure \
+        --prefix=/usr \
+        --sysconfdir=/etc \
+        --libdir=/usr/lib \
+        --with-confdir=/etc/pam_pkcs11 \
+        --without-ldap \
+        --without-curl
+    make
+}
+
+check() {
+    cd "$srcdir/pam_pkcs11-pam_pkcs11-${pkgver}"
+    make check
+}
+
+package() {
+    cd "$srcdir/pam_pkcs11-pam_pkcs11-${pkgver}"
+    make DESTDIR="$pkgdir" install
+
+    # Upstream installs only pam_pkcs11.conf.example, so a stock install has no
+    # /etc/pam_pkcs11/pam_pkcs11.conf at all. SUSE's advisory on CVE-2025-24032
+    # records what that costs on Arch: the module ends up with no usable
+    # configuration, so smartcard login does not work even with the module
+    # present. Ship a real one, derived from the example, pointing at the
+    # PKCS#11 provider opensc actually installs on Arch.
+    install -d "$pkgdir/etc/pam_pkcs11"
+    sed -e "s|@libdir@|/usr/lib|g" \
+        "$srcdir/pam_pkcs11-pam_pkcs11-${pkgver}/etc/pam_pkcs11.conf.example" \
+        > "$pkgdir/etc/pam_pkcs11/pam_pkcs11.conf"
+    install -Dm644 "$srcdir/pam_pkcs11-pam_pkcs11-${pkgver}/etc/subject_mapping.example" \
+        "$pkgdir/etc/pam_pkcs11/subject_mapping"
+
+    # opensc ships its provider as a versionless module; record it so a pacman
+    # upgrade cannot silently leave this config pointing at nothing.
+    for f in /usr/lib/opensc-pkcs11.so /usr/lib/pkcs11/opensc-pkcs11.so; do
+        [ -e "$f" ] && { echo "$f" > "$pkgdir/etc/pam_pkcs11/opensc-module-path"; break; }
+    done
+}
