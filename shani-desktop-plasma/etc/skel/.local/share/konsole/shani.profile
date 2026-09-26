@@ -11,7 +11,18 @@ CustomCursorColor=255,127,80
 UseCustomCursorColor=true
 
 [General]
-# no Command=: Konsole runs the login shell (zsh by default), so chsh works
+# Command= is required, and fish is a declared dependency because of it.
+# Konsole/Yakuake do NOT fall back to the login shell when it is absent:
+# Profile::Command is inherited from the built-in profile, whose value is
+# defaultShell() = qgetenv("SHELL"). With no $SHELL in the environment
+# (systemd units, bare ExecStart=, non-login su) that is empty, and
+# Session::run() logs
+#   Could not find '', starting '/usr/bin/bash' instead.  Please check your
+#   profile settings.
+# and silently runs bash, ignoring the user's real shell. Pinning fish keeps
+# chsh working: the terminal runs the shell named here, so `chsh` is picked up
+# on next launch.
+Command=/usr/bin/fish
 Name=Shani
 Parent=FALLBACK/
 TerminalColumns=110

@@ -594,6 +594,36 @@ def validate_theme_references(root: Path) -> list[str]:
         scheme = cp.get("Appearance", "ColorScheme", fallback=None)
         if scheme and not (root / "usr/share/konsole" / f"{scheme}.colorscheme").is_file():
             errors.append(f"{prof.relative_to(root)}: ColorScheme={scheme} is not a shipped Konsole scheme")
+        # No Command= does NOT get the login shell: Profile::Command is inherited
+        # from the built-in profile as defaultShell() = qgetenv("SHELL") (konsole
+        # Profile.cpp), so with $SHELL unset (systemd unit, non-login su) it is
+        # empty and Session::run() warns and silently runs bash. Pin the shell.
+        if not cp.get("General", "Command", fallback=None):
+            errors.append(
+                f"{prof.relative_to(root)}: no Command= under [General]; it inherits "
+                "qgetenv(\"SHELL\") and warns/falls back to bash when $SHELL is unset"
+            )
+
+    # DefaultProfile resolves under GenericDataLocation/konsole (~/.local/share/
+    # konsole, /usr/share/konsole) - not the yakuake/profiles path the name suggests -
+    # and a dangling name silently leaves konsole's built-in profile in place.
+    for rc_name, profile_dirs in (
+        ("etc/skel/.config/yakuakerc", ("etc/skel/.local/share/konsole",)),
+        ("etc/skel/.config/konsolerc", ("etc/skel/.local/share/konsole",)),
+    ):
+        rc = root / rc_name
+        if not rc.is_file():
+            continue
+        default_profile = _ini(rc.read_text(encoding="utf-8")).get(
+            "Desktop Entry", "DefaultProfile", fallback=None
+        )
+        if not default_profile:
+            continue
+        if not any((root / d / default_profile).is_file() for d in profile_dirs):
+            errors.append(
+                f"{rc.relative_to(root)}: DefaultProfile={default_profile} matches no "
+                f"shipped profile in {', '.join(profile_dirs)} (konsole silently uses its built-in)"
+            )
     return errors
 
 
