@@ -134,7 +134,7 @@ sleep 5; import -window root "$OUT/$LNF$TAG-gtk3.png"; pkill -f gtk3-widget-fact
 GDK_BACKEND=x11 gtk4-widget-factory >/dev/null 2>&1 &
 sleep 5; import -window root "$OUT/$LNF$TAG-gtk4.png"; pkill -f gtk4-widget-factory
 # Yakuake: drop it down with two tabs (skin + the shani terminal profile)
-QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} yakuake >/tmp/yakuake-$LNF.log 2>&1 &
+QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} yakuake >"$OUT/yakuake-$LNF.log" 2>&1 &
 sleep 5
 qdbus6 org.kde.yakuake /yakuake/sessions org.kde.yakuake.addSession >/dev/null 2>&1
 qdbus6 org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState >/dev/null 2>&1
@@ -151,8 +151,27 @@ pkill kvantumpreview; pkill plasmashell; pkill kwin_x11
 IN
 GTK_THEME_NAME="${GTK_THEME_NAME:-}" DECO="${DECO:-}" APP_STYLE="${APP_STYLE:-}" KV_THEME="${KV_THEME:-}" dbus-run-session -- bash "$XDG_RUNTIME_DIR/session.sh" "$LNF" "$OUT" "$TAG"
 for s in desktop calendar launcher dolphin maximized konsole lockscreen gtk3 gtk4 yakuake kvantum; do
-  [[ -s "$OUT/$LNF$TAG-$s.png" ]] && r "$LNF screenshot $s" PASS || r "$LNF screenshot $s" FAIL
+  f="$OUT/$LNF$TAG-$s.png"
+  if [[ ! -s "$f" ]]; then r "$LNF screenshot $s" "FAIL (no file)"; continue; fi
+  # `import -window root` captures the whole screen whatever is on it, so
+  # non-empty proves nothing: require the shot to differ from the desktop
+  # baseline, and report the margin so a near-miss is visible.
+  if [[ "$s" == desktop ]]; then r "$LNF screenshot $s" "PASS (baseline)"; continue; fi
+  d=$(compare -metric AE "$OUT/$LNF$TAG-desktop.png" "$f" null: 2>&1)
+  d=${d%%[^0-9]*}                       # compare prints e.g. "12345 (0.592857)"
+  # Threshold from the image itself, not $W/$H: those are set in the pre-session
+  # section and H is never set at all, so under `set -u` they abort the run.
+  read -r iw ih < <(identify -format '%w %h' "$f")
+  if (( d < iw * ih / 200 )); then
+    r "$LNF screenshot $s" "FAIL (only $d px differ from desktop - subject not visible?)"
+  else
+    r "$LNF screenshot $s" "PASS ($d px differ from desktop)"
+  fi
 done
+if grep -qiE "could not find|check your profile" "$OUT/yakuake-$LNF.log" 2>/dev/null; then
+  r "$LNF yakuake shell resolution" "FAIL (see yakuake-$LNF.log)"
+  grep -iE "could not find|check your profile" "$OUT/yakuake-$LNF.log" | head -3
+else r "$LNF yakuake shell resolution" "PASS (no shell warning)"; fi
 if grep -iE "desktoptheme|Saturn|svg" /tmp/plasmashell-$LNF.log | grep -iE "warn|error|fail|not found" | head -5 | grep -q .; then
   r "$LNF plasmashell theme warnings" "FAIL (see /tmp/plasmashell-$LNF.log)"
   grep -iE "desktoptheme|Saturn|svg" /tmp/plasmashell-$LNF.log | grep -iE "warn|error|fail|not found" | head -5
