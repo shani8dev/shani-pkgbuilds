@@ -189,6 +189,15 @@ if [ -f "$profile" ]; then
   if [ "$current_konsole" != "$konsole_scheme" ]; then
     kwriteconfig6 --file "$profile" --group Appearance --key ColorScheme "$konsole_scheme"
   fi
+  # Pin the shell. Without Command=, Profile::Command is inherited from the
+  # built-in profile as defaultShell() = qgetenv("SHELL") (konsole Profile.cpp),
+  # so with no $SHELL in the environment - a systemd unit, a bare ExecStart=, a
+  # non-login su - it is empty, and Konsole/Yakuake log "Could not find '',
+  # starting '/usr/bin/bash' instead" and then silently run bash. Only write
+  # it when absent, so a shell the user chose themselves is never overwritten.
+  if [ -z "$(kreadconfig6 --file "$profile" --group General --key Command 2>/dev/null)" ]; then
+    kwriteconfig6 --file "$profile" --group General --key Command /usr/bin/fish
+  fi
 fi
 
 # --- Yakuake skin follows the scheme (a non-Saturn skin is the user's choice) ---
