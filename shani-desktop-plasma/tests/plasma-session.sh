@@ -163,9 +163,13 @@ for s in desktop calendar launcher dolphin maximized konsole lockscreen gtk3 gtk
   # section and H is never set at all, so under `set -u` they abort the run.
   read -r iw ih < <(identify -format '%w %h' "$f")
   if (( d < iw * ih / 200 )); then
-    r "$LNF screenshot $s" "FAIL (only $d px differ from desktop - subject not visible?)"
+    r "$LNF screenshot $s" FAIL
+    echo "DETAIL $LNF $s: only $d px differ from desktop - subject not visible?"
   else
-    r "$LNF screenshot $s" "PASS ($d px differ from desktop)"
+    # Keep RESULT lines byte-stable so tests/baseline-plasma-6.7.result stays
+    # diffable; the margin is informational, so it goes on its own line.
+    r "$LNF screenshot $s" PASS
+    echo "DETAIL $LNF $s: $d px differ from desktop"
   fi
 done
 if grep -qiE "could not find|check your profile" "$OUT/yakuake-$LNF.log" 2>/dev/null; then

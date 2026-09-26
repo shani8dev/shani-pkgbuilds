@@ -3,42 +3,94 @@
 # PURPOSE: the package builds fine even when the theme renders wrong, so
 # there is no build-time signal for a theming regression. This file is the
 # known-good state to diff a future run against. Any RESULT line that is not
-# PASS is the regression.
+# PASS is the regression. DETAIL lines carry per-shot pixel margins and are
+# informational only - do not diff them, the counts vary run to run.
 #
-# HOW TO USE (after Plasma 6.8 lands):
-#   docker run --rm -v "$PWD:/pkg:ro" archlinux:latest bash -c '
+# Regenerate with (one container, all three looks, ~2.6G install):
+#   docker run --rm -v "$PWD:/pkg:ro" -v "$PWD/out:/out" archlinux:latest bash -c '
 #     pacman -Sy --noconfirm
 #     pacman -S --noconfirm --needed --overwrite "*" plasma-desktop \
 #       plasma-workspace kwin-x11 kvantum kde-gtk-config breeze-gtk dolphin \
 #       konsole yakuake fish gtk3-demos gtk4-demos wmctrl xorg-server-xvfb \
 #       xdotool imagemagick discover plasma-systemmonitor kate kcalc
-#     SCREEN=1920x1080 bash /pkg/tests/plasma-session.sh Saturn-Dark /tmp/shots' \
-#   | grep "^RESULT" > /tmp/new.result
-#   diff <(grep "^RESULT" tests/baseline-plasma-6.7.result) /tmp/new.result
+#     for L in Saturn-Dark Saturn Saturn-Twilight; do
+#       SCREEN=1920x1080 bash /pkg/tests/plasma-session.sh "$L" "/out/$L"
+#     done' | grep -E '^(RESULT|DETAIL)' > out/all.result
+#   diff <(grep '^RESULT' tests/baseline-plasma-6.7.result) <(grep '^RESULT' out/all.result)
 #
-# CAPTURED: 2026-09-26 03:36 UTC
-# PLASMA:   plasma-workspace 6.7.5-1 (Arch extra; version confirmed with
-#           `pacman -Si`, not assumed)
-# HARNESS:  tests/plasma-session.sh Saturn-Dark, package tree at /pkg
-# EXITS:    PACMAN_EXIT=0, HARNESS_EXIT=0
+# CAPTURED: 2026-09-26, all three looks, 39 RESULT lines, 0 failures
+# PLASMA:   plasma-workspace 6.7.5-1 (Arch extra; confirmed with pacman -Si)
+# EXITS:    HARNESS_EXIT=0 for Saturn-Dark, Saturn and Saturn-Twilight
 #
-# SCOPE LIMIT: Saturn-Dark only. Saturn and Saturn-Twilight are NOT
-# baselined - run all three looks before concluding anything about the
-# theme, then add them here.
-#
-# NOT CAPTURED: the screenshots. The container was --rm and the harness wrote
-# them to an unmounted path, so only the RESULT lines survive. Re-capture
-# with a mounted output directory if the visual evidence is needed.
+# All three yakuake-*.log files are 0 bytes: the 'Could not find \'\'' warning
+# (empty inherited Command) is gone, and each shell resolution assertion passes.
 
-RESULT Saturn-Dark screenshot desktop           PASS
+RESULT Saturn-Dark screenshot desktop           PASS (baseline)
 RESULT Saturn-Dark screenshot calendar          PASS
+DETAIL Saturn-Dark calendar: 47461 px differ from desktop
 RESULT Saturn-Dark screenshot launcher          PASS
+DETAIL Saturn-Dark launcher: 30001 px differ from desktop
 RESULT Saturn-Dark screenshot dolphin           PASS
+DETAIL Saturn-Dark dolphin: 46474 px differ from desktop
 RESULT Saturn-Dark screenshot maximized         PASS
+DETAIL Saturn-Dark maximized: 241103 px differ from desktop
 RESULT Saturn-Dark screenshot konsole           PASS
+DETAIL Saturn-Dark konsole: 76486 px differ from desktop
 RESULT Saturn-Dark screenshot lockscreen        PASS
+DETAIL Saturn-Dark lockscreen: 117384 px differ from desktop
 RESULT Saturn-Dark screenshot gtk3              PASS
+DETAIL Saturn-Dark gtk3: 196275 px differ from desktop
 RESULT Saturn-Dark screenshot gtk4              PASS
+DETAIL Saturn-Dark gtk4: 207996 px differ from desktop
 RESULT Saturn-Dark screenshot yakuake           PASS
+DETAIL Saturn-Dark yakuake: 126295 px differ from desktop
 RESULT Saturn-Dark screenshot kvantum           PASS
+DETAIL Saturn-Dark kvantum: 121693 px differ from desktop
+RESULT Saturn-Dark yakuake shell resolution     PASS (no shell warning)
 RESULT Saturn-Dark plasmashell theme warnings   PASS (none)
+RESULT Saturn screenshot desktop                PASS (baseline)
+RESULT Saturn screenshot calendar               PASS
+DETAIL Saturn calendar: 33035 px differ from desktop
+RESULT Saturn screenshot launcher               PASS
+DETAIL Saturn launcher: 25895 px differ from desktop
+RESULT Saturn screenshot dolphin                PASS
+DETAIL Saturn dolphin: 42925 px differ from desktop
+RESULT Saturn screenshot maximized              PASS
+DETAIL Saturn maximized: 189492 px differ from desktop
+RESULT Saturn screenshot konsole                PASS
+DETAIL Saturn konsole: 50223 px differ from desktop
+RESULT Saturn screenshot lockscreen             PASS
+DETAIL Saturn lockscreen: 106328 px differ from desktop
+RESULT Saturn screenshot gtk3                   PASS
+DETAIL Saturn gtk3: 132899 px differ from desktop
+RESULT Saturn screenshot gtk4                   PASS
+DETAIL Saturn gtk4: 134791 px differ from desktop
+RESULT Saturn screenshot yakuake                PASS
+DETAIL Saturn yakuake: 74707 px differ from desktop
+RESULT Saturn screenshot kvantum                PASS
+DETAIL Saturn kvantum: 94944 px differ from desktop
+RESULT Saturn yakuake shell resolution          PASS (no shell warning)
+RESULT Saturn plasmashell theme warnings        PASS (none)
+RESULT Saturn-Twilight screenshot desktop       PASS (baseline)
+RESULT Saturn-Twilight screenshot calendar      PASS
+DETAIL Saturn-Twilight calendar: 38952 px differ from desktop
+RESULT Saturn-Twilight screenshot launcher      PASS
+DETAIL Saturn-Twilight launcher: 26854 px differ from desktop
+RESULT Saturn-Twilight screenshot dolphin       PASS
+DETAIL Saturn-Twilight dolphin: 190711 px differ from desktop
+RESULT Saturn-Twilight screenshot maximized     PASS
+DETAIL Saturn-Twilight maximized: 776338 px differ from desktop
+RESULT Saturn-Twilight screenshot konsole       PASS
+DETAIL Saturn-Twilight konsole: 336298 px differ from desktop
+RESULT Saturn-Twilight screenshot lockscreen    PASS
+DETAIL Saturn-Twilight lockscreen: 129968 px differ from desktop
+RESULT Saturn-Twilight screenshot gtk3          PASS
+DETAIL Saturn-Twilight gtk3: 692405 px differ from desktop
+RESULT Saturn-Twilight screenshot gtk4          PASS
+DETAIL Saturn-Twilight gtk4: 652447 px differ from desktop
+RESULT Saturn-Twilight screenshot yakuake       PASS
+DETAIL Saturn-Twilight yakuake: 551897 px differ from desktop
+RESULT Saturn-Twilight screenshot kvantum       PASS
+DETAIL Saturn-Twilight kvantum: 272274 px differ from desktop
+RESULT Saturn-Twilight yakuake shell resolution PASS (no shell warning)
+RESULT Saturn-Twilight plasmashell theme warnings PASS (none)
