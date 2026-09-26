@@ -499,36 +499,52 @@ rather than writing in a generic format.
   `gvfs-*` entry but not this one. Removed; `pkgrel` left unchanged since
   no artifact was ever actually published at that `pkgrel` (the build had
   always failed).
-- **`shani-peripherals` declares `pam-u2f` and `pam-krb5`, and NEITHER is
-  referenced by any PAM stack on any edition — two more inert dependencies,
-  found 2026-09-26 by auditing every module the peripherals set ships.** Same
-  class as the `libpwquality` entry below, and found the same way: the module
-  is installed, so it looks supported, but nothing loads it. Verified by
-  installing `gdm`, `plasma-login-manager`, `sddm` and `kscreenlocker`
-  together and grepping **every** file in `/etc/pam.d` and `/usr/lib/pam.d`:
-  `pam_u2f` and `pam_krb5` appear in **zero** stacks, while `pam_fprintd`
-  appears in exactly two (`gdm-fingerprint`, `kde-fingerprint`) and
-  `pam_pkcs11` in two (`gdm-smartcard`, `kde-smartcard`). Net effect: **a
-  FIDO2/U2F security key cannot log in on any Shanios edition**, and
-  Kerberos cannot either. `shani-docs`' `security/hardware-auth.md` does say
-  FIDO2/U2F tokens "work without a driver download" — the *token* is detected,
-  but it cannot authenticate, so that wording needs qualifying. Note the
-  asymmetry that makes this easy to miss: smartcards and fingerprints look
-  supported for the same reason and genuinely are, because `gdm`/`kscreenlocker`
-  ship the PAM services that reference them; u2f and krb5 have no such
-  service, and nothing in this repo provides one.
-  **The only safe way to wire `pam_u2f` is `auth sufficient`, and this was
-  measured, not assumed:** with no key present, `pam_u2f.so` returns
-  `PAM_AUTHINFO_UNAVAIL` (9). Under `auth required` that fails the whole
-  stack, so a machine with no security key could not log in with its
-  password either; under `auth sufficient` the return value is ignored and
-  the stack falls through to `pam_unix` (verified with a compiled libpam
-  client, controls `pam_permit`=0 / `pam_deny`=7 in the same run). Same
-  reasoning applies to any fingerprint/u2f line added to a stack that must
-  keep a working password fallback — and it is why `required` is the wrong
-  word to reach for. Wiring it means owning a pambase file
-  (`system-auth`/`system-local-login`), which is the same policy decision as
-  the `libpwquality` entry and is deliberately still unmade.
+- **`shani-peripherals` declared `pam-u2f` and `pam-krb5` with neither
+  referenced by any PAM stack — two inert dependencies, found 2026-09-26 by
+  auditing every module the peripherals set ships. `pam-u2f` is now FIXED;
+  `pam-krb5` is still open.** Same class as the `libpwquality` entry below,
+  and found the same way: the module is installed, so it looks supported, but
+  nothing loads it. Verified by installing `gdm`, `plasma-login-manager`,
+  `sddm` and `kscreenlocker` together and grepping **every** file in
+  `/etc/pam.d` and `/usr/lib/pam.d`: `pam_u2f` and `pam_krb5` appeared in
+  **zero** stacks, while `pam_fprintd` appeared in exactly two
+  (`gdm-fingerprint`, `kde-fingerprint`) and `pam_pkcs11` in two
+  (`gdm-smartcard`, `kde-smartcard`). The asymmetry that makes this easy to
+  miss: smartcards and fingerprints look supported for the same reason and
+  genuinely are, because `gdm`/`kscreenlocker` ship PAM services referencing
+  them; u2f and krb5 had no such service and nothing in the tree provided one.
+  **`pam-u2f` — FIXED (2026-09-26).** `shani-settings` now ships
+  `etc/pam.d/system-auth` with `auth sufficient pam_u2f.so`, so a FIDO2/U2F
+  key works at any graphical login and for `sudo` with no hand-editing. Two
+  things that are easy to get wrong and were both measured rather than
+  assumed:
+  (a) `system-auth` is the right file, and `system-local-login` is the
+  tempting wrong answer — `plasmalogin` (the Plasma edition's actual login
+  manager) includes `system-login`, *not* `system-local-login`; the two are
+  siblings that both include `system-auth`, so `system-auth` is the only
+  chokepoint reaching GNOME, KDE, Plasma and getty together.
+  (b) `sufficient`, never `required`: with no key present `pam_u2f.so` returns
+  `PAM_AUTHINFO_UNAVAIL` (9), which under `required` fails the whole stack and
+  would stop the *password* working on any machine without a key. Verified
+  with a compiled libpam client feeding a password through the conversation
+  callback, called as a **non-root** user through a service that really
+  includes the file — correct password succeeds, wrong password still rejected,
+  `pam_permit`=0 / `pam_deny`=7 controls in the same run. **Harness trap:** an
+  earlier attempt looked like an auth bypass purely because it ran as root
+  (where `pam_rootok.so` short-circuits the stack) and tested
+  `/etc/pam.d/su`, whose `auth` stack never includes `system-auth`. Do not
+  reuse that shape.
+  Note `pam-u2f` is deliberately **not** a dependency of `shani-settings` (it
+  ships in `shani-peripherals`); if genuinely absent PAM skips the module and
+  the `sufficient` line falls through to the password, so the failure direction
+  is safe. Also note `shani-settings` `pkgrel` must be bumped whenever
+  `shani-peripherals` gains a PAM-referenced module, since the two ship
+  independently.
+  **`pam-krb5` — still open.** No stack references it; Kerberos cannot
+  authenticate. Wiring it is not a one-liner the way u2f was: it needs a realm
+  and a keytab, so it is a deployment decision rather than a missing line.
+  `shani-docs`' `security/hardware-auth.md` now says a FIDO2 key can log in
+  and calls Kerberos out separately as unwired.
   Everything else in that package checks out and is genuinely wired: all nine
   units `shani-peripherals.install` enables exist (`fprintd`, `bolt`,
   `ratbagd`, `geoclue`, `upower`, `usbmuxd`, plus the `pcscd`/`lircd`/`gpsd`
