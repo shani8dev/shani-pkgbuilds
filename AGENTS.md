@@ -540,17 +540,25 @@ rather than writing in a generic format.
   is safe. Also note `shani-settings` `pkgrel` must be bumped whenever
   `shani-peripherals` gains a PAM-referenced module, since the two ship
   independently.
-  **`pam-krb5` — still open, but no longer a safety question.** No stack
-  references it, so Kerberos cannot authenticate. The safety half is settled:
-  adding `auth sufficient pam_krb5.so` above the `pam_u2f` line, with **no realm
-  and no keytab configured**, leaves password auth intact — verified the same
-  way as u2f (compiled libpam client, non-root, correct password 0 / wrong
-  password 7, and the as-shipped baseline re-run in the same session for
-  comparison). So the remaining work is provisioning, not wiring risk: add the
-  one line and supply a realm and keytab per deployment. `pam_krb5` is **not**
-  made a `shani-settings` dependency for the same reason `pam-u2f` is not — it
-  ships in `shani-peripherals`.
-  `shani-docs`' `security/hardware-auth.md` now says a FIDO2 key can log in
+  **`pam-krb5` — still open, and DO NOT wire it blind: it was measured to
+  cost ~24 seconds per login.** A first pass concluded the mechanism was safe
+  and recorded that here. That conclusion was wrong, and the mistake is worth
+  keeping: the check looked only at the *return code* (password auth still
+  succeeded with `auth sufficient` and no realm configured) and never measured
+  *time*. With no realm and no `krb5.conf`, `pam_krb5.so` blocks trying to
+  reach a KDC before it gives up — measured at **~24,000 ms per
+  authentication** on a real non-root PAM client, against ~70 ms for the same
+  stack with the `pam_krb5` line absent. `sufficient` controls what happens
+  *after* a module returns; it does nothing about a module that blocks first.
+  So the line was reverted. Correct password -> success and wrong password ->
+  rejection is necessary but not sufficient evidence for an auth change;
+  **measure the latency too**, because a 24-second login is a fleet-wide
+  regression that no return-code assertion would ever catch.
+  What remains is provisioning, and it should be a per-deployment decision with
+  the latency measured on a real target: add the line, supply a realm and
+  keytab, and confirm the login does not regress. `pam_krb5` is deliberately
+  **not** a `shani-settings` dependency (it ships in `shani-peripherals`).
+`shani-docs`' `security/hardware-auth.md` now says a FIDO2 key can log in
   and calls Kerberos out separately as unwired.
   Everything else in that package checks out and is genuinely wired: all nine
   units `shani-peripherals.install` enables exist (`fprintd`, `bolt`,
