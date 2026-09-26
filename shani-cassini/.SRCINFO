@@ -1,0 +1,26 @@
+pkgbase = shani-cassini
+	pkgdesc = Shani Cassini - keeps a Shanios system updated, healthy and recoverable
+	pkgver = 0.1.0
+	pkgrel = 13
+	url = https://github.com/shani8dev/shani-cassini
+	install = shani-cassini.install
+	arch = any
+	license = GPL-3.0-only
+	makedepends = git
+	depends = python
+	depends = python-gobject
+	depends = gtk4
+	depends = libadwaita
+	depends = python-httpx
+	depends = python-keyring
+	depends = polkit
+	depends = libnotify
+	depends = shani-deploy
+	optdepends = shani-backup: the Backup tab
+	optdepends = shani-chronoa: the Chronoa assistant tab
+	optdepends = shani-fleet: the Fleet tab (fleet enrollment)
+	optdepends = shani-peripherals: the Fingerprint tab (fprintd, the fingerprint reader)
+	source = git+https://github.com/shani8dev/shani-cassini.git#commit=d84123170265bb4efd5df2e43acd3c51c07e6f29
+	sha256sums = deda25b89c47bf34ba4e240edc62579dc0a222bd939cc0da0bb8b303aad03a90
+
+pkgname = shani-cassini
