@@ -374,11 +374,27 @@ rather than writing in a generic format.
   `etc/` and `usr/` into `$pkgdir`, so `tests/` never ships. Diff **only**
   the `RESULT` lines: `DETAIL` lines carry per-shot pixel margins that vary
   run to run and would produce false diffs. Any `RESULT` line that is not
-  `PASS` is the regression. All three `yakuake-*.log` files are 0 bytes,
+  `PASS`   is the regression. All three `yakuake-*.log` files are 0 bytes,
   confirming the empty-`Command` warning is gone on every look.
   Regenerate with **one** container for all three looks (a ~2.6G install each
   time otherwise) and a **mounted** `out/` dir, or the screenshots and app
-  logs are lost with `--rm`.
+  logs are lost with `--rm`. Every app log (`kwin`, `plasmashell`,
+  `konsole`, `yakuake`, `lock`) now goes to `$OUT` for that reason — the
+  `plasmashell theme warnings` assertion reads one of them, so on an
+  unmounted path a FAIL would have been undiagnosable.
+  **Two things that look like bugs in a run but are not.** (1) `org.kde.KSplash
+  failed: exited with status 1` appears in every container run: the headless
+  session has no real splash compositing. The splash itself is fine —
+  `tests/render-splash.py` exits 0 for all three looks, and the captured
+  stage1/stage5 frames are real renders (mean stddev 24-30, not black), so
+  bug 10 has not regressed. (2) `Parent=FALLBACK/` in the profile is
+  **correct** and must not be "fixed" to `Built-in/`: konsole renamed only
+  the built-in profile's *display name*, deliberately keeping the magic path
+  string `FALLBACK/` ("For backward compatibility with existing profiles, it
+  should never change", `Profile.cpp` `BUILTIN_MAGIC_PATH`). Konsole's own
+  test fixture and an autotest both assert that exact spelling, and a bad
+  `Parent=` would fail only to a `qCDebug` line and then silently inherit
+  built-in defaults anyway.
 
 - **check-skip-checksums false negatives — FIXED, and the real gap was
   bigger than documented (Med → both issues now closed).**
