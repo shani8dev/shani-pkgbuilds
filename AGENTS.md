@@ -181,7 +181,32 @@ rather than writing in a generic format.
   (12) **Konsole/Yakuake never used the Saturn terminal colours**: the skel
   profile (and theme-sync) put `ColorScheme=` under `[General]`; Konsole
   reads it from `[Appearance]` only. Moved; theme-sync migrates old
-  profiles; checker rule. **Palette:** one neutral set for everything
+  profiles; checker rule.
+  (13) **Yakuake printed `Could not find '', starting '/usr/bin/bash' instead.
+  Please check your profile settings.` — FIXED (2026-09-26), by pinning
+  `Command=/usr/bin/fish` in the skel `shani.profile`. The skel profile set
+  **no** `Command=`, under a comment claiming "Konsole runs the login shell
+  (zsh by default), so chsh works" — that is wrong. Konsole/Yakuake do not
+  fall back to the login shell: `Profile::Command` is *inherited* from the
+  built-in profile, whose value is `defaultShell() = qgetenv("SHELL")` (konsole
+  `Profile.cpp`). With no `$SHELL` in the environment (systemd unit, bare
+  `ExecStart=`, non-login `su`) that is empty, so `Session::run()` warns and
+  silently runs bash, ignoring the user's real shell. The warning is the
+  *symptom*; the same condition also mis-runs the shell, so it is not
+  cosmetic. `fish` is the shell and is a `shani-settings` dependency, not
+  this package's — safe because only the `plasma` profile installs
+  `shani-desktop-plasma` and that profile lists `shani-settings` in
+  `Packages-Base` (verified; the `server` profile omits `shani-settings` but
+  also never installs this package). Two checker rules now prevent the
+  regression, both verified RED→GREEN: every shipped `*.profile` must set
+  `Command=`, and `yakuakerc`/`konsolerc` `DefaultProfile` must resolve to a
+  shipped profile. That second one matters because `DefaultProfile` is
+  resolved by konsole's `ProfileManager` under
+  `GenericDataLocation/konsole` (`~/.local/share/konsole`,
+  `/usr/share/konsole`) — **not** a `yakuake/profiles` directory — and a
+  dangling name leaves konsole's built-in profile in place with no error at
+  all, which is how this survived a green `check-package.py`.
+  **Palette:** one neutral set for everything
   (`saturn_palette.py`: night-sky indigo dark / cream light, coral accent
   kept, harsh neon-teal "positive" -> mint), applied by `build-palette.py`
   (colour schemes, Konsole, Kvantum art) and `build-kvantum.py`; idempotent,
@@ -278,6 +303,19 @@ rather than writing in a generic format.
   and apps get no colour scheme (Breeze Light views inside a dark Kvantum
   window, which looks exactly like a Kvantum contrast bug; it isn't). The
   session script sets both; don't "fix" theming from a run without them.
+  **A harness `PASS` used to mean only "the PNG is non-empty" — fixed
+  2026-09-26.** `shot()` is `import -window root`, which captures the whole
+  screen whatever is on it, so an app that never opened still produced a
+  full-desktop frame and scored `PASS`. That is how a Yakuake shell-resolution
+  bug above survived a green run. Screenshot steps now `compare` each shot
+  against the `desktop` baseline and report the pixel delta, and a new
+  `yakuake shell resolution` line fails on the warning text; the thresholds
+  are computed from the image with `identify`, **not** `$W`/`$H` (`H` is never
+  set in that scope and `set -u` aborts the run). Yakuake's stderr now goes to
+  `$OUT` rather than `/tmp`, so it survives a `--rm` container — the run that
+  found the bug wrote it to an unmounted `/tmp` and lost it. When adding a
+  screenshot step, assert the subject is *visible*, not merely that a file
+  appeared.
   `RESEARCH-FINDINGS.md` predates all of this; its §1 table, §6.8 (Id) and §9
   items are stale.
 
