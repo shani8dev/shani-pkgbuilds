@@ -289,6 +289,21 @@ rather than writing in a generic format.
   `[Appearance]` — bug 12), and that no surface silently falls back to stock
   Breeze/Next. A `plasmarc` or decoration regression will not fail the build.
 
+  **Pre-6.8 baseline captured 2026-09-26** on `plasma-workspace 6.7.5-1`
+  (Arch `extra`, version verified with `pacman -Si`, not assumed), running
+  `tests/plasma-session.sh Saturn-Dark` in an Arch container with the package
+  tree at `/pkg`: **12/12 PASS, `HARNESS_EXIT=0`** — screenshots `desktop`,
+  `calendar`, `launcher`, `dolphin`, `maximized`, `konsole`, `lockscreen`,
+  `gtk3`, `gtk4`, `yakuake`, `kvantum`, plus `plasmashell theme warnings
+  PASS (none)`. Diff the `RESULT` lines from a post-6.8 run against that
+  list; any line that is not `PASS` is the regression. Two honest limits on
+  this baseline: it covers **only** the `Saturn-Dark` look (`Saturn` and
+  `Saturn-Twilight` were not baselined — run all three before drawing a
+  conclusion), and the **screenshots were not retained** (the throwaway
+  container was `--rm` and wrote them to an unmounted path), so the baseline
+  is the `RESULT` lines rather than the images. Re-capture with a mounted
+  output directory if visual evidence is wanted.
+
 - **check-skip-checksums false negatives — FIXED, and the real gap was
   bigger than documented (Med → both issues now closed).**
   `is_pinned_source()` (`check-skip-checksums.sh:76`) now only treats a
