@@ -1,0 +1,44 @@
+# Baseline: shani-desktop-plasma Saturn theming on Plasma 6.7
+#
+# PURPOSE: the package builds fine even when the theme renders wrong, so
+# there is no build-time signal for a theming regression. This file is the
+# known-good state to diff a future run against. Any RESULT line that is not
+# PASS is the regression.
+#
+# HOW TO USE (after Plasma 6.8 lands):
+#   docker run --rm -v "$PWD:/pkg:ro" archlinux:latest bash -c '
+#     pacman -Sy --noconfirm
+#     pacman -S --noconfirm --needed --overwrite "*" plasma-desktop \
+#       plasma-workspace kwin-x11 kvantum kde-gtk-config breeze-gtk dolphin \
+#       konsole yakuake fish gtk3-demos gtk4-demos wmctrl xorg-server-xvfb \
+#       xdotool imagemagick discover plasma-systemmonitor kate kcalc
+#     SCREEN=1920x1080 bash /pkg/tests/plasma-session.sh Saturn-Dark /tmp/shots' \
+#   | grep "^RESULT" > /tmp/new.result
+#   diff <(grep "^RESULT" tests/baseline-plasma-6.7.result) /tmp/new.result
+#
+# CAPTURED: 2026-09-26 03:36 UTC
+# PLASMA:   plasma-workspace 6.7.5-1 (Arch extra; version confirmed with
+#           `pacman -Si`, not assumed)
+# HARNESS:  tests/plasma-session.sh Saturn-Dark, package tree at /pkg
+# EXITS:    PACMAN_EXIT=0, HARNESS_EXIT=0
+#
+# SCOPE LIMIT: Saturn-Dark only. Saturn and Saturn-Twilight are NOT
+# baselined - run all three looks before concluding anything about the
+# theme, then add them here.
+#
+# NOT CAPTURED: the screenshots. The container was --rm and the harness wrote
+# them to an unmounted path, so only the RESULT lines survive. Re-capture
+# with a mounted output directory if the visual evidence is needed.
+
+RESULT Saturn-Dark screenshot desktop           PASS
+RESULT Saturn-Dark screenshot calendar          PASS
+RESULT Saturn-Dark screenshot launcher          PASS
+RESULT Saturn-Dark screenshot dolphin           PASS
+RESULT Saturn-Dark screenshot maximized         PASS
+RESULT Saturn-Dark screenshot konsole           PASS
+RESULT Saturn-Dark screenshot lockscreen        PASS
+RESULT Saturn-Dark screenshot gtk3              PASS
+RESULT Saturn-Dark screenshot gtk4              PASS
+RESULT Saturn-Dark screenshot yakuake           PASS
+RESULT Saturn-Dark screenshot kvantum           PASS
+RESULT Saturn-Dark plasmashell theme warnings   PASS (none)

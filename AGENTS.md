@@ -295,8 +295,13 @@ rather than writing in a generic format.
   tree at `/pkg`: **12/12 PASS, `HARNESS_EXIT=0`** — screenshots `desktop`,
   `calendar`, `launcher`, `dolphin`, `maximized`, `konsole`, `lockscreen`,
   `gtk3`, `gtk4`, `yakuake`, `kvantum`, plus `plasmashell theme warnings
-  PASS (none)`. Diff the `RESULT` lines from a post-6.8 run against that
-  list; any line that is not `PASS` is the regression. Two honest limits on
+  PASS (none)`. Those `RESULT` lines are committed verbatim as
+  `shani-desktop-plasma/tests/baseline-plasma-6.7.result`, so a post-6.8 run
+  can be diffed mechanically instead of eyeballed; that file also carries the
+  container recipe. It is inert in the payload — the `package()` function only
+  copies `etc/` and `usr/` into `$pkgdir`, so `tests/` never ships. Diff the
+  `RESULT` lines from a post-6.8 run against that list; any line that is not
+  `PASS` is the regression. Two honest limits on
   this baseline: it covers **only** the `Saturn-Dark` look (`Saturn` and
   `Saturn-Twilight` were not baselined — run all three before drawing a
   conclusion), and the **screenshots were not retained** (the throwaway
