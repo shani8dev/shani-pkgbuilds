@@ -1,8 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=89
-_commit='9e1de5b9cbda95e99b6b029b1aa3a3735ff6aa7c'  # Replace with the specific commit hash
+pkgrel=90
+_commit='8289999373535c0b3721693299149c71a646f865'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
@@ -25,7 +25,7 @@ depends=(
     'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('b37dd1f02278cfca2ec475a48b6dc40cfc9f56576f5896f79c2c0c20191f59b1')
+sha256sums=('875f882e1f78d71fb93751436518b7e59151fc1a1d3187ca4ba1c316d160e55f')
 makedepends=('git')
 
 package() {
