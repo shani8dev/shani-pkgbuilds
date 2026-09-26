@@ -499,6 +499,46 @@ rather than writing in a generic format.
   `gvfs-*` entry but not this one. Removed; `pkgrel` left unchanged since
   no artifact was ever actually published at that `pkgrel` (the build had
   always failed).
+- **`shani-peripherals` declares `pam-u2f` and `pam-krb5`, and NEITHER is
+  referenced by any PAM stack on any edition — two more inert dependencies,
+  found 2026-09-26 by auditing every module the peripherals set ships.** Same
+  class as the `libpwquality` entry below, and found the same way: the module
+  is installed, so it looks supported, but nothing loads it. Verified by
+  installing `gdm`, `plasma-login-manager`, `sddm` and `kscreenlocker`
+  together and grepping **every** file in `/etc/pam.d` and `/usr/lib/pam.d`:
+  `pam_u2f` and `pam_krb5` appear in **zero** stacks, while `pam_fprintd`
+  appears in exactly two (`gdm-fingerprint`, `kde-fingerprint`) and
+  `pam_pkcs11` in two (`gdm-smartcard`, `kde-smartcard`). Net effect: **a
+  FIDO2/U2F security key cannot log in on any Shanios edition**, and
+  Kerberos cannot either. `shani-docs`' `security/hardware-auth.md` does say
+  FIDO2/U2F tokens "work without a driver download" — the *token* is detected,
+  but it cannot authenticate, so that wording needs qualifying. Note the
+  asymmetry that makes this easy to miss: smartcards and fingerprints look
+  supported for the same reason and genuinely are, because `gdm`/`kscreenlocker`
+  ship the PAM services that reference them; u2f and krb5 have no such
+  service, and nothing in this repo provides one.
+  **The only safe way to wire `pam_u2f` is `auth sufficient`, and this was
+  measured, not assumed:** with no key present, `pam_u2f.so` returns
+  `PAM_AUTHINFO_UNAVAIL` (9). Under `auth required` that fails the whole
+  stack, so a machine with no security key could not log in with its
+  password either; under `auth sufficient` the return value is ignored and
+  the stack falls through to `pam_unix` (verified with a compiled libpam
+  client, controls `pam_permit`=0 / `pam_deny`=7 in the same run). Same
+  reasoning applies to any fingerprint/u2f line added to a stack that must
+  keep a working password fallback — and it is why `required` is the wrong
+  word to reach for. Wiring it means owning a pambase file
+  (`system-auth`/`system-local-login`), which is the same policy decision as
+  the `libpwquality` entry and is deliberately still unmade.
+  Everything else in that package checks out and is genuinely wired: all nine
+  units `shani-peripherals.install` enables exist (`fprintd`, `bolt`,
+  `ratbagd`, `geoclue`, `upower`, `usbmuxd`, plus the `pcscd`/`lircd`/`gpsd`
+  sockets — an earlier "no unit file" reading of this was a container artifact
+  of a partially failed install, not a gap), `libfprint` ships
+  `70-libfprint-2.rules` for SPI sensors, and `android-udev` ships
+  `51-android.rules`. `game-devices-udev` ships `uinput.conf` rather than a
+  `.rules` file, so a "no udev rules" grep reports it as missing when it is
+  not. `apcupsd` and `inputattach` are commented out in that `.install`.
+
 - **`shani-core` declares `libpwquality` but nothing ever loads it — inert
   dependency, NOT fixed because it needs a policy decision.** The inverse of
   the `gvfs-google` case above: that entry named a package that does not
@@ -511,13 +551,50 @@ rather than writing in a generic format.
   on a Shanios install** — the library is installed and inert. Either wire
   `pam_pwquality.so` into the `password` stack (note that a missing module
   fails silently rather than erroring, so it needs a deliberate test) or drop
-  the dependency; do not leave it looking enforced. Password *expiry* is a
-  separate axis and is deliberate: shadow defaults apply, so `max-days` is
-  `99999` and `inactive-days` is `-1`, matching the server profile's
-  `/etc/default/useradd` (`EXPIRE=` empty, `INACTIVE=-1`). That matches
-  NIST SP 800-63B, which advises against periodic forced rotation absent
-  evidence of compromise. `shani-docs` now documents the real default
+  the dependency; do not leave it looking enforced. **Its control-flag
+  behaviour is now measured** (2026-09-26, compiled libpam client, no sensor
+  attached): the line must go in as `password sufficient`, not `required` —
+  `pam_pwquality.so` returns `PAM_AUTHINFO_UNAVAIL` (9) when the password is
+  merely too short, and under `required` that fails the stack and so would
+  lock the user out of changing their password at all, while under
+  `sufficient` it is ignored and the change proceeds. The
+  `retry=3 minlen=12` form was verified end to end: a 5-character password is
+  rejected, a valid one is accepted, and `su`, `passwd` and `chpasswd` all
+  still work with the line in place (`chpasswd` matters — the installer sets
+  the first password through it, and an early "failure" there turned out to be
+  a test artifact, reproduced unmodified and modified to prove it). Password
+  *expiry* is a separate axis and is deliberate: shadow defaults apply, so
+  `max-days` is `99999` and `inactive-days` is `-1`, matching the server
+  profile's `/etc/default/useradd` (`EXPIRE=` empty, `INACTIVE=-1`). That
+  matches NIST SP 800-63B, which advises against periodic forced rotation
+  absent evidence of compromise. `shani-docs` now documents the real default
   (`system/users-groups.md`, commit `7112701`).
+- **Fingerprint login: which editions can actually use a finger — audited
+  2026-09-26, and the answer is narrower than the docs claimed.** The rule
+  that makes this non-obvious: **the PAM service that makes an enrolled
+  finger usable ships with the login manager, not with `fprintd`.** So
+  grepping the overlay for `pam_fprintd` finds nothing and looks like the
+  `libpwquality` bug, when the real answer lives in the display-manager
+  packages. `gdm` ships `/etc/pam.d/gdm-fingerprint` (works at the GNOME
+  login screen) and `kscreenlocker` ships `/usr/lib/pam.d/kde-fingerprint`
+  (KDE lock screen, and only once `Authenticators/Fingerprint` is enabled in
+  `kscreenlockerrc` — it is off by default). **Shanios Plasma does not use
+  SDDM**: it ships `plasma-login-manager` and logs in via `/usr/bin/plasmalogin`
+  (`shani-desktop-plasma` depends on it; `os-installer-config`'s
+  `configure.sh` adds a `plasmalogin` autologin branch ahead of the sddm one
+  and comments "the plasma image has no sddm"). Its PAM services
+  (`plasmalogin`, `plasmalogin-autologin`, `plasmalogin-greeter`) contain no
+  `pam_fprintd`, and neither do `system-login` or `system-auth`, so **no
+  edition but GNOME can use a finger at the login screen**. `cosmic-greeter`
+  ships no PAM service at all. `greetd` (`/etc/pam.d/greetd`, used by the ISO
+  profile) includes `system-local-login` and likewise has no `pam_fprintd`.
+  `libpam` searches both `/etc/pam.d` and `/usr/lib/pam.d` (confirmed in its
+  compiled-in strings), which is why a service inside a package payload works
+  with no `/etc` file at all. **A leading `-` in a PAM line is not a
+  comment**: `kscreenlocker`'s `kde-fingerprint` contains
+  `-auth required pam_fprintd.so`, and a compiled libpam client showed that
+  line behaving *identically* to the unprefixed one — it is live, not
+  disabled.
 - **game-devices-udev "unknown public key" CI failure — root cause was in
   `shani-builder`, not here; this PKGBUILD was already correct.** Worth
   cross-referencing so a future pass doesn't re-diagnose this file: the
