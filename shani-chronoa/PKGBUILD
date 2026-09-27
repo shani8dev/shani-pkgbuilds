@@ -22,6 +22,14 @@ depends=(
     'tesseract-data-eng'
     'espeak-ng'
     'libsecret'
+    # The machine-state senses shell out to these. Without them they degrade
+    # to reporting UNKNOWN rather than a fact, which is honest but much less
+    # useful - `fuser` in particular backs the contention sense, and its
+    # absence previously read as "no microphone is in use".
+    'psmisc'      # fuser - device holder lookup
+    'i2c-tools'   # i2cdetect - thermal-array probe
+    'polkit'      # pkexec - opt-in root scan for the same
+    'bluez'       # bluetoothctl - device inventory
 )
 optdepends=(
     'ollama: run the language model on this computer'
