@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-chronoa"
@@ -18,6 +18,8 @@ depends=(
     'libnotify'
     'upower'
     'bubblewrap'
+    'tesseract'
+    'tesseract-data-eng'
     'espeak-ng'
     'libsecret'
 )
@@ -30,13 +32,14 @@ optdepends=(
     'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=e047a8cac53e76b1f2c71af56e22eda58a072219")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=cd9a59d3d7cc223c9f6fd918dcb2e73dae4dc3f3")
 sha256sums=('SKIP')
 
 package() {
     cd "$srcdir/$pkgname"
     install -Dm755 usr/bin/shani-chronoa "$pkgdir/usr/bin/shani-chronoa"
     install -Dm755 usr/bin/shani-chronoa-mcp "$pkgdir/usr/bin/shani-chronoa-mcp"
+    install -Dm755 usr/bin/shani-chronoa-sense "$pkgdir/usr/bin/shani-chronoa-sense"
     install -d "$pkgdir/usr/lib"
     cp -r usr/lib/shani-chronoa "$pkgdir/usr/lib/"
     install -Dm644 usr/share/applications/shani-chronoa.desktop "$pkgdir/usr/share/applications/shani-chronoa.desktop"
