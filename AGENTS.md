@@ -135,6 +135,48 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
+- **`shani-chronoa/PKGBUILD` cannot deliver the senses layer — CONFIRMED
+  PRESENT (2026-09-27), not yet fixable here.** Three separate defects, all
+  verified against a real booted slot rather than by reading the file:
+  (1) it pins `e047a8c`, which predates the `senses/` layer entirely, so the
+  packaged source tree has no `senses/` package and no
+  `usr/bin/shani-chronoa-sense`; (2) it never gained an install line for that
+  launcher, because the launcher did not exist when the pin was set; (3) it
+  declares neither `tesseract` nor `tesseract-data-eng`, so no published image
+  ships tesseract and the `ocr` sense is unusable as packaged. Note
+  `shani-install-media/image_profiles/*/Packages-Desktop` *does* pin
+  `tesseract-data-eng`, so a freshly built image gets the language data but
+  not the binary — both halves are required, and the binary is only ever
+  pulled transitively through this PKGBUILD's `depends`.
+
+  Evidence, from `shani-testbed`'s `chronoa-senses` slot-test driven against a
+  real booted Arch slot: with this PKGBUILD's package in place the test fails
+  four assertions — `tesseract-binary-present`, `tesseract-eng-data`,
+  `ocr-text-recognized`, `ocr-word-boxes` — and the failure is the finding, not
+  a broken test, because supplying the three packages from the on-disk pacman
+  cache via `--local-pkg` turns exactly those four into passes (15 pass, 0
+  fail) with real `tesseract 5.5.3` and 23,466,654 bytes of `eng.traineddata`
+  reading back all four words of a real 1400x320 rendered PNG, 4 word boxes,
+  `lang=eng`. Careful with one of those passes: `ocr-negative-control` passes
+  *vacuously* in the broken state, because both images return the same
+  "tesseract is not installed" error and the expected tokens are trivially
+  absent from it. It only becomes evidence once tesseract is present.
+
+  The three-line fix is verified to build: a scratch PKGBUILD adding
+  `'tesseract'` + `'tesseract-data-eng'` to `depends`, an
+  `install -Dm755 usr/bin/shani-chronoa-sense` line, and `pkgrel=3` produced
+  `shani-chronoa-0.1.0-3-any.pkg.tar.zst` containing `usr/bin/shani-chronoa-sense`,
+  all ten `shani_chronoa/senses/*.py` modules, both tesseract `depend` entries,
+  and zero bytecode. **Open:** the repin cannot be committed until
+  `shani-chronoa`'s `91551f6` (the senses layer) and `4f18b5d` (a fix to it)
+  are pushed to `github.com/shani8dev/shani-chronoa` — a PKGBUILD pinning an
+  unpublished commit fails to clone for everyone else, so the pin was
+  deliberately not committed against a local-only SHA. `git push` is gated by
+  the workspace rules, so that is a human call. The full SHA needed is
+  `4f18b5d6110b43a574212df15972c47604aa8917`. Re-verify the build after the
+  repin, and note the `--local-pkg` route still works for testing before the
+  image is rebuilt.
+
 - **`adbf925` (a shani-desktop-plasma commit) silently reverted two unrelated
   fixes — RESTORED (2026-09-23).** It swept in stale copies of
   `shani-keyring/PKGBUILD` (dropping `ca329bd`'s `depends=(bash gnupg)`, so in
