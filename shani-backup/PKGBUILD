@@ -3,7 +3,7 @@
 
 pkgname=shani-backup
 pkgver=0.0.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Backup utility for Shanios with Btrfs snapshots and restic"
 arch=('x86_64')
 url="https://github.com/shani8dev/shani-backup"
@@ -20,7 +20,7 @@ makedepends=('git')
 backup=()
 options=()
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-backup.git#commit=b4b84606ef742e1bfe0f919a338d816e5dc61e05")
+source=("git+https://github.com/shani8dev/shani-backup.git#commit=f7c2754df60772b33f5a59fda4c98dc785ba16dc")
 sha256sums=('SKIP')
 
 package() {
