@@ -135,9 +135,10 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
-- **`shani-chronoa/PKGBUILD` cannot deliver the senses layer — CONFIRMED
-  PRESENT (2026-09-27), not yet fixable here.** Three separate defects, all
-  verified against a real booted slot rather than by reading the file:
+- **`shani-chronoa/PKGBUILD` could not deliver the senses layer — FIXED
+  (2026-09-27, pkgrel 3).** Kept as the record of how it was found, because
+  the failure was invisible to a build that succeeded. Three separate defects,
+  all verified against a real booted slot rather than by reading the file:
   (1) it pins `e047a8c`, which predates the `senses/` layer entirely, so the
   packaged source tree has no `senses/` package and no
   `usr/bin/shani-chronoa-sense`; (2) it never gained an install line for that
@@ -167,15 +168,22 @@ rather than writing in a generic format.
   `install -Dm755 usr/bin/shani-chronoa-sense` line, and `pkgrel=3` produced
   `shani-chronoa-0.1.0-3-any.pkg.tar.zst` containing `usr/bin/shani-chronoa-sense`,
   all ten `shani_chronoa/senses/*.py` modules, both tesseract `depend` entries,
-  and zero bytecode. **Open:** the repin cannot be committed until
-  `shani-chronoa`'s `91551f6` (the senses layer) and `4f18b5d` (a fix to it)
-  are pushed to `github.com/shani8dev/shani-chronoa` — a PKGBUILD pinning an
-  unpublished commit fails to clone for everyone else, so the pin was
-  deliberately not committed against a local-only SHA. `git push` is gated by
-  the workspace rules, so that is a human call. The full SHA needed is
-  `4f18b5d6110b43a574212df15972c47604aa8917`. Re-verify the build after the
-  repin, and note the `--local-pkg` route still works for testing before the
-  image is rebuilt.
+  and zero bytecode.
+
+  **Shipped:** repinned to `cd9a59d`, `pkgrel=3`, and rebuilt against that
+  real upstream commit rather than a local checkout — `0.1.0-3-any.pkg.tar.zst`
+  contains `usr/bin/shani-chronoa-sense` and all ten `senses/` modules,
+  declares both tesseract halves plus `bubblewrap` and `libsecret`, ships no
+  bytecode, and extracts `root:root`. The pin was deliberately held back until
+  the referenced commits actually existed upstream, because a PKGBUILD pinning
+  an unpublished commit fails to clone for everyone else.
+
+  **Still open, and it is not this repo:** the image has to be rebuilt for any
+  of this to reach a running system, and until it is, `--local-pkg` is still
+  required to test OCR — the path that still works today, verified at 15 pass
+  / 0 fail in a real booted slot. Once the image is rebuilt from this pin,
+  re-run that slot-test without `--local-pkg` to confirm both tesseract
+  halves now arrive on their own.
 
 - **`adbf925` (a shani-desktop-plasma commit) silently reverted two unrelated
   fixes — RESTORED (2026-09-23).** It swept in stale copies of
