@@ -24,10 +24,14 @@ rules you must follow are all near the top.
 - `This repo is usually where a service actually gets enabled` — check here
   before concluding a service is missing
 
-**On-demand reference — do not page through speculatively:**
+**Current known issues — read this before you start:**
 - `Audit-verified known issues (confirmed present)` — ~620 lines, the bulk of
   this file. **Grep it for the package you are building.** This repo
   has no `AUDIT-HISTORY.md` yet, so the detail lives here for now.
+
+  This section mixes fixed history with issues that are **still open**,
+  including Critical security ones. Grep it for `not fixed`,
+  `still open`, and your subsystem name before you touch anything.
 
 **Note:** the build/sign/publish pipeline lives in **`shani-builder`**, not
 here — this repo holds PKGBUILD sources only.
