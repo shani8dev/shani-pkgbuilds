@@ -9,14 +9,23 @@ name: Trigger package rebuild
 # exactly what happened with the 2026-09-16 broadcom-wl fix, caught only
 # because it was manually re-verified the same day.
 #
-# Required repo secret (not provisioned by this workflow - must be added
-# manually in shani8dev/shani-pkgbuilds's repo settings):
-#   CROSS_REPO_PAT - a fine-grained PAT (or GitHub App token) with
-#                    actions:write on shani8dev/shani-builder. The default
-#                    GITHUB_TOKEN is scoped only to this repo and can't
-#                    trigger a workflow in a different one.
-# Until that secret exists, this step fails loudly (not silently) so the
-# gap stays visible instead of quietly doing nothing.
+# Required repo secret (NOT provisioned by this workflow - set manually in
+  # shani8dev/shani-pkgbuilds -> Settings -> Secrets and variables -> Actions):
+  #   CROSS_REPO_PAT - a fine-grained PAT (or GitHub App token) with
+  #                    actions:write on shani8dev/shani-builder. The default
+  #                    GITHUB_TOKEN is scoped only to this repo and can't
+  #                    trigger a workflow in a different one.
+  #
+  # The two ways this can be broken need OPPOSITE fixes, so they are reported
+  # separately below: an ABSENT secret means create one, a secret that is
+  # PRESENT but rejected (expired, revoked, or missing actions:write) means
+  # RENEW the existing one. Until 2026-09-28 both were reported as "not set",
+  # which is actively misleading: the secret was present the whole time and
+  # dead, so an operator following the old message would try to add a SECOND
+  # secret with the same name rather than replace the broken one. Every push
+  # since at least 2026-09-26 failed this way in ~7s, which is why the pacman
+  # repo lagged several pkgrels behind shani-pkgbuilds.
+  # This step fails loudly (not silently) so the gap stays visible.
 
 on:
   push:
@@ -34,7 +43,21 @@ jobs:
           GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
         run: |
           if [ -z "${GH_TOKEN:-}" ]; then
-            echo "::error::CROSS_REPO_PAT is not set - see this file's header comment. A PKGBUILD just changed but nothing will rebuild it until the next daily cron (or a manual 'gh workflow run build.yaml --repo shani8dev/shani-builder')."
+            echo "::error::CROSS_REPO_PAT is not set - add it in shani8dev/shani-pkgbuilds -> Settings -> Secrets and variables -> Actions. Nothing will rebuild until the next daily cron (or a manual 'gh workflow run build.yaml --repo shani8dev/shani-builder')."
+            exit 1
+          fi
+          # A set-but-rejected token is a DIFFERENT failure needing a different
+          # fix, so it gets its own message rather than falling through to the
+          # opaque 401 that 'gh workflow run' emits.
+          #
+          # The probe is 'gh api user', not 'gh auth status': measured on
+          # 2026-09-28, 'gh auth status' exits 0 against a deliberately bogus
+          # GH_TOKEN because it reports the account from the runner's stored
+          # config and ignores the env token's validity. It looks like a
+          # sensible pre-flight check and silently never fires. A cheap
+          # authenticated API call does return non-zero on a rejected token.
+          if ! gh api user --hostname github.com >/dev/null 2>&1; then
+            echo "::error::CROSS_REPO_PAT is set but GitHub REJECTED it (HTTP 401 Bad credentials). RENEW that existing secret - do not add a second one with the same name. It needs actions:write on shani8dev/shani-builder and must not be expired or revoked."
             exit 1
           fi
           gh workflow run build.yaml --repo shani8dev/shani-builder
