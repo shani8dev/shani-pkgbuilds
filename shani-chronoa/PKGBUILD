@@ -51,7 +51,7 @@ optdepends=(
     'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=23712730a6f2c8db466e2a75b46f187ae0821cba")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=ff9f4416d4fac4cb5dc43c357c1720b8326abac4")
 sha256sums=('42dc2566c6351304f37fac867590e406305bc33cc2177249a4f9063063469d20')
 
 package() {
