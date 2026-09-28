@@ -1,8 +1,23 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=91
-_commit='93fbb13fc78d025964abcd1d4ebe3d4bcad75e2e'  # Replace with the specific commit hash
+pkgrel=92
+# NOT a5867ac, which is the config-validation commit. At a5867ac the bundled
+# scripts/shani-deploy.sh.sha256 is STALE: it records fbc1614f... while
+# shani-deploy.sh itself hashes to 202695f8..., because re-signing runs in CI
+# (.github/workflows/sign-deploy-script.yml) and lands as a follow-up commit.
+# 34c8af9 is that re-sign, so the shipped checksum and signature actually
+# describe the shipped script.
+#
+# Stated precisely, since the first version of this comment overstated it:
+# nothing verifies the script against its own bundled signature at runtime. The
+# .sha256/.asc are produced by sign-deploy-script.sh and consumed only by that
+# CI workflow; every verify_sha256/verify_gpg call in shani-deploy.sh checks a
+# DOWNLOADED artifact (update image, gen-efi), not itself. So pinning a5867ac
+# would not fail a check on an installed machine. What it would ship is a
+# package whose bundled shani-deploy.sh.sha256 does not describe the bundled
+# shani-deploy - wrong metadata, in a file whose whole job is to describe it.
+_commit='34c8af96d960a24ba0cca65e804756b6d3873930'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
@@ -25,7 +40,7 @@ depends=(
     'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('33592ed6e626b64382f501dd8332edd5bddcc460efa7f4a2db1759fc4609a5e8')
+sha256sums=('87d9815133f809878f655f8ff2cfaf2c98b37566b5ac367f3833317011d8168b')
 makedepends=('git')
 
 package() {
