@@ -25,8 +25,8 @@ rules you must follow are all near the top.
   before concluding a service is missing
 
 **On-demand reference — do not page through speculatively:**
-- `Audit-verified known issues (confirmed present)` — ~620 of this file's
-  794 lines (78%). **Grep it for the package you are building.** This repo
+- `Audit-verified known issues (confirmed present)` — ~620 lines, the bulk of
+  this file. **Grep it for the package you are building.** This repo
   has no `AUDIT-HISTORY.md` yet, so the detail lives here for now.
 
 **Note:** the build/sign/publish pipeline lives in **`shani-builder`**, not
