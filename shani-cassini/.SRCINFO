@@ -1,7 +1,7 @@
 pkgbase = shani-cassini
 	pkgdesc = Shani Cassini - keeps a Shanios system updated, healthy and recoverable
 	pkgver = 0.1.0
-	pkgrel = 16
+	pkgrel = 17
 	url = https://github.com/shani8dev/shani-cassini
 	install = shani-cassini.install
 	arch = any
@@ -20,7 +20,7 @@ pkgbase = shani-cassini
 	optdepends = shani-chronoa: the Chronoa assistant tab
 	optdepends = shani-fleet: the Fleet tab (fleet enrollment)
 	optdepends = shani-peripherals: the Fingerprint tab (fprintd, the fingerprint reader)
-	source = git+https://github.com/shani8dev/shani-cassini.git#commit=a5f980382104af7ec5dd4c1d1a1e8e1352175e90
-	sha256sums = SKIP
+	source = git+https://github.com/shani8dev/shani-cassini.git#commit=fac2c79a5832cb99e1fb0b03cd8afcce201d29dd
+	sha256sums = f77340bbca0cd2fa318d546f8468f6ba209e22207ecd3ffdd95da7f9711248d9
 
 pkgname = shani-cassini
