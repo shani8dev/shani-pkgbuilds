@@ -22,10 +22,20 @@ depends=(
     'tesseract-data-eng'
     'espeak-ng'
     'libsecret'
-    # The machine-state senses shell out to these. Without them they degrade
-    # to reporting UNKNOWN rather than a fact, which is honest but much less
-    # useful - `fuser` in particular backs the contention sense, and its
-    # absence previously read as "no microphone is in use".
+    # The machine-state senses shell out to these. Declared because this
+    # package uses them, not because the image is missing them: psmisc and
+    # polkit are preinstalled in the ShaniOS base images (confirmed by
+    # slot-test's dep-present-* assertions passing on a base-image slot with
+    # no chronoa package installed) and all four resolve from the Arch repos -
+    # psmisc 23.7-2 in core, polkit/i2c-tools/bluez in extra. Declaring them
+    # keeps the package correct on a minimal Arch, and pacman treats an
+    # already-satisfied dep as satisfied.
+    #
+    # Why they matter: without one, its sense degrades to reporting UNKNOWN
+    # rather than a fact, which is honest but much less useful. `fuser` is the
+    # sharpest case - the contention sense previously swallowed its absence
+    # and reported every microphone and camera as free, which is the exact
+    # inverse of the thing it exists to report.
     'psmisc'      # fuser - device holder lookup
     'i2c-tools'   # i2cdetect - thermal-array probe
     'polkit'      # pkexec - opt-in root scan for the same
