@@ -1,7 +1,7 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 13
+	pkgrel = 14
 	url = https://github.com/shani8dev/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
@@ -30,7 +30,7 @@ pkgbase = shani-chronoa
 	optdepends = rhvoice-voice-slt: an English RHVoice voice
 	optdepends = python-numpy: wake-word activation (with python-openwakeword)
 	optdepends = python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=135f554ddfb39155ee2929d65d4f00ebfc76b5fe
-	sha256sums = 858cda19eb9482912fb1817658ecf4843e8bf42828782e165ac75f2c92c7978a
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=275a6859d1e58bfec2a925189624eb26ed2a0528
+	sha256sums = eee564afd66d463ddde93dd1381dde69df10d6cf88cb0a2ffdf6e8534a432902
 
 pkgname = shani-chronoa
