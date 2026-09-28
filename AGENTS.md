@@ -5,6 +5,32 @@ This file applies to any AI coding assistant working in this repository
 before editing, and follow the verification steps before calling any change
 done.
 
+## Start here (fast path)
+
+Almost all of this file is a dated record of past package-build defects. The
+rules you must follow are all near the top.
+
+**Always read these first:**
+- `What this repo is`
+- `Empirical verification (mandatory)`
+- `Rule: a PKGBUILD that looks right and a PKGBUILD that builds are
+  different claims`
+- `Required verification for any PKGBUILD change`
+- `Boundaries`
+
+**Read when your change touches them:**
+- `Things that have bitten this repo specifically`
+- `This repo is usually where a service actually gets enabled` — check here
+  before concluding a service is missing
+
+**On-demand reference — do not page through speculatively:**
+- `Audit-verified known issues (confirmed present)` — ~620 of this file's
+  794 lines (78%). **Grep it for the package you are building.** This repo
+  has no `AUDIT-HISTORY.md` yet, so the detail lives here for now.
+
+**Note:** the build/sign/publish pipeline lives in **`shani-builder`**, not
+here — this repo holds PKGBUILD sources only.
+
 ## What this repo is
 
 Custom and patched PKGBUILDs for Shanios — every build runs inside the
