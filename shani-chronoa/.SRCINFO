@@ -1,0 +1,36 @@
+pkgbase = shani-chronoa
+	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
+	pkgver = 0.1.0
+	pkgrel = 12
+	url = https://github.com/shani8dev/shani-chronoa
+	arch = any
+	license = GPL-3.0-only
+	makedepends = git
+	depends = python
+	depends = python-gobject
+	depends = gtk4
+	depends = libadwaita
+	depends = python-httpx
+	depends = pipewire
+	depends = wireplumber
+	depends = libnotify
+	depends = upower
+	depends = bubblewrap
+	depends = tesseract
+	depends = tesseract-data-eng
+	depends = espeak-ng
+	depends = libsecret
+	depends = psmisc
+	depends = i2c-tools
+	depends = polkit
+	depends = bluez
+	optdepends = ollama: run the language model on this computer
+	optdepends = whisper-cpp: voice input (speech recognition)
+	optdepends = rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)
+	optdepends = rhvoice-voice-slt: an English RHVoice voice
+	optdepends = python-numpy: wake-word activation (with python-openwakeword)
+	optdepends = python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=23712730a6f2c8db466e2a75b46f187ae0821cba
+	sha256sums = 42dc2566c6351304f37fac867590e406305bc33cc2177249a4f9063063469d20
+
+pkgname = shani-chronoa

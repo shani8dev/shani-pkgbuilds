@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=11
+pkgrel=12
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-chronoa"
@@ -12,6 +12,7 @@ depends=(
     'python'
     'python-gobject'
     'gtk4'
+    'libadwaita'
     'python-httpx'
     'pipewire'
     'wireplumber'
@@ -50,8 +51,8 @@ optdepends=(
     'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
 )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=0c784ff69952dacbd31ffd40ccebccaf60fa4b0e")
-sha256sums=('SKIP')
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=23712730a6f2c8db466e2a75b46f187ae0821cba")
+sha256sums=('42dc2566c6351304f37fac867590e406305bc33cc2177249a4f9063063469d20')
 
 package() {
     cd "$srcdir/$pkgname"
