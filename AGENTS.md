@@ -17,6 +17,7 @@ rules you must follow are all near the top.
   different claims`
 - `Required verification for any PKGBUILD change`
 - `Boundaries`
+- `Cross-repo impact — check before calling a fix complete`
 
 **Read when your change touches them:**
 - `Things that have bitten this repo specifically`

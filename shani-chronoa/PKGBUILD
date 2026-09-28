@@ -41,6 +41,14 @@ depends=(
     'i2c-tools'   # i2cdetect - thermal-array probe
     'polkit'      # pkexec - opt-in root scan for the same
     'bluez'       # bluetoothctl - device inventory
+    'pciutils'    # lspci - PCI and GPU inventory. Was declared nowhere at all,
+                  # so the devices and gpu senses degraded to UNKNOWN on every
+                  # install rather than reporting a fact.
+    'usbutils'    # lsusb - the USB half of the device inventory
+    'smartmontools' # smartctl - drive health. Was only in the image manifest,
+                  # so a user installing the package on plain Arch got a sense
+                  # that could never read a drive.
+    'power-profiles-daemon' # powerprofilesctl - the power-profile skill
 )
 optdepends=(
     'ollama: run the language model on this computer'
