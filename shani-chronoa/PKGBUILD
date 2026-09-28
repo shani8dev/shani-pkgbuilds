@@ -52,7 +52,7 @@ optdepends=(
 )
 makedepends=('git')
 source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=ff9f4416d4fac4cb5dc43c357c1720b8326abac4")
-sha256sums=('42dc2566c6351304f37fac867590e406305bc33cc2177249a4f9063063469d20')
+sha256sums=('a7ccc4eb1fcefb1f0226f0a77baa2db949f8268471e3178cfe0f1fb24b99842a')
 
 package() {
     cd "$srcdir/$pkgname"
