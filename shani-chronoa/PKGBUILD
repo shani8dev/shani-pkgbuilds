@@ -77,7 +77,7 @@ optdepends=(
     'rhvoice-voice-slt: an English RHVoice voice'
     'python-numpy: wake-word activation (with python-openwakeword)'
       'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
-      'translate-kit: translate_text runs locally on trans instead of falling back to sending the text to a web service'
+      'translate-shell: translate_text runs locally on trans instead of falling back to sending the text to a web service'
   )
 makedepends=('git')
 source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=275a6859d1e58bfec2a925189624eb26ed2a0528")
