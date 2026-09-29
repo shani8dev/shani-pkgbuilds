@@ -48,16 +48,37 @@ depends=(
     'smartmontools' # smartctl - drive health. Was only in the image manifest,
                   # so a user installing the package on plain Arch got a sense
                   # that could never read a drive.
-    'power-profiles-daemon' # powerprofilesctl - the power-profile skill
+      'power-profiles-daemon' # powerprofilesctl - the power-profile skill
+      # The actuators added after the senses above. Same reasoning: this package
+      # invokes them, so declaring them is what keeps it correct on a minimal
+      # Arch. `systemd` is deliberately absent - systemctl, journalctl,
+      # timedatectl and udevadm come from it and no real install lacks it, so
+      # declaring it would be noise rather than a constraint.
+      'udisks2'       # udisksctl - manage_mount. Not optional in the way the
+                      # others are: the skill deliberately has no bare-`mount`
+                      # fallback, because that would bypass the polkit rules
+                      # which are the only reason it is safe to offer. Without
+                      # udisksctl it can never work, and says so rather than
+                      # quietly escalating. Named udisks2, not udisks -
+                      # confirmed by listing the cached 2.11.2-1 tarball, which
+                      # ships usr/bin/udisksctl.
+      'cups'          # lpstat - the printing sense
+      'sane'          # scanimage - the scan half of printing. Arch renamed
+                      # this from sane-utils; confirmed by listing the cached
+                      # sane-1.4.0-4 tarball, which ships usr/bin/scanimage.
+      'nmap'          # nmap - scan_network
+      'networkmanager' # nmcli - Wi-Fi listing and connection
 )
+
 optdepends=(
     'ollama: run the language model on this computer'
     'whisper-cpp: voice input (speech recognition)'
     'rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)'
     'rhvoice-voice-slt: an English RHVoice voice'
     'python-numpy: wake-word activation (with python-openwakeword)'
-    'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
-)
+      'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
+      'translate-kit: translate_text runs locally on trans instead of falling back to sending the text to a web service'
+  )
 makedepends=('git')
 source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=275a6859d1e58bfec2a925189624eb26ed2a0528")
 sha256sums=('eee564afd66d463ddde93dd1381dde69df10d6cf88cb0a2ffdf6e8534a432902')
