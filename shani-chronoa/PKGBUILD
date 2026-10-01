@@ -73,6 +73,8 @@ depends=(
 )
 
 optdepends=(
+    'geoclue: where this computer is, for get_location and local weather (GNOME’s location service)'
+    'gpsd: a GPS receiver’s fix for get_location, when one is attached'
     'ollama: run the language model on this computer'
     'rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)'
     'rhvoice-voice-slt: an English RHVoice voice'
