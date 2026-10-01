@@ -1,12 +1,24 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
 pkgver=1.2
-pkgrel=6
+pkgrel=7
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-video"
 depends=(
     mesa
+    # Hybrid-graphics reporting for Shani Cassini's Graphics page. The service
+    # is a *system* D-Bus property source (net.hadess.SwitcherooControl) and
+    # exposes exactly HasDualGpu / NumGPUs / GPUs - there is no method that
+    # changes anything - so it is what a GUI can read to say which GPU is the
+    # default and what DRI_PRIME value addresses each one.
+    #
+    # It is here, not only in shani-desktop-*, because it is a graphics fact
+    # rather than a desktop-shell feature: without it the page has no answer on
+    # a core/headless install, and shani-desktop-plasma only enables the unit.
+    # `switcherooctl launch -g N` is the per-application switch, and it is this
+    # package that ships prime-run (nvidia-prime, below) for the NVIDIA case.
+    switcheroo-control
     vulkan-mesa-layers
     vulkan-intel
     vulkan-nouveau
