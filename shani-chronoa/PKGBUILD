@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=14
+pkgrel=15
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-chronoa"
@@ -21,8 +21,10 @@ depends=(
     'bubblewrap'
     'tesseract'
     'tesseract-data-eng'
+    'whisper-cpp' # whisper-cpp: voice input (speech recognition)
     'espeak-ng'
     'libsecret'
+    
     # The machine-state senses shell out to these. Declared because this
     # package uses them, not because the image is missing them: psmisc and
     # polkit are preinstalled in the ShaniOS base images (confirmed by
@@ -72,10 +74,8 @@ depends=(
 
 optdepends=(
     'ollama: run the language model on this computer'
-    'whisper-cpp: voice input (speech recognition)'
     'rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)'
     'rhvoice-voice-slt: an English RHVoice voice'
-    'python-numpy: wake-word activation (with python-openwakeword)'
       'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
       'translate-shell: translate_text runs locally on trans instead of falling back to sending the text to a web service'
   )
