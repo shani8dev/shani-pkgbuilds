@@ -866,3 +866,16 @@ doesn't match that repo's current content breaks every clean install.
 expectations. `check-skip-checksums.sh --help` explains its own false-negative
 shape — read it before assuming a package that passes the linter is
 actually safe.
+- **shani-chronoa declared `bluez` but `bluetoothctl` is in `bluez-utils`; 25
+  more runtime commands were declared nowhere — FIXED (2026-10-01, pkgrel 16).**
+  Found by shani-chronoa's `tools/cli_matrix.py --audit-packaging --strict`
+  against the installed GNOME and Plasma images: each command a skill or sense
+  runs, mapped to the package that owns it on the image, compared with
+  `depends`/`optdepends`. `bluez-utils` and `wl-clipboard` (every Wayland
+  clipboard skill) are now `depends`; ffmpeg, imagemagick, poppler, git, flatpak,
+  plocate, tealdeer, btrfs-progs, firewalld, nftables, iptables, ethtool, ddcutil,
+  liquidctl, vnstat, tailscale, xorg-setxkbmap, kconfig, libkscreen and
+  pacman-contrib are `optdepends`, each naming its skill. All 22 confirmed with
+  `pacman -Si` (core/extra); `makepkg --printsrcinfo` reads pkgrel 16 and 58
+  entries. The `#commit=` pin is unchanged, so this is a deps-only rebuild.
+  Re-run the audit after an image build: `--strict` exits 1 while any remain.

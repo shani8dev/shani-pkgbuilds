@@ -8,4 +8,24 @@ post_upgrade() {
 	systemctl enable firewalld
 	systemctl enable fail2ban
 	systemctl enable avahi-daemon.socket
+
+	# Encrypted DNS. The shipped dnscrypt-proxy.toml already does the right
+	# thing - `listen_addresses = ['127.0.0.1:53']` (loopback only, so it is not
+	# an open resolver), DNSCrypt and DoH enabled - and until now nothing turned
+	# it on, so every Shanios machine resolved in the clear through
+	# NetworkManager while a fully configured encrypted resolver sat next to it.
+	#
+	# Deliberately NOT done here: pointing NetworkManager's connections at
+	# 127.0.0.1. That is the part that can strand a machine. dnscrypt-proxy
+	# ships **no resolver list** - it fetches public-resolvers.md over the
+	# network into /var/cache/dnscrypt-proxy on first start, and answers nothing
+	# until that succeeds. Making it the connection's only nameserver therefore
+	# means DNS depends on a service that cannot answer until it has bootstrapped
+	# itself over the very network it is providing. If it fails, the machine has
+	# no resolver and no way to fetch anything to fix it.
+	#
+	# So the service is available and idle, and the switch that uses it is the
+	# user's to make per connection. NetworkManager keeps working unchanged if
+	# the proxy is stopped, broken or still fetching.
+	systemctl enable dnscrypt-proxy.service
 }

@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=15
+pkgrel=16
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-chronoa"
@@ -22,6 +22,11 @@ depends=(
     'tesseract'
     'tesseract-data-eng'
     'whisper-cpp' # whisper-cpp: voice input (speech recognition)
+    # The on-machine language model (local_llm.py): llama.cpp's llama-server.
+    # ggml-vulkan lets it use any GPU with a Vulkan driver (Intel, AMD, NVIDIA)
+    # and costs nothing on a CPU-only machine, where ggml runs on the processor.
+    'llama-cpp'
+    'ggml-vulkan'
     'espeak-ng'
     'libsecret'
     
@@ -42,7 +47,14 @@ depends=(
     'psmisc'      # fuser - device holder lookup
     'i2c-tools'   # i2cdetect - thermal-array probe
     'polkit'      # pkexec - opt-in root scan for the same
-    'bluez'       # bluetoothctl - device inventory
+    'bluez'       # the Bluetooth daemon the device inventory talks to
+    'bluez-utils' # bluetoothctl itself. Arch ships it apart from bluez, so
+                  # declaring only bluez left bluetooth, bluetooth_devices and
+                  # toggle_bluetooth working only because the image pulled
+                  # bluez-utils in by another route (cli_matrix --audit-packaging,
+                  # 2026-10-01: bluetoothctl is owned by bluez-utils on both images).
+    'wl-clipboard' # wl-copy/wl-paste - every clipboard skill on a Wayland desktop,
+                  # which is all three Shanios desktops; xclip/xsel are X11 only.
     'pciutils'    # lspci - PCI and GPU inventory. Was declared nowhere at all,
                   # so the devices and gpu senses degraded to UNKNOWN on every
                   # install rather than reporting a fact.
@@ -76,11 +88,51 @@ optdepends=(
     'python-sympy: solve_math - derivatives, integrals, limits, equations, series'
     'geoclue: where this computer is, for get_location and local weather (GNOME’s location service)'
     'gpsd: a GPS receiver’s fix for get_location, when one is attached'
-    'ollama: run the language model on this computer'
+    'ollama: an alternative local model server (Chronoa prefers it when running; llama-cpp is the default)'
     'rhvoice-language-english: a more natural voice than espeak-ng (with a rhvoice-voice-* such as rhvoice-voice-slt)'
     'rhvoice-voice-slt: an English RHVoice voice'
       'python-mcp: shani-chronoa-mcp, Chronoa skills as an MCP server'
       'translate-shell: translate_text runs locally on trans instead of falling back to sending the text to a web service'
+      # Found by tools/cli_matrix.py --audit-packaging --strict (2026-10-01): each
+      # is run by a skill or sense, and was declared nowhere - it worked only
+      # because the image happened to pull it in by another route.
+      'ffmpeg: convert_media - audio and video conversion'
+      'imagemagick: edit_image - resize, compress, crop and convert pictures'
+      'poppler: read_document - text out of PDFs (pdftotext); office_document pdf_images (pdfimages)'
+      'git: the git sense and git_inspect'
+      'flatpak: install_app and cleanup_report'
+      'plocate: find_files - instant file-name search'
+      'tealdeer: explain_command - short examples for a command (tldr)'
+      'btrfs-progs: the snapshots sense'
+      'firewalld: the firewall sense (firewall-cmd)'
+      'nftables: the firewall sense, for rules set outside firewalld'
+      'iptables: the firewall sense, legacy rules'
+      'ethtool: the network sense - link speed and driver'
+      'ddcutil: set_brightness on an external monitor'
+      'liquidctl: the hwmon sense - liquid coolers and fan controllers'
+      'vnstat: data_usage - how much the network moved'
+      'tailscale: tailscale_status'
+      'xorg-setxkbmap: set_keyboard_layout in an X11 session'
+      'kconfig: set_theme on Plasma (kreadconfig6)'
+      'plasma-workspace: set_theme on Plasma 6 (plasma-apply-colorscheme)'
+      'libkscreen: set_scaling on Plasma (kscreen-doctor)'
+      'pacman-contrib: check_updates - pending updates without touching the sync database (checkupdates)'
+      # Surface harvest 2026-10-02 (CHRONOA-HARVEST.md Part 6); each found unused on both images by the matrix
+      'android-tools: android_device - a phone over USB debugging (adb)'
+      'zbar: qr_code - read QR codes and barcodes (zbarimg)'
+      'qrencode: qr_code - make QR codes'
+      'at-spi2-core: ui_elements - buttons, fields and menus of other apps over AT-SPI'
+      # The in-app browser (Ctrl+Shift+U, app.open-browser). Optional by design:
+      # without webkit2gtk the action is insensitive and says which package is
+      # missing; nothing else about the assistant changes. WebKitGTK 6.0 is what
+      # `gui/browser.py` asks gi for, and webkit2gtk-4.1 provides it on Arch.
+      'webkit2gtk-4.1: the in-app browser, and attaching a page to the conversation'
+      # Background removal for objects (u2net) rather than people (PP-HumanSeg,
+      # which needs only the OpenCV extra setup installs). Without it
+      # remove_background says exactly what is missing instead of quietly
+      # falling back to the people-only model, which would return a wrong
+      # cut-out for any subject that is not a person.
+      'python-onnxruntime-cpu: remove_background for any object (u2net), not only people'
   )
 makedepends=('git')
 source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=275a6859d1e58bfec2a925189624eb26ed2a0528")
@@ -91,6 +143,22 @@ package() {
     install -Dm755 usr/bin/shani-chronoa "$pkgdir/usr/bin/shani-chronoa"
     install -Dm755 usr/bin/shani-chronoa-mcp "$pkgdir/usr/bin/shani-chronoa-mcp"
     install -Dm755 usr/bin/shani-chronoa-sense "$pkgdir/usr/bin/shani-chronoa-sense"
+    install -Dm755 usr/bin/shani-chronoa-search "$pkgdir/usr/bin/shani-chronoa-search"
+    install -Dm755 usr/bin/shani-chronoa-daemon "$pkgdir/usr/bin/shani-chronoa-daemon"
+    # Background mode: installed, never enabled by default (the Settings switch enables it)
+    install -Dm644 usr/lib/systemd/user/shani-chronoa-daemon.service \
+        "$pkgdir/usr/lib/systemd/user/shani-chronoa-daemon.service"
+    install -Dm644 usr/lib/systemd/user/shani-chronoa-llm.service \
+        "$pkgdir/usr/lib/systemd/user/shani-chronoa-llm.service"
+    install -Dm644 "usr/lib/systemd/user/shani-chronoa-model@.service" \
+        "$pkgdir/usr/lib/systemd/user/shani-chronoa-model@.service"
+    # Desktop search: GNOME Shell overview + Plasma KRunner, one D-Bus activated service
+    install -Dm644 usr/share/dbus-1/services/dev.shani.chronoa.SearchProvider.service \
+        "$pkgdir/usr/share/dbus-1/services/dev.shani.chronoa.SearchProvider.service"
+    install -Dm644 usr/share/gnome-shell/search-providers/shani-chronoa.ini \
+        "$pkgdir/usr/share/gnome-shell/search-providers/shani-chronoa.ini"
+    install -Dm644 usr/share/krunner/dbusplugins/shani-chronoa.desktop \
+        "$pkgdir/usr/share/krunner/dbusplugins/shani-chronoa.desktop"
     install -d "$pkgdir/usr/lib"
     cp -r usr/lib/shani-chronoa "$pkgdir/usr/lib/"
     install -Dm644 usr/share/applications/shani-chronoa.desktop "$pkgdir/usr/share/applications/shani-chronoa.desktop"
