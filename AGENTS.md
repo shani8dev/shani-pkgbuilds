@@ -209,6 +209,22 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
+- **The cross-repo rebuild trigger has been dead since 2026-09-26 — confirmed
+  present 2026-10-04, needs a human.** `CROSS_REPO_PAT` is *set* but GitHub
+  rejects it (HTTP 401 Bad credentials), so every `Trigger package rebuild`
+  run on a `PKGBUILD` push fails in ~7s and shani-builder's
+  `workflow_dispatch` never fires. The workflow already reports this as
+  needing a renewal rather than a second secret, and probes with
+  `gh api user` because `gh auth status` exits 0 against a rejected token —
+  so the diagnosis is not in question, only the remedy, which is a human's:
+  a fine-grained PAT with `actions: write` on `shani8dev/shani-builder`.
+  **The pacman repo lagged by up to a day for the whole period.** Worked
+  around on 2026-10-04 by dispatching the build by hand
+  (`gh workflow run build.yaml --repo shani8dev/shani-builder`), which
+  published everything repinned that day; that is a stopgap, not a fix. Until
+  the secret is renewed, check `latest`/`stable` against this repo after any
+  packaging change rather than assuming the push went out.
+
 - **`shani-chronoa/PKGBUILD` could not deliver the senses layer — FIXED
   (2026-09-27, pkgrel 3).** Kept as the record of how it was found, because
   the failure was invisible to a build that succeeded. Three separate defects,
