@@ -3,10 +3,10 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=16
+pkgrel=18
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
-url="https://github.com/shani8dev/shani-chronoa"
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
 license=('GPL-3.0-only')
 depends=(
     'python'
@@ -14,6 +14,14 @@ depends=(
     'gtk4'
     'libadwaita'
     'python-httpx'
+    # solve_math.py's two engines, both required for it to be more than a
+    # calculator: symengine does the exact algebra (derivative, series,
+    # expand, factor, prime_factors, is_prime, linear solve) and bc runs the
+    # exact rational arithmetic Matrix.solve cannot do (symengine's solve
+    # segfaults, so the Gaussian elimination is done over Fractions in bc).
+    # Without either it says which package to install instead of guessing.
+    'python-symengine'
+    'bc'
     'pipewire'
     'wireplumber'
     'libnotify'
@@ -29,7 +37,7 @@ depends=(
     'ggml-vulkan'
     'espeak-ng'
     'libsecret'
-    
+
     # The machine-state senses shell out to these. Declared because this
     # package uses them, not because the image is missing them: psmisc and
     # polkit are preinstalled in the ShaniOS base images (confirmed by
@@ -85,7 +93,15 @@ depends=(
 )
 
 optdepends=(
-    'python-sympy: solve_math - derivatives, integrals, limits, equations, series'
+    # The learning engine (learning.py) is standard library only by design -
+    # "polars is optional and used for nothing but reading the log faster",
+    # in its own words. Declared so that what it can use is visible; the
+    # standard-library path is what actually runs without it.
+    'python-polars: learning.py reads tool_calls.log into dataframes; absent, it reads json per line'
+    # Pitch, tempo and rate are sox's job, applied once after whichever engine
+    # produced the WAV (tts.py apply_timbre). tts.py calls it an optdepend and
+    # never a hard one: without it speak says which transform was skipped.
+    'sox: speak - pitch, tempo and rate (tts.py apply_timbre)'
     'geoclue: where this computer is, for get_location and local weather (GNOME’s location service)'
     'gpsd: a GPS receiver’s fix for get_location, when one is attached'
     'ollama: an alternative local model server (Chronoa prefers it when running; llama-cpp is the default)'
@@ -135,8 +151,10 @@ optdepends=(
       'python-onnxruntime-cpu: remove_background for any object (u2net), not only people'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=275a6859d1e58bfec2a925189624eb26ed2a0528")
-sha256sums=('eee564afd66d463ddde93dd1381dde69df10d6cf88cb0a2ffdf6e8534a432902')
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=20fb12dfa3fd9c8d0020101a2c700fdce4d09fbb")
+# git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
+# the pin is the anchor (what check-skip-checksums.sh checks).
+sha256sums=('SKIP')
 
 package() {
     cd "$srcdir/$pkgname"
@@ -145,6 +163,12 @@ package() {
     install -Dm755 usr/bin/shani-chronoa-sense "$pkgdir/usr/bin/shani-chronoa-sense"
     install -Dm755 usr/bin/shani-chronoa-search "$pkgdir/usr/bin/shani-chronoa-search"
     install -Dm755 usr/bin/shani-chronoa-daemon "$pkgdir/usr/bin/shani-chronoa-daemon"
+    # The lab_network_* skills' privileged half: lab_network.py runs
+    # `pkexec /usr/bin/shani-chronoa-lab-network` for the namespace/NAT work
+    # and the polkit rule in shani-settings authorises exactly this path. A
+    # skill that invokes a binary the package does not install reports "not
+    # installed" on every machine.
+    install -Dm755 usr/bin/shani-chronoa-lab-network "$pkgdir/usr/bin/shani-chronoa-lab-network"
     # Background mode: installed, never enabled by default (the Settings switch enables it)
     install -Dm644 usr/lib/systemd/user/shani-chronoa-daemon.service \
         "$pkgdir/usr/lib/systemd/user/shani-chronoa-daemon.service"
@@ -166,6 +190,10 @@ package() {
         "$pkgdir/usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml"
     install -Dm644 usr/share/pixmaps/shani-chronoa.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/shani-chronoa.svg"
     find "$pkgdir" -type d -name __pycache__ -prune -exec rm -rf {} +
+    # `__pycache__` is the directory; a stray `.pyc` can also arrive outside
+    # one (a build that byte-compiled in place, a copied file). Both are
+    # removed explicitly rather than relying on the directory rule alone.
+    find "$pkgdir" -type f -name '*.pyc' -delete
     find "$pkgdir/usr/lib/shani-chronoa" -type d -exec chmod 755 {} +
     find "$pkgdir/usr/lib/shani-chronoa" -type f -exec chmod 644 {} +
     # schemas, icon cache, desktop database: Arch's own pacman hooks
