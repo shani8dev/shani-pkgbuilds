@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=17
+pkgrel=18
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -32,8 +32,9 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-cassini.git#commit=fac2c79a5832cb99e1fb0b03cd8afcce201d29dd")
-sha256sums=('f77340bbca0cd2fa318d546f8468f6ba209e22207ecd3ffdd95da7f9711248d9')
+source=("git+https://github.com/shani8dev/shani-cassini.git#commit=1e46f00a114776c412aadde8b22e70af7b351fe1")
+# git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
+sha256sums=('SKIP')
 
 package() {
     cd "$srcdir/$pkgname"

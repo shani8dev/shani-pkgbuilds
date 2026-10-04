@@ -5,7 +5,7 @@
 
 pkgname=shani-fleet
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Shanios fleet agent - enrollment, inventory and remote deploys for managed devices (opt-in)"
 arch=('any')
 url="https://shani.dev"
@@ -13,7 +13,7 @@ license=('GPL-3.0-only')
 depends=('bash' 'curl' 'jq' 'gnupg' 'systemd' 'shani-deploy')
 makedepends=('git')
 backup=('etc/shani-fleet.conf')
-source=("git+ssh://git@github.com/shani8dev/shani-fleet.git#commit=c708330499e4b7c252e07706af8aeaa443be40d9")
+source=("git+ssh://git@github.com/shani8dev/shani-fleet.git#commit=5acae7e622494a8be052dd522a9252c701377c1a")
 sha256sums=('SKIP')
 
 package() {

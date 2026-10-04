@@ -5,7 +5,7 @@
 
 pkgname=shani-insights
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Shanios Insights collector - transparent, policy-driven activity analytics (opt-in)"
 arch=('any')
 url="https://shani.dev"
@@ -16,7 +16,7 @@ optdepends=('xdotool: active-window tracking on X11'
             'gnome-screenshot: screenshots on GNOME (when the policy enables them)'
             'scrot: screenshots on other X11 desktops')
 makedepends=('git')
-source=("git+ssh://git@github.com/shani8dev/shani-insights.git#commit=6d53b3117657ec5a727aaa6e9036e528af3fa376")
+source=("git+ssh://git@github.com/shani8dev/shani-insights.git#commit=7aec6b7c1af9da1ed030cd88dc6502477f639849")
 sha256sums=('SKIP')
 
 package() {

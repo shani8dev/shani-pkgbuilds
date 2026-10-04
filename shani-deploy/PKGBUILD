@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=92
+pkgrel=93
 # NOT a5867ac, which is the config-validation commit. At a5867ac the bundled
 # scripts/shani-deploy.sh.sha256 is STALE: it records fbc1614f... while
 # shani-deploy.sh itself hashes to 202695f8..., because re-signing runs in CI
@@ -17,7 +17,7 @@ pkgrel=92
 # would not fail a check on an installed machine. What it would ship is a
 # package whose bundled shani-deploy.sh.sha256 does not describe the bundled
 # shani-deploy - wrong metadata, in a file whose whole job is to describe it.
-_commit='34c8af96d960a24ba0cca65e804756b6d3873930'  # Replace with the specific commit hash
+_commit='05af54ec072de5cf4f2b367fc283f5f1d603bce3'  # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
@@ -40,7 +40,11 @@ depends=(
     'bees'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
-sha256sums=('87d9815133f809878f655f8ff2cfaf2c98b37566b5ac367f3833317011d8168b')
+# A git+ source pinned to a commit: makepkg ignores checksums for VCS
+# sources, so the pin IS the integrity anchor (check-skip-checksums.sh
+# agrees). The previous real hash here described nothing makepkg ever
+# checked, and described the OLD pin besides.
+sha256sums=('SKIP')
 makedepends=('git')
 
 package() {
