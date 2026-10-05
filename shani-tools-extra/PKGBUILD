@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=12
+pkgrel=13
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-extra"
@@ -20,6 +20,11 @@ depends=(
     lm_sensors
     ddcutil
     liquidctl
+    gptfdisk
+    cpupower
+    btop
+    nvtop
+    iotop
 
     # Scheduling & logging
     cronie
@@ -54,11 +59,17 @@ depends=(
     lrzip
     lzop
     elfutils
+    cabextract
+    
+    #input
+    ydotool
+    wtype
 
     # GPU & hardware diagnostics
     vulkan-tools
     mesa-utils
     clinfo
+    hdparm
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"

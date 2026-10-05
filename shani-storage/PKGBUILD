@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-storage
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Storage related packages for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-storage"
@@ -33,5 +33,6 @@ depends=(
 	gocryptfs
 	ndctl
 	quota-tools
+	udftools
 )
 license=('GPL-3.0-only')

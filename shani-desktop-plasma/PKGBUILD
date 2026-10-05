@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=37
+pkgrel=38
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-plasma"
@@ -87,6 +87,8 @@ depends=(
     xdg-utils
     plasma-setup-git
     kvantum
+    hunspell-en_us
+    tesseract-data-eng
 )
 install="$pkgname.install"
 source=()
