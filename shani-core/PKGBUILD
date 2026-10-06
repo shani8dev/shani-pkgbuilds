@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=18
+pkgrel=19
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -57,6 +57,17 @@ depends=(
     buildah
     skopeo
     podlet
+    # crun is pinned deliberately: podman and buildah depend on the *virtual*
+    # `oci-runtime`, which has three providers in [extra] (crun, krun, runc).
+    # Unpinned, `makepkg -s` makes pacman stop and ASK which one to use —
+    # "Enter a number (default=1)" — and in CI there is no TTY, so it reads EOF
+    # and takes whichever happens to be first. That is luck, not a build.
+    # Observed live in shani-builder CI run 37317352283 (2026-10-05), where the
+    # prompt appeared during shani-core's own dependency install. The image
+    # profiles already pin crun for this reason (see
+    # shani-install-media/image_profiles/*/Packages-Base); this makes the
+    # package itself non-interactive too.
+    crun
 
     # Container & VM user-facing tools
     distrobox
