@@ -209,6 +209,47 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
+- **`shani-core` let `makepkg` prompt for a virtual provider with no TTY in CI
+  — FIXED (2026-10-06, pkgrel 19).** `podman` and `buildah` depend on the
+  virtual `oci-runtime`, which has three providers in `[extra]` (`crun`,
+  `krun`, `runc`). Unpinned, `makepkg -s` makes pacman stop and ask —
+  `Enter a number (default=1):` — and in CI there is no TTY, so it reads EOF
+  and installs whichever provider happens to be first. That is luck, not a
+  build. Observed live in `shani-builder` CI run `37317352283` (2026-10-05),
+  during `shani-core`'s own dependency install. `crun` is now a direct
+  `depends`, so the package is non-interactive regardless of what any image
+  profile lists; the image profiles already pinned it for the same reason
+  (`shani-install-media/image_profiles/*/Packages-Base`, 2026-10-05), and this
+  closes the gap where a profile could not protect the package build. Verified
+  by really running `./make_pkg.sh shani-core`: completed as
+  `shani-core-1.2-19-any.pkg.tar.zst` with **no** `Enter a number` line
+  anywhere in the log, and the artifact's `.PKGINFO` reads `pkgver = 1.2-19` /
+  `depend = crun`. **Generalisable lesson:** any `depends` that resolves to a
+  *virtual* provider (`provides=`) is a latent non-interactive build; the
+  package, not just the image profile, must name a concrete provider.
+  `check-skip-checksums.sh` is clean for this package and repo-wide (rc=0).
+  No tracked `.SRCINFO` exists for `shani-core`, so there was none to
+  regenerate.
+
+- **The 2026-10-05 `Build and Package` CI failure was an upstream Arch
+  partial-upgrade window, NOT a defect in this repo — do not "fix" anything
+  here for it.** Run `37317352283` failed at `Run build script` with
+  `makepkg failed (exit 8)` on `shani-core`. The fatal line was
+  `installing systemd (262-1) breaks dependency 'systemd=261.3' required by
+  systemd-sysvcompat`: the builder image then in use was built 2026-09-20 and
+  carried `systemd` 261.3 + `systemd-sysvcompat` 261.3, and by 2026-10-05 Arch
+  had moved `systemd` to 262-1 while `systemd-sysvcompat` had not yet been
+  repackaged, so the targeted dependency install upgraded `systemd` without
+  upgrading the package pinning it. Self-resolved: the immediate re-run passed,
+  and the rebuilt image pairs `systemd 262-1` with `systemd-sysvcompat 262-1`
+  consistently (verified live with `pacman -Q` in the current builder image).
+  **How the logs were actually retrieved,** since `gh run view --log` returned
+  nothing at all (and `gh api .../actions/jobs` returned `Not Found` without a
+  `databaseId`): `gh run view <id> --json jobs --jq '.jobs[].databaseId'` then
+  `gh api repos/shani8dev/shani-builder/actions/jobs/<databaseId>/logs` — that
+  endpoint works where the other two do not, and it is how this was diagnosed
+  at all.
+
 - **The cross-repo rebuild trigger has been dead since 2026-09-26 — confirmed
   present 2026-10-04, needs a human.** `CROSS_REPO_PAT` is *set* but GitHub
   rejects it (HTTP 401 Bad credentials), so every `Trigger package rebuild`
