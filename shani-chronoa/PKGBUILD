@@ -163,6 +163,7 @@ package() {
     install -Dm755 usr/bin/shani-chronoa-sense "$pkgdir/usr/bin/shani-chronoa-sense"
     install -Dm755 usr/bin/shani-chronoa-search "$pkgdir/usr/bin/shani-chronoa-search"
     install -Dm755 usr/bin/shani-chronoa-daemon "$pkgdir/usr/bin/shani-chronoa-daemon"
+    install -Dm755 usr/bin/shani-chronoa-bridge "$pkgdir/usr/bin/shani-chronoa-bridge"
     # The lab_network_* skills' privileged half: lab_network.py runs
     # `pkexec /usr/bin/shani-chronoa-lab-network` for the namespace/NAT work
     # and the polkit rule in shani-settings authorises exactly this path. A
