@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=13
+pkgrel=15
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-extra"
@@ -46,6 +46,7 @@ depends=(
     mercurial
 
     # Android
+    playerctl
     android-tools
 
     # Archive tools
@@ -62,8 +63,12 @@ depends=(
     cabextract
     
     #input
+    brightnessctl
+    wl-clipboard
     ydotool
     wtype
+    grim
+    slurp
 
     # GPU & hardware diagnostics
     vulkan-tools

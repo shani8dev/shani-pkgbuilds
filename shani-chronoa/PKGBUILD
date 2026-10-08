@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=18
+pkgrel=19
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -102,6 +102,18 @@ optdepends=(
     # produced the WAV (tts.py apply_timbre). tts.py calls it an optdepend and
     # never a hard one: without it speak says which transform was skipped.
     'sox: speak - pitch, tempo and rate (tts.py apply_timbre)'
+    # `bluetooth_call`'s audio half. The profile switch needs only wpctl, which
+    # wireplumber already provides, but bridging the call's voice to this
+    # computer's speakers and back from the microphone needs pactl to load
+    # PipeWire's loopback and echo-cancel modules. Without it the skill still
+    # dials, answers and hangs up, and says by name that the audio cannot be
+    # bridged - which is the whole point of it being an optdepend rather than
+    # either a hard dependency or silently absent.
+    # No apostrophe in these descriptions: they sit inside single quotes, and
+    # one `'` closes the string early - which is a *syntax error*, so the whole
+    # PKGBUILD stops parsing and makepkg cannot build the package at all.
+    'libpulse: pactl, for bridging the audio of a Bluetooth call to this computer (bluetooth_call)'
+    'bluez-obex: obexd - send and receive files, phone contacts, call history and text messages over plain Bluetooth (no app on the phone)'
     'geoclue: where this computer is, for get_location and local weather (GNOME’s location service)'
     'gpsd: a GPS receiver’s fix for get_location, when one is attached'
     'ollama: an alternative local model server (Chronoa prefers it when running; llama-cpp is the default)'
@@ -139,10 +151,14 @@ optdepends=(
       'qrencode: qr_code - make QR codes'
       'at-spi2-core: ui_elements - buttons, fields and menus of other apps over AT-SPI'
       # The in-app browser (Ctrl+Shift+U, app.open-browser). Optional by design:
-      # without webkit2gtk the action is insensitive and says which package is
-      # missing; nothing else about the assistant changes. WebKitGTK 6.0 is what
-      # `gui/browser.py` asks gi for, and webkit2gtk-4.1 provides it on Arch.
-      'webkit2gtk-4.1: the in-app browser, and attaching a page to the conversation'
+      # without WebKitGTK the action is insensitive and says which package is
+      # missing; nothing else about the assistant changes. `gui/browser.py` asks
+      # gi for the GTK4 namespace WebKit 6.0, which is `webkitgtk-6.0`
+      # (usr/lib/girepository-1.0/WebKit-6.0.typelib). This used to name
+      # webkit2gtk-4.1, which is the GTK3 build and ships only WebKit2-4.1 - it
+      # cannot load into a GTK4 process, so the browser never started with it.
+      # Checked against both packages in the pacman cache, 2026-10-08.
+      'webkitgtk-6.0: the in-app browser, and attaching a page to the conversation'
       # Background removal for objects (u2net) rather than people (PP-HumanSeg,
       # which needs only the OpenCV extra setup installs). Without it
       # remove_background says exactly what is missing instead of quietly
@@ -151,7 +167,7 @@ optdepends=(
       'python-onnxruntime-cpu: remove_background for any object (u2net), not only people'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=20fb12dfa3fd9c8d0020101a2c700fdce4d09fbb")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=befcd6f4c2e4a342295108aad18cfd98ed56ae19")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
