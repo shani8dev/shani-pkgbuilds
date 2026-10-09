@@ -102,6 +102,26 @@ optdepends=(
     # produced the WAV (tts.py apply_timbre). tts.py calls it an optdepend and
     # never a hard one: without it speak says which transform was skipped.
     'sox: speak - pitch, tempo and rate (tts.py apply_timbre)'
+    # **The singing path, which sox alone cannot do.** `prosody.apply_song()`
+    # cuts and joins the notes in Python and hands each one to a transposer to
+    # move it by its own number of semitones; `_best_transposer()` looks for
+    # `soundstretch` then `rubberband`. Without either, `apply_song` raises
+    # `SingingUnsupported` naming both packages, so `sing` cannot put a melody
+    # on one syllable at a time - which is the whole difference between singing
+    # and intonation, and the property `tests/test_prosody.py` measures.
+    # sox is not a substitute: `sox` pitch shifts a whole file in one go, which is
+    # the intonation path the per-syllable design replaced.
+    #
+    # Declared here and missing until now, while `DEBIAN/control` has carried
+    # both since it was written - so on every Arch install `sing` refused for a
+    # reason nobody could act on. Package names read out of pacman's own file
+    # database (`chronoa-matrix.json`: `/usr/bin/soundstretch` -> `soundtouch`,
+    # `/usr/bin/rubberband` -> `rubberband`), not guessed.
+    # No apostrophes: these sit inside single quotes and one `'` closes the
+    # string early, which is a syntax error that stops the whole PKGBUILD
+    # parsing - the mistake `bash -n` is the only guard against.
+    'soundtouch: soundstretch, which shifts each sung note to its own pitch (prosody.apply_song; sox cannot do this)'
+    'rubberband: the higher-quality pitch shifter, used when soundtouch is absent (prosody.apply_song)'
     # `bluetooth_call`'s audio half. The profile switch needs only wpctl, which
     # wireplumber already provides, but bridging the call's voice to this
     # computer's speakers and back from the microphone needs pactl to load
