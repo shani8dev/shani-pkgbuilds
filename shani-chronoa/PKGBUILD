@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=21
+pkgrel=22
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -187,7 +187,7 @@ optdepends=(
       'python-onnxruntime-cpu: remove_background for any object (u2net), not only people'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=0a7b20147c425980c8f1994cea2f7bf1ad67429a")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=2b95046019194fc293cc5e74bc012014d34286e9")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
@@ -233,6 +233,13 @@ package() {
     install -Dm644 usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml \
         "$pkgdir/usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml"
     install -Dm644 usr/share/pixmaps/shani-chronoa.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/shani-chronoa.svg"
+    # The capability list, so a person reading the installed package can see
+    # every skill and the switch each one needs without a checkout. It is
+    # generated (tools/gen_capabilities.py) from the same _GROUPS table the
+    # Help window renders, and `tests/check_capabilities_doc.py` fails if the
+    # committed file stops matching what that generator produces.
+    install -Dm644 CAPABILITIES.md "$pkgdir/usr/share/doc/shani-chronoa/CAPABILITIES.md"
+    install -Dm644 README.md "$pkgdir/usr/share/doc/shani-chronoa/README.md"
     find "$pkgdir" -type d -name __pycache__ -prune -exec rm -rf {} +
     # `__pycache__` is the directory; a stray `.pyc` can also arrive outside
     # one (a build that byte-compiled in place, a copied file). Both are
