@@ -25,6 +25,14 @@ depends=(
 	iio-sensor-proxy
 	libratbag
 	geoclue
+	# NUT, not apcupsd, is the UPS daemon. apcupsd has had no upstream
+	# release since 3.14.14 (2016/2017) while NUT is at 2.8.5 with its data
+	# model published as IETF RFC 9271, 170+ manufacturers, serial/USB/SNMP/
+	# IPMI, and an `apcupsd-ups` driver that still reaches apcupsd hardware.
+	# shani-settings ships the baseline config and generates the monitor
+	# credential in its install hook. apcupsd stays available as an optdepend
+	# for anyone who wants its single-file model.
+	nut
 	apcupsd
 	usbmuxd
 	upower
