@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=42
+pkgrel=43
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -133,6 +133,25 @@ optdepends=(
     # one `'` closes the string early - which is a *syntax error*, so the whole
     # PKGBUILD stops parsing and makepkg cannot build the package at all.
     'libpulse: pactl, for bridging the audio of a Bluetooth call to this computer (bluetooth_call)'
+    # `fm_radio` receives FM through an RTL2832U DVB-T dongle, and the tool it
+    # shells to is `rtl_fm` - which is not in a package called rtl_fm. It ships
+    # in `rtl-sdr`, the same shape as `bluetoothctl` in bluez-utils and `wpctl`
+    # in wireplumber, and the package name was read out of pacman's own file
+    # database rather than guessed (which is what `files._PACKAGE_HINTS` carries
+    # and what `tests/test_package_names_match_arch.py` now checks against the
+    # matrix). Measured: rtl-sdr 1:2.0.3-1 in extra, ships /usr/bin/rtl_fm.
+    #
+    # An optdepend rather than a hard one, because the dongle is hardware not
+    # every machine has, and `fm_radio` reports by name that the receiver is
+    # absent rather than failing silently - the same discipline as pactl for
+    # bluetooth_call above. `shani-peripherals` now carries rtl-sdr as a
+    # depends, so on every profile that installs both, it is already there; this
+    # entry is what makes the requirement visible from HERE, so a change to that
+    # package's dependency list cannot break fm_radio without a named cause.
+    # No apostrophe in the description: it sits inside single quotes, and one '
+    # closes the string early - a syntax error that stops the whole PKGBUILD
+    # parsing, which is the mistake the comments above record.
+    'rtl-sdr: rtl_fm, which receives FM from an RTL2832U DVB-T dongle (fm_radio)'
     'bluez-obex: obexd - send and receive files, phone contacts, call history and text messages over plain Bluetooth (no app on the phone)'
     'geoclue: where this computer is, for get_location and local weather (GNOME’s location service)'
     'gpsd: a GPS receiver’s fix for get_location, when one is attached'
@@ -200,7 +219,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=0a94343498a97133882818217e092511da9f951b")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=969c818b6e2dee0df0f59b39b3c9521c1f327b1d")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
