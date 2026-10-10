@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=53
+pkgrel=54
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -219,7 +219,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=8a0b2afc550ad522139d1d610dcef8fb30db2ac7")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=a046adf5bf38147c14cc8142506637e0b5adc9d8")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
@@ -232,6 +232,12 @@ package() {
     install -Dm755 usr/bin/shani-chronoa-search "$pkgdir/usr/bin/shani-chronoa-search"
     install -Dm755 usr/bin/shani-chronoa-daemon "$pkgdir/usr/bin/shani-chronoa-daemon"
     install -Dm755 usr/bin/shani-chronoa-bridge "$pkgdir/usr/bin/shani-chronoa-bridge"
+    # The overlay cue layer. A skill drives a screen Chronoa does not own - a
+    # container's GUI app, a VM's guest - and the feedback is drawn over it by
+    # this process, which owns the GTK main loop the skill's child cannot. It
+    # runs standalone of the app, and it is a separate binary for exactly the
+    # reason the docs give: a sandboxed skill child has no main loop of its own.
+    install -Dm755 usr/bin/shani-chronoa-overlay "$pkgdir/usr/bin/shani-chronoa-overlay"
     # The lab_network_* skills' privileged half: lab_network.py runs
     # `pkexec /usr/bin/shani-chronoa-lab-network` for the namespace/NAT work
     # and the polkit rule in shani-settings authorises exactly this path. A
