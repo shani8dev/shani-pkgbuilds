@@ -185,6 +185,19 @@ optdepends=(
       # falling back to the people-only model, which would return a wrong
       # cut-out for any subject that is not a person.
       'python-onnxruntime-cpu: remove_background for any object (u2net), not only people'
+      # Matrix enrichments 2026-10-10; package names read out of BOTH images'
+      # matrices, which carry pacman's own file database (they agree on every
+      # one): `/usr/bin/avahi-browse` is in `avahi`, `ip` in `iproute2`,
+      # `fwupdmgr` in `fwupd`. Offered, never required - each skill degrades to
+      # an answer that names the missing tool, which is what their tests assert.
+      #
+      # `avahi` was NEWLY missing: discover_hosts' mDNS half had never been
+      # offered the package that ships it, so it refused with a reason nobody
+      # could act on. `iproute2` and `fwupd` had been missing since the skills
+      # that use them were written - the same defect, only older.
+      'avahi: discover_hosts - devices that announce themselves by name (avahi-browse)'
+      'iproute2: check_internet and neighbour_table - the route and the ARP cache (ip neigh)'
+      'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
 source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=4e016b2a9ecc3e6ddba26a8b25a107aaffa697c4")
