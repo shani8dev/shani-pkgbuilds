@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=9
+pkgrel=10
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals"
@@ -48,6 +48,26 @@ depends=(
 	yubikey-manager
 	pcsc-tools
 	oath-toolkit
+
+	# Software-defined radio: the RTL2832U DVB-T dongle driver and the eight
+	# rtl_* tools. Chronoa's fm_radio skill needs `rtl_fm`, which is NOT in a
+	# package called rtl_fm - it ships in rtl-sdr, the same shape as
+	# `bluetoothctl` in bluez-utils and `wpctl` in wireplumber. Measured:
+	# `rtl-sdr 1:2.0.3-1` in extra, depends glibc + libusb (1.0, not the legacy
+	# 0.1 that stopped older distros packaging it), and ships /usr/bin/rtl_fm.
+	#
+	# A depends rather than an optdepend, because the dongle is a peripheral
+	# this package already exists to support, the eight binaries are a few
+	# hundred kB, and libusb is already pulled in by the rest of this stack. The
+	# alternative - an optdepend - leaves fm_radio reporting "not installed" on
+	# a machine whose hardware is sitting right there, which is the answer this
+	# package is meant not to give.
+	#
+	# No root needed: the package's own udev rule grants MODE=0660
+	# GROUP=rtlsdr plus uaccess, so the seat's user gets the dongle without a
+	# sudoers entry. Nothing in the .install enables a service, and there is
+	# none - rtl_fm opens the device on demand.
+	rtl-sdr
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
