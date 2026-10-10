@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=49
+pkgrel=50
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -219,7 +219,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=8599b1113d30b47eaba1b38dcaf7ae704ad0109a")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=0fa9d4d7ad183d0b2c3dd53bba913cfbf73fcfa3")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
