@@ -37,7 +37,11 @@ post_upgrade() {
 	systemctl enable geoclue
 	systemctl enable upower
 	systemctl enable usbmuxd
-	#systemctl enable apcupsd
+	# NUT's stack is enabled by shani-settings' install hook, not here: it
+	# has to generate the monitor credential and insert the MONITOR line at the
+	# same time, which a bare `systemctl enable` cannot do. apcupsd stays
+	# installed because NUT ships an `apcupsd-ups` driver that still reaches
+	# that hardware, but it is opt-in rather than the default.
 	#systemctl enable inputattach
 	add_group
 }
