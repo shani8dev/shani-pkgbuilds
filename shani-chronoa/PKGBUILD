@@ -193,6 +193,22 @@ optdepends=(
       # silently, so a user who never asks about a binary should not be made to
       # install a toolchain to get it.
       'binutils: readelf, which inspect_binary uses to read a program and binary_hardening uses to report whether it is hardened'
+      # graphics_stack reads the OpenGL renderer string, which is the only thing
+      # that says hardware or software - the kernel driver in sysfs does not, and
+      # a machine with a healthy i915 and an llvmpipe fallback is exactly the case
+      # that otherwise reads as fine. Measured: /usr/bin/glxinfo is owned by
+      # mesa-utils 9.0.0-7, and /usr/lib/dri/i915_dri.so by mesa 1:26.2.3-1 -
+      # so it is mesa-utils, not mesa, and not mesa-demos.
+      'mesa-utils: glxinfo, which reports the OpenGL renderer string (graphics_stack)'
+      # network_activity reads per-program network rates with nethogs. The
+      # interface half samples /proc/net/dev and needs no binary; this decides
+      # only whether the skill can say WHICH PROGRAM is moving bytes, which is
+      # the whole question. Measured: nethogs is on both images, and it names
+      # a program by reading /proc/<pid>/fd - so on a machine whose socket
+      # owners are not visible to it (a container, a systemd-nspawn slot with
+      # three processes) it answers `unknown TCP/0/0` while bandwidth is in
+      # fact being used. The skill says so rather than reporting idle.
+      'nethogs: nethogs, which reports per-program network traffic (network_activity)'
       'iptables: the firewall sense, legacy rules'
       'ethtool: the network sense - link speed and driver'
       'ddcutil: set_brightness on an external monitor'
