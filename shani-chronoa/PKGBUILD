@@ -173,6 +173,26 @@ optdepends=(
       'btrfs-progs: the snapshots sense'
       'firewalld: the firewall sense (firewall-cmd)'
       'nftables: the firewall sense, for rules set outside firewalld'
+      # **binutils, not elfutils.** Two skills shell to the binary called
+      # `readelf`: inspect_binary (what a program is, what it needs to run) and
+      # binary_hardening (whether it has PIE, RELRO, full RELRO, a stack canary
+      # and a no-execute stack). Both existed with neither declared anywhere, and
+      # they worked only by accident: measured on a real ShaniOS @blue install,
+      # `/usr/bin/readelf is owned by binutils 2.47-4` and `Required By:
+      # libmakepkg-dropins sbctl`. Nothing in chronoa requires sbctl, so what was
+      # keeping readelf on the machine was one indirect edge that any change to
+      # either package could have removed - which is precisely the class of
+      # dependency the entries above this one were added for.
+      # elfutils is a different package: it ships the `eu-*` spellings
+      # (`eu-readelf`, `eu-elflint`), and `eu-elflint` is the purpose-built
+      # hardening reporter. Package name read out of pacman's own file database
+      # on both images, not guessed - the same evidence
+      # tests/test_package_names_match_arch.py checks.
+      # An optdepend rather than a hard one, matching the discipline above: both
+      # skills refuse with a sentence naming binutils rather than degrading
+      # silently, so a user who never asks about a binary should not be made to
+      # install a toolchain to get it.
+      'binutils: readelf, which inspect_binary uses to read a program and binary_hardening uses to report whether it is hardened'
       'iptables: the firewall sense, legacy rules'
       'ethtool: the network sense - link speed and driver'
       'ddcutil: set_brightness on an external monitor'
