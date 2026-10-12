@@ -1,7 +1,7 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 19
+	pkgrel = 55
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
@@ -42,7 +42,10 @@ pkgbase = shani-chronoa
 	depends = networkmanager
 	optdepends = python-polars: learning.py reads tool_calls.log into dataframes; absent, it reads json per line
 	optdepends = sox: speak - pitch, tempo and rate (tts.py apply_timbre)
+	optdepends = soundtouch: soundstretch, which shifts each sung note to its own pitch (prosody.apply_song; sox cannot do this)
+	optdepends = rubberband: the higher-quality pitch shifter, used when soundtouch is absent (prosody.apply_song)
 	optdepends = libpulse: pactl, for bridging the audio of a Bluetooth call to this computer (bluetooth_call)
+	optdepends = rtl-sdr: rtl_fm, which receives FM from an RTL2832U DVB-T dongle (fm_radio)
 	optdepends = bluez-obex: obexd - send and receive files, phone contacts, call history and text messages over plain Bluetooth (no app on the phone)
 	optdepends = geoclue: where this computer is, for get_location and local weather (GNOME’s location service)
 	optdepends = gpsd: a GPS receiver’s fix for get_location, when one is attached
@@ -61,6 +64,9 @@ pkgbase = shani-chronoa
 	optdepends = btrfs-progs: the snapshots sense
 	optdepends = firewalld: the firewall sense (firewall-cmd)
 	optdepends = nftables: the firewall sense, for rules set outside firewalld
+	optdepends = binutils: readelf, which inspect_binary uses to read a program and binary_hardening uses to report whether it is hardened
+	optdepends = mesa-utils: glxinfo, which reports the OpenGL renderer string (graphics_stack)
+	optdepends = nethogs: nethogs, which reports per-program network traffic (network_activity)
 	optdepends = iptables: the firewall sense, legacy rules
 	optdepends = ethtool: the network sense - link speed and driver
 	optdepends = ddcutil: set_brightness on an external monitor
@@ -78,7 +84,10 @@ pkgbase = shani-chronoa
 	optdepends = at-spi2-core: ui_elements - buttons, fields and menus of other apps over AT-SPI
 	optdepends = webkitgtk-6.0: the in-app browser, and attaching a page to the conversation
 	optdepends = python-onnxruntime-cpu: remove_background for any object (u2net), not only people
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=befcd6f4c2e4a342295108aad18cfd98ed56ae19
+	optdepends = avahi: discover_hosts - devices that announce themselves by name (avahi-browse)
+	optdepends = iproute2: check_internet and neighbour_table - the route and the ARP cache (ip neigh)
+	optdepends = fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=d077ede6996b26980466d1d79be878d6ca3b29c3
 	sha256sums = SKIP
 
 pkgname = shani-chronoa

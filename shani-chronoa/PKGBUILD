@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=54
+pkgrel=55
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -255,7 +255,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=a046adf5bf38147c14cc8142506637e0b5adc9d8")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=d077ede6996b26980466d1d79be878d6ca3b29c3")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
@@ -274,6 +274,14 @@ package() {
     # runs standalone of the app, and it is a separate binary for exactly the
     # reason the docs give: a sandboxed skill child has no main loop of its own.
     install -Dm755 usr/bin/shani-chronoa-overlay "$pkgdir/usr/bin/shani-chronoa-overlay"
+    # The LAN phone link (KDE Connect protocol, discovery only). A separate
+    # process because identity exchange is a GLib main loop and a skill runs in
+    # a sandboxed child with no main loop - the same reason as the overlay
+    # above. `skills/screen_to_phone` starts it.
+    install -Dm755 usr/bin/shani-chronoa-screen-stream "$pkgdir/usr/bin/shani-chronoa-screen-stream"
+    # The LAN phone bridge (KDE Connect -> gateway.Submit). A caller, not a door:
+    # gateway.py is on the session bus and this process only ever calls it.
+    install -Dm755 usr/bin/shani-chronoa-lan-bridge "$pkgdir/usr/bin/shani-chronoa-lan-bridge"
     # The lab_network_* skills' privileged half: lab_network.py runs
     # `pkexec /usr/bin/shani-chronoa-lab-network` for the namespace/NAT work
     # and the polkit rule in shani-settings authorises exactly this path. A
