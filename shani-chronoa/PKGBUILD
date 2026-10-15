@@ -298,6 +298,9 @@ package() {
         "$pkgdir/usr/lib/systemd/user/shani-chronoa-daemon.service"
     install -Dm644 usr/lib/systemd/user/shani-chronoa-llm.service \
         "$pkgdir/usr/lib/systemd/user/shani-chronoa-llm.service"
+    # The phone bridge: enabled from Connect a device's last page, never by default.
+    install -Dm644 usr/lib/systemd/user/shani-chronoa-lan-bridge.service \
+        "$pkgdir/usr/lib/systemd/user/shani-chronoa-lan-bridge.service"
     install -Dm644 "usr/lib/systemd/user/shani-chronoa-model@.service" \
         "$pkgdir/usr/lib/systemd/user/shani-chronoa-model@.service"
     # Desktop search: GNOME Shell overview + Plasma KRunner, one D-Bus activated service
