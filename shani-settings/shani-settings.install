@@ -33,8 +33,112 @@ post_install() {
 # ---------------------------------------------------------------------------
 # Network UPS Tools
 #
-# Two things have to happen for NUT to be usable on a Shanios install, and
-# neither can be a shipped file:
+# Nothing under /etc/nut is ours to ship. The four configs live in
+# /usr/share/shani/nut/ as templates and are installed from here, because
+# `nut` owns /etc/nut/{nut,ups,upsd,upsmon}.conf and shani-peripherals
+# depends on `nut` - so a package that shipped them collided with it on
+# every profile and pacstrap refused the whole transaction with "conflicting
+# files". Pacman has no primitive for taking over *some* files of another
+# package: replaces=(nut) would take its binaries too. So `nut` keeps
+# ownership and we write the content here, which is the same decision already
+# made below for upsd.users and the MONITOR line.
+#
+# Taking a file over is not the same as owning it. Each template is written
+# only while the file on disk is provably not the admin's:
+#
+#  - content already equals our template            -> nothing to do
+#  - content equals what we last installed           -> ours, so refresh it,
+#                                                      which is how a fixed
+#                                                      baseline reaches an
+#                                                      existing install
+#  - file absent, or still byte-identical to `nut`'s -> take it over
+#  - anything else                                  -> the admin's; leave it,
+#                                                      and say so
+#
+# The manifest is what makes the second case possible. Without it, every file
+# we had ever written would look "modified" against `nut` forever, and a
+# corrected baseline could never reach an existing install again.
+install_nut_baseline() {
+	local tdir=/usr/share/shani/nut
+	local manifest=/var/lib/shani-settings/nut-baseline.sha256
+	local -a files=(nut.conf ups.conf upsd.conf upsmon.conf)
+	local f want have recorded stock took=0 skipped=0
+
+	[ -d "$tdir" ] || {
+		echo "shani-settings: $tdir is missing; cannot install the NUT baseline"
+		return 1
+	}
+	mkdir -p "$(dirname "$manifest")" || return 1
+
+	# `pacman -Qkk` lists absent files too, so ask for the reason explicitly
+	# rather than testing for the path appearing in the output at all.
+	stock=$(pacman -Qkk nut 2>/dev/null)
+
+	tmp=$(mktemp) || return 1
+	for f in "${files[@]}"; do
+		want=$(sha256sum "$tdir/$f" | cut -d' ' -f1)
+		if [ -e "/etc/nut/$f" ]; then
+			have=$(sha256sum "/etc/nut/$f" | cut -d' ' -f1)
+		else
+			have=
+		fi
+		recorded=$(awk -v k="$f" '$2 == k { print $1 }' "$manifest" 2>/dev/null)
+
+		if [ "$have" = "$want" ]; then
+			printf '%s  %s\n' "$want" "$f" >>"$tmp"
+			continue
+		fi
+
+		recorded=$(awk -v k="$f" '$2 == k { print $1 }' "$manifest" 2>/dev/null)
+
+		if [ ! -e "/etc/nut/$f" ]; then
+			# Gone, whoever removed it. A file that is not there is nobody's
+			# edit, and NUT is broken without it, so put it back and say so.
+			# (Deleting one to disable NUT is not a supported flow here -
+			# ups.conf ships with no device section and ALLOW_NO_DEVICE keeps
+			# the stack inert, so there is nothing to disable.)
+			echo "shani-settings: /etc/nut/$f was missing; restoring it"
+		elif [ -z "$recorded" ]; then
+			# We have never written this one. It is ours to take only if it
+			# is still exactly what nut shipped; anything else is the admin's.
+			if grep -qF "warning: nut: /etc/nut/$f (Modification detected)" <<<"$stock"; then
+				echo "shani-settings: /etc/nut/$f was modified; leaving it as-is"
+				skipped=$((skipped + 1))
+				continue
+			fi
+		elif [ "$have" != "$recorded" ]; then
+			# We wrote this file before and what is on disk is not what we
+			# wrote, so the admin has edited it - and that is the end of it.
+			# Do not consult pacman, which by now reports every file here as
+			# "Modification detected" precisely because we took it over, and
+			# would otherwise authorise clobbering all of them.
+			echo "shani-settings: /etc/nut/$f was modified; leaving it as-is"
+			skipped=$((skipped + 1))
+			continue
+		fi
+
+		install -Dm644 "$tdir/$f" "/etc/nut/$f" || {
+			rm -f "$tmp"
+			return 1
+		}
+		printf '%s  %s\n' "$want" "$f" >>"$tmp"
+		took=$((took + 1))
+	done
+
+	mv -f "$tmp" "$manifest" || return 1
+	[ "$took" = 0 ] && [ "$skipped" = 0 ] && return 0
+	echo "shani-settings: NUT baseline installed ($took updated, $skipped left alone)"
+	return 0
+}
+
+# ---------------------------------------------------------------------------
+# Network UPS Tools
+#
+# Three things have to happen for NUT to be usable on a Shanios install, and
+# none of them can be a shipped file:
+#
+#  0. the four configs, laid down from /usr/share/shani/nut/ because `nut`
+#     owns those paths - see install_nut_baseline above.
 #
 #  1. upsd.users and upsmon.conf's MONITOR line must share a monitor password,
 #     and it must NOT be a static fleet-wide value. `upsmon master` permits a
@@ -115,8 +219,10 @@ post_upgrade() {
 	plymouth-set-default-theme bgrt
 	add_samba_group
 
-	# NUT: generate the monitor credential and bring the stack up. Both halves
-	# are in the hook, not in a shipped file, for the reasons in its comment.
+	# NUT: lay down the baseline config, then generate the monitor credential
+	# and bring the stack up. All three stages are in the hook rather than in
+	# shipped files, for the reasons in their comments.
+	install_nut_baseline
 	add_nut_monitor_user
 	systemctl enable nut-server.service
 	systemctl enable nut-monitor.service
