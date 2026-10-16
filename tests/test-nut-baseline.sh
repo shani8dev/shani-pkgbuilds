@@ -86,16 +86,20 @@ done
     || fail "first install (rc=$rc, all_ours=$all_ours): $out"
 [[ -f $STATE ]] && pass "manifest written" || fail "no manifest at $STATE"
 
-# 2. idempotent: a second run changes nothing at all. Compares inode as well
-#    as content - `install` builds a new file, so a rewrite that happens to
-#    produce identical bytes is still a rewrite, and an upgrade hook that
-#    rewrites four files on every run is not idempotent.
-before=$(stat -c '%i %s' "$ETCD"/* | sha256sum)
+# 2. idempotent: a second run must not touch the files at all. `install`
+#    overwrites IN PLACE, so the inode survives a rewrite and only the mtime
+#    shows it - an inode check here passes on a hook that reinstalls all four
+#    files on every single upgrade. The mtime is pinned to a known old value
+#    first so the assertion cannot race the clock.
+for f in "${FILES[@]}"; do touch -d '2020-01-01 00:00:00' "$ETCD/$f"; done
 out=$(install_nut_baseline 2>&1); rc=$?
-after=$(stat -c '%i %s' "$ETCD"/* | sha256sum)
-[[ $rc == 0 && $before == "$after" ]] \
-    && pass "re-running changes nothing (idempotent, not even a rewrite)" \
-    || fail "second run was not idempotent: $out"
+untouched=yes
+for f in "${FILES[@]}"; do
+    case $(stat -c %y "$ETCD/$f") in 2020-01-01*) ;; *) untouched=no ;; esac
+done
+[[ $rc == 0 && $untouched == yes ]] \
+    && pass "re-running does not even rewrite the files (idempotent)" \
+    || fail "second run rewrote files that were already correct: $out"
 
 # 3. a corrected baseline reaches an existing install, via the manifest
 printf '# improved %s\n' nut.conf >"$SHARED/nut.conf"
