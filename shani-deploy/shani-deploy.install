@@ -13,6 +13,13 @@ post_upgrade() {
     # User setup (path unit activates the service — only enable the path)
     systemctl enable shani-user-setup.path            # WantedBy=multi-user.target
 
+    # Stranding repair. Enabled unconditionally and it is a no-op on a healthy
+    # system: it only does anything when no account exists, which is the state
+    # shani-reset leaves behind. WantedBy=multi-user.target, Before=
+    # display-manager.service, so it runs before whatever greeter would show a
+    # login screen with no users on it.
+    systemctl enable shani-first-boot.service          # WantedBy=multi-user.target
+
     # Bees deduplication
     systemctl enable beesd-setup.service              # WantedBy=multi-user.target
 
