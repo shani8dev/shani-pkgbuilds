@@ -101,7 +101,15 @@ install_nut_baseline() {
 		elif [ -z "$recorded" ]; then
 			# We have never written this one. It is ours to take only if it
 			# is still exactly what nut shipped; anything else is the admin's.
-			if grep -qF "warning: nut: /etc/nut/$f (Modification detected)" <<<"$stock"; then
+			# Measured against a real built image, pacman reports these two
+			# different things and this function must catch both:
+			#   backup file: nut: /etc/nut/nut.conf (SHA256 checksum mismatch)
+			#   warning: nut: /etc/nut/upsd.conf (GID mismatch)
+			# Content drift on a backup file arrives under "backup file:" with a
+			# content reason; "warning:" only ever carries attribute reasons. A
+			# grep for the assumed string matched NOTHING, so this branch could
+			# never fire and every file looked admin-owned to nobody - i.e. never.
+			if grep -qE "(backup file|warning): nut: .*/etc/nut/$f \((SHA256 checksum mismatch|Modification detected)\)" <<<"$stock"; then
 				echo "shani-settings: /etc/nut/$f was modified; leaving it as-is"
 				skipped=$((skipped + 1))
 				continue
@@ -128,6 +136,31 @@ install_nut_baseline() {
 	mv -f "$tmp" "$manifest" || return 1
 	[ "$took" = 0 ] && [ "$skipped" = 0 ] && return 0
 	echo "shani-settings: NUT baseline installed ($took updated, $skipped left alone)"
+	return 0
+}
+
+# Re-hash the four files and rewrite the manifest. Run this AFTER every other
+# NUT writer. install_nut_baseline records what IT wrote, but
+# add_nut_monitor_user then inserts the MONITOR line into upsmon.conf, so a
+# manifest taken before that describes a file that no longer exists.
+# Only files install_nut_baseline actually owns are recorded - a file skipped
+# as the admin's is left out, and stays out until the admin changes it.
+record_nut_baseline() {
+	local manifest=/var/lib/shani-settings/nut-baseline.sha256
+	local tdir=/usr/share/shani/nut
+	local -a files=(nut.conf ups.conf upsd.conf upsmon.conf)
+	local f tmp
+	[ -d "$tdir" ] || return 0
+	tmp=$(mktemp) || return 1
+	for f in "${files[@]}"; do
+		# Only claim files we previously claimed: anything the manifest does
+		# not already list is not ours to re-assert.
+		grep -qE "[[:space:]]$f\$" "$manifest" 2>/dev/null || continue
+		[ -e "/etc/nut/$f" ] || continue
+		printf '%s  %s\n' "$(sha256sum "/etc/nut/$f" | cut -d' ' -f1)" "$f" >>"$tmp"
+	done
+	[ -s "$tmp" ] || { rm -f "$tmp"; return 0; }
+	mv -f "$tmp" "$manifest"
 	return 0
 }
 
@@ -224,6 +257,12 @@ post_upgrade() {
 	# shipped files, for the reasons in their comments.
 	install_nut_baseline
 	add_nut_monitor_user
+	# add_nut_monitor_user rewrites upsmon.conf (the MONITOR line), so the
+	# hash install_nut_baseline recorded for it is stale the moment that
+	# returns - the next run would read the file as an admin edit and refuse
+	# to refresh it forever, which is the exact failure the manifest exists
+	# to prevent. Re-record after the last writer.
+	record_nut_baseline
 	systemctl enable nut-server.service
 	systemctl enable nut-monitor.service
 	systemctl enable nut-logger.service

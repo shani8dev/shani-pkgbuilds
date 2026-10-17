@@ -47,6 +47,8 @@ FILES=(nut.conf ups.conf upsd.conf upsmon.conf)
 # samba group juggling) does not run.
 eval "$(awk '/^install_nut_baseline\(\) \{/,/^\}/' "$INSTALL")"
 declare -F install_nut_baseline >/dev/null || { echo "install_nut_baseline not found in $INSTALL" >&2; exit 2; }
+eval "$(awk '/^record_nut_baseline\(\) \{/,/^\}/' "$INSTALL")"
+declare -F record_nut_baseline >/dev/null || { echo "record_nut_baseline not found in $INSTALL" >&2; exit 2; }
 
 reset_nut() {   # a "fresh install": nut's own stock config, nothing of ours
     rm -rf "$ETCD" "$SHARED" "$STATE"
@@ -134,27 +136,78 @@ grep -q 'upsd.conf was missing' <<<"$out" \
     && pass "and the restore is reported" \
     || fail "restore happened silently: $out"
 
-# 6. pacman says nut's file was modified and we have no manifest entry:
-#    that is the admin's, so leave it alone. Without the manifest this is the
-#    only evidence available, so it has to be believed.
+# 6. pacman says the content drifted and we have no manifest entry: that is the
+#    admin's, so leave it alone. Without the manifest this is the only evidence
+#    available, so it has to be believed.
+#
+#    The strings below are pacman's REAL output, taken from a built image - not
+#    a shape I assumed. It reports content drift under a "backup file:" prefix
+#    with a content reason, and reserves "warning:" for attribute drift. A grep
+#    written against the assumed shape matched nothing at all, so this branch
+#    had never once fired on a real system.
 reset_nut
 rm -f "$STATE"
 printf '# edited by hand, no manifest knows about this\n' >"$ETCD/nut.conf"
-stub_pacman 'warning: nut: /etc/nut/nut.conf (Modification detected)'
+stub_pacman 'backup file: nut: /etc/nut/nut.conf (SHA256 checksum mismatch)'
 out=$(install_nut_baseline 2>&1)
 [[ $(cat "$ETCD/nut.conf") == "# edited by hand, no manifest knows about this" ]] \
-    && pass "pacman's 'Modification detected' is honoured with no manifest" \
-    || fail "overwrote a file pacman reported as modified"
-# ...and the reason is tested, not merely the path: a file pacman reports as
-# MISSING is not a modification, and must still be taken over.
+    && pass "pacman's real SHA256-mismatch report is honoured with no manifest" \
+    || fail "overwrote a file pacman reported as content-modified"
+# The older/other spelling, still matched.
 reset_nut
 rm -f "$STATE"
-stub_pacman 'warning: nut: /etc/nut/ups.conf (No such file or directory)'
+printf '# edited, warning-prefix spelling\n' >"$ETCD/ups.conf"
+stub_pacman 'warning: nut: /some/root/etc/nut/ups.conf (Modification detected)'
+install_nut_baseline >/dev/null 2>&1
+[[ $(cat "$ETCD/ups.conf") == "# edited, warning-prefix spelling" ]] \
+    && pass "the warning-prefix spelling is honoured too" \
+    || fail "overwrote a file reported modified under the warning prefix"
+# An attribute-only mismatch is not evidence the admin edited the CONTENT, and
+# refusing to take the file over over a GID difference would strand the install.
+reset_nut
+rm -f "$STATE"
+stub_pacman 'warning: nut: /some/root/etc/nut/upsd.conf (GID mismatch)'
+install_nut_baseline >/dev/null 2>&1
+[[ $(stock_digest upsd.conf) == $(ours_digest upsd.conf) ]] \
+    && pass "a GID/attribute mismatch is not read as a content edit" \
+    || fail "refused to take a file over because of an attribute mismatch"
+# A file pacman reports as MISSING is not a modification and must still be
+# taken over.
+reset_nut
+rm -f "$STATE"
+stub_pacman 'backup file: nut: /etc/nut/ups.conf (No such file or directory)'
 install_nut_baseline >/dev/null 2>&1
 [[ $(stock_digest ups.conf) == $(ours_digest ups.conf) ]] \
     && pass "'No such file or directory' is not read as a modification" \
     || fail "treated a missing file as a modification and refused to take it over"
 stub_pacman ""
+
+# 9. record_nut_baseline must run AFTER add_nut_monitor_user, because that
+#    inserts the MONITOR line into upsmon.conf. A manifest taken before it
+#    describes a file that no longer exists, so the next run reads the file as
+#    an admin edit and refuses to refresh it forever - the exact failure the
+#    manifest exists to prevent.
+reset_nut
+install_nut_baseline >/dev/null 2>&1
+[[ -f $STATE ]] || fail "no manifest to re-record"
+printf '\nMONITOR myups@localhost 1 monuser SECRET master\n' >>"$ETCD/upsmon.conf"   # the later writer
+record_nut_baseline
+rec=$(awk '$2 == "upsmon.conf" { print $1 }' "$STATE")
+[[ -n $rec && $rec == $(sha256sum "$ETCD/upsmon.conf" | cut -d' ' -f1) ]] \
+    && pass "re-recording after the MONITOR insert keeps upsmon.conf ours" \
+    || fail "manifest is stale for upsmon.conf: recorded=${rec:0:12} actual=$(sha256sum "$ETCD/upsmon.conf" | cut -c1-12)"
+# ...and it must not claim a file that has become the admin's. The sequence
+# matters: the file must be in the manifest FIRST (so it is ours), then edited
+# (so install_nut_baseline skips it and drops it). Starting from no manifest
+# would instead just take the file over, which is correct and tests nothing.
+reset_nut
+install_nut_baseline >/dev/null 2>&1
+printf '# the admin edited this one\n' >"$ETCD/upsd.conf"
+install_nut_baseline >/dev/null 2>&1
+record_nut_baseline
+grep -q ' upsd.conf$' "$STATE" \
+    && fail "re-recording claimed a file that is now the admin's" \
+    || pass "re-recording does not claim a file the admin took over"
 
 echo
 echo "the conflict that broke every image build"
@@ -170,6 +223,25 @@ shipped=$(cd "$SRC_ROOT" 2>/dev/null && git ls-files etc/nut 2>/dev/null)
 [[ -f $SHARED/nut.conf && -f $SHARED/upsmon.conf ]] \
     && pass "templates present in usr/share/shani/nut" \
     || fail "templates missing from usr/share/shani/nut"
+
+# 7b. post_upgrade must call them in this ORDER. Everything above calls the
+#     functions directly, which is exactly why it cannot see the wiring: a
+#     mutant that deletes the `record_nut_baseline` call from post_upgrade
+#     leaves every behavioural assertion green while the manifest goes stale
+#     on every real install. This is the same shape as a subcommand added to a
+#     dispatcher but not to its guard - the function is right and unreachable.
+_up=$(awk '/^post_upgrade\(\) \{/,/^\}/' "$INSTALL" | grep -nE '^[[:space:]]*(install_nut_baseline|add_nut_monitor_user|record_nut_baseline)[[:space:]]*$' | tr -d ' ')
+# grep -n prefixes "NNN:" - strip it, or the arithmetic below is a syntax error
+_b=$(echo "$_up" | grep -m1 'install_nut_baseline'    | grep -oE '^[0-9]+')
+_m=$(echo "$_up" | grep -m1 'add_nut_monitor_user'     | grep -oE '^[0-9]+')
+_r=$(echo "$_up" | grep -m1 'record_nut_baseline'      | grep -oE '^[0-9]+')
+if [[ -z $_b || -z $_m || -z $_r ]]; then
+    fail "post_upgrade does not call all three NUT steps (found: ${_up:-nothing})"
+elif (( _b < _m && _m < _r )); then
+    pass "post_upgrade runs baseline -> MONITOR insert -> re-record, in that order"
+else
+    fail "post_upgrade order wrong: baseline=$_b monitor=$_m record=$_r (record must come last)"
+fi
 
 # 8. the move preserved the bytes. The hardening is the whole point of these
 #    files, and a hand-edit during the move would not fail anything else here.
