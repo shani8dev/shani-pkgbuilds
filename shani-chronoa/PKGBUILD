@@ -3,13 +3,21 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=56
+pkgrel=57
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
 license=('GPL-3.0-only')
+# Circle to Search lived in its own package until 2026-10-15; this one ships it.
+provides=('gnome-shell-extension-shani-circle-to-search')
+conflicts=('gnome-shell-extension-shani-circle-to-search')
+replaces=('gnome-shell-extension-shani-circle-to-search')
 depends=(
     'python'
+    # Circle to Search's overlay and its clipboard / browser hand-offs.
+    'gtk4-layer-shell'
+    'wl-clipboard'
+    'xdg-utils'
     'python-gobject'
     # `gio`, which `delete_file` needs to move anything to the desktop trash.
     # Already pulled in by python-gobject's chain, so this states a requirement
@@ -260,7 +268,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=8d36b7f05ff26a18fa35a25e99199611af59fc72")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=5b3cdc29f77543774be94d2081b0246e2e80d142")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
@@ -315,13 +323,28 @@ package() {
     # Window operations on GNOME (windows/gnome.py): Mutter exposes no window
     # list to clients, so this Shell extension exports a fixed D-Bus interface
     # for list/focus/close/arrange. Installed system-wide; the user enables it.
-    install -Dm644 usr/share/gnome-shell/extensions/chronoa-windows@shani.dev/extension.js \
-        "$pkgdir/usr/share/gnome-shell/extensions/chronoa-windows@shani.dev/extension.js"
-    install -Dm644 usr/share/gnome-shell/extensions/chronoa-windows@shani.dev/metadata.json \
-        "$pkgdir/usr/share/gnome-shell/extensions/chronoa-windows@shani.dev/metadata.json"
+    # Every file of the extension (indicator.js and stylesheet.css joined
+    # extension.js and metadata.json on 2026-10-15; naming each file left any
+    # new one out of the package).
+    for f in usr/share/gnome-shell/extensions/chronoa-windows@shani.dev/*; do
+        install -Dm644 "$f" "$pkgdir/$f"
+    done
     install -Dm644 usr/share/applications/shani-chronoa.desktop "$pkgdir/usr/share/applications/shani-chronoa.desktop"
     install -Dm644 usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml \
         "$pkgdir/usr/share/glib-2.0/schemas/org.shani.chronoa.gschema.xml"
+    # Circle to Search, moved here from its own package (2026-10-15): select
+    # part of the screen, then OCR it, send it to Google Lens, scan a QR, or
+    # ask Chronoa about it. UUID kept so shani-desktop-gnome's
+    # enabled-extensions override still names it. Installed file by file at
+    # 0644: the source once had extension.js at 0660, unreadable to the shell.
+    for f in usr/share/gnome-shell/extensions/shani-circle-to-search@inled.es/*; do
+        install -Dm644 "$f" "$pkgdir/$f"
+    done
+    install -Dm755 usr/bin/shani-circle-to-search "$pkgdir/usr/bin/shani-circle-to-search"
+    install -Dm644 usr/share/applications/shani-circle-to-search.desktop \
+        "$pkgdir/usr/share/applications/shani-circle-to-search.desktop"
+    install -Dm644 usr/share/glib-2.0/schemas/org.gnome.shell.extensions.shani-circle-to-search.gschema.xml \
+        "$pkgdir/usr/share/glib-2.0/schemas/org.gnome.shell.extensions.shani-circle-to-search.gschema.xml"
     install -Dm644 usr/share/pixmaps/shani-chronoa.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/shani-chronoa.svg"
     # The capability list, so a person reading the installed package can see
     # every skill and the switch each one needs without a checkout. It is
