@@ -17,7 +17,7 @@ pkgrel=96
 # would not fail a check on an installed machine. What it would ship is a
 # package whose bundled shani-deploy.sh.sha256 does not describe the bundled
 # shani-deploy - wrong metadata, in a file whose whole job is to describe it.
-_commit='19485a961d5bba6b1bb41bf08d55a260fe7e9251'  # Replace with the specific commit hash
+_commit='482d1bb00a7fcd30f65a5326581322781731bc31'   # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
