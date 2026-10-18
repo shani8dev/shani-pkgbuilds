@@ -112,7 +112,7 @@ install_nut_baseline >/dev/null 2>&1
 
 # 4. the admin's edit survives a baseline that changed under it
 printf '# the admin was here\n' >"$ETCD/ups.conf"
-printf '# improved again\n' ups.conf >"$SHARED/ups.conf"
+printf '# improved again\n' >"$SHARED/ups.conf"
 out=$(install_nut_baseline 2>&1)
 [[ $(cat "$ETCD/ups.conf") == "# the admin was here" ]] \
     && pass "admin edit is never clobbered" \
