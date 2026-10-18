@@ -1,13 +1,17 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=97
+pkgrel=100
 # NOT a5867ac, which is the config-validation commit. At a5867ac the bundled
 # scripts/shani-deploy.sh.sha256 is STALE: it records fbc1614f... while
 # shani-deploy.sh itself hashes to 202695f8..., because re-signing runs in CI
 # (.github/workflows/sign-deploy-script.yml) and lands as a follow-up commit.
-# 34c8af9 is that re-sign, so the shipped checksum and signature actually
-# describe the shipped script.
+# The re-sign is a CI follow-up commit (sign-deploy-script.yml), so the pin is
+# always one commit behind the newest script until CI lands its .sha256/.asc.
+# Nothing verifies the script against its own signature at runtime - every
+# verify_sha256/verify_gpg inside it checks a DOWNLOADED artifact - so a
+# mid-cycle pin ships a package whose bundled .sha256 describes the previous
+# script. Wrong metadata, not a failed check.
 #
 # Stated precisely, since the first version of this comment overstated it:
 # nothing verifies the script against its own bundled signature at runtime. The
@@ -17,7 +21,7 @@ pkgrel=97
 # would not fail a check on an installed machine. What it would ship is a
 # package whose bundled shani-deploy.sh.sha256 does not describe the bundled
 # shani-deploy - wrong metadata, in a file whose whole job is to describe it.
-_commit='482d1bb00a7fcd30f65a5326581322781731bc31'   # Replace with the specific commit hash
+_commit='8232355fa3c7be35a7664a84ddee923d9bbcde2c'   # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')
@@ -38,6 +42,10 @@ depends=(
     'duperemove'
     'compsize'
     'bees'
+    # chattr -i is required to unlink LoaderEntry* EFI variables: efivarfs
+    # nodes are S_IMMUTABLE unless allowlisted (ed8b0de), and rm alone returns
+    # EPERM. Without this the deploy's clearing is a guaranteed no-op.
+    'e2fsprogs'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 # A git+ source pinned to a commit: makepkg ignores checksums for VCS
