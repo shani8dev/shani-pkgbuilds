@@ -2,7 +2,7 @@
 
 pkgname=shani-settings
 pkgver=0.0.5
-pkgrel=54
+pkgrel=55
 arch=('any')
 url="https://github.com/shani8dev/$pkgname"
 license=('GPL-3.0-only')
