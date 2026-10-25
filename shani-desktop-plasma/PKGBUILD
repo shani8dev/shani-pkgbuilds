@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=38
+pkgrel=39
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-plasma"
@@ -40,7 +40,11 @@ depends=(
     xdg-desktop-portal-kde
     flatpak-kcm
     plymouth-kcm
-    colord-kde
+    # colord-kde removed from Arch [extra] with KDE Gear 26.08 (user removal
+    # confirmed: absent from package search; still listed upstream only for
+    # older versions). Keeping it makes pacstrap abort the whole transaction
+    # with "unable to satisfy dependency" — tracked by the 2026-10-23 CI
+    # failure of Build Image and Upload (plasma image).
     kdf
     krfb
     kdeconnect
