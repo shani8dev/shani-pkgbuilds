@@ -1,0 +1,13 @@
+#%PAM-1.0
+# greetd's sign-in for the niri desktop (/etc/greetd/shani-niri.toml names this
+# service): greetd's own stack, plus GNOME Keyring — unlocked with the login
+# password (and created at the first login), so apps never ask for it again.
+auth       required     pam_securetty.so
+auth       requisite    pam_nologin.so
+auth       include      system-local-login
+auth       optional     pam_gnome_keyring.so
+account    include      system-local-login
+password   include      system-local-login
+password   optional     pam_gnome_keyring.so use_authtok
+session    include      system-local-login
+session    optional     pam_gnome_keyring.so auto_start

@@ -1,0 +1,13 @@
+# greetd config for the niri desktop. greetd's own /etc/greetd/config.toml
+# belongs to the greetd package, so this one is selected by the drop-in
+# /usr/lib/systemd/system/greetd.service.d/10-shani-niri.conf.
+[terminal]
+vt = 1
+
+[general]
+# /etc/pam.d/shani-greetd: greetd's stack plus the keyring unlock
+service = "shani-greetd"
+
+[default_session]
+command = "niri -c /etc/greetd/shani-niri-greeter.kdl"
+user = "greeter"

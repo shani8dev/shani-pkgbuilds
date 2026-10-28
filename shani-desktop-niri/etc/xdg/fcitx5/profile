@@ -1,0 +1,18 @@
+# Default input methods for a new user: English, then Hindi phonetic
+# ("namaste" -> नमस्ते, m17n itrans). Switch with the bar's input chip or
+# Ctrl+Space; add Marathi, Inscript, … in fcitx5-configtool (per-user).
+[Groups/0]
+Name=Default
+Default Layout=us
+DefaultIM=keyboard-us
+
+[Groups/0/Items/0]
+Name=keyboard-us
+Layout=
+
+[Groups/0/Items/1]
+Name=m17n_hi_itrans
+Layout=
+
+[GroupOrder]
+0=Default

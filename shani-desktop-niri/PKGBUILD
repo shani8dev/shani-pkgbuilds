@@ -1,0 +1,85 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+pkgname=shani-desktop-niri
+pkgver=1.0
+pkgrel=1
+pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
+arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
+license=('GPL-3.0-only')
+depends=(
+	# --- compositor + shell ---
+	niri
+	# bar, launcher, notifications, Chronoa panel and the greetd greeter;
+	# niri.service's drop-in starts it (usr/lib/systemd/user/niri.service.d)
+	shani-shell
+	xwayland-satellite
+	# --- login: greetd runs a bare niri hosting shani-shell's Quickshell greeter ---
+	greetd
+	# --- portals: niri-portals.conf asks for gnome first, gtk as fallback ---
+	xdg-desktop-portal-gnome
+	xdg-desktop-portal-gtk
+	gnome-keyring
+	# --- keybinds in etc/niri/config.kdl ---
+	foot
+	wireplumber
+	brightnessctl
+	xdg-user-dirs
+	xdg-utils
+	# --- clipboard: history (spawned by the niri config) and persistence ---
+	wl-clipboard
+	cliphist
+	wl-clip-persist
+	# --- input methods: Devanagari and other scripts (etc/xdg/fcitx5/profile:
+	#     English + Hindi phonetic by default); niri speaks input-method-v2 ---
+	fcitx5
+	fcitx5-m17n
+	fcitx5-gtk
+	fcitx5-qt
+	fcitx5-configtool
+	# --- the shell's tiles and Lens; optional in shani-shell, standard here ---
+	networkmanager
+	bluez
+	bluez-utils
+	sound-theme-freedesktop
+	noise-suppression-for-voice
+	# the Cast tile (carried here from the AUR)
+	gnome-network-displays
+	# the camera: libcamera's cam/qcam for stills and the viewfinder, PipeWire
+	# (its libcamera plugin + GStreamer's pipewiresrc) for video
+	libcamera-tools
+	pipewire-libcamera
+	gst-plugin-pipewire
+	gst-plugins-good
+	gst-plugins-base
+	upower
+	power-profiles-daemon
+	polkit
+	gsettings-desktop-schemas
+	wf-recorder
+	wlsunset
+	grim
+	slurp
+	tesseract
+	tesseract-data-eng
+	zbar
+	udisks2
+	unicode-emoji
+	wl-mirror
+	# launcher: fast file and content search, PDF previews
+	fd
+	ripgrep
+	poppler
+	# annotate a screenshot from its notification
+	satty
+	# accessibility: the screen reader
+	orca
+)
+install="$pkgname.install"
+source=()
+md5sums=()
+
+package() {
+    # Copy local etc and usr directories
+    cp -r "$startdir/etc" "$pkgdir/"
+    cp -r "$startdir/usr" "$pkgdir/"
+}

@@ -1,0 +1,6 @@
+post_install() {
+    # Not enabled globally: the shell would also start inside Plasma/GNOME
+    # sessions and own the Chronoa mascot names there. It is opt-in per user.
+    echo ":: enable the shell in a niri session with:"
+    echo "   systemctl --user enable --now shani-shell.service"
+}

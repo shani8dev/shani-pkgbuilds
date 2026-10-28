@@ -1,0 +1,23 @@
+// shani-shell's administrator actions (Settings > Users, Settings > Power),
+// one program run through pkexec: /usr/lib/shani-shell/shani-admin.py <command>.
+// The tiers follow shani-settings' 99-shani.rules:
+//   user-*      creating, removing, promoting accounts, other people's
+//               passwords — an administrator's credential (AUTH_ADMIN), as for
+//               org.freedesktop.accounts.user-administration
+//   autologin,  a drop-in each, undone by deleting it — the person's own
+//   power-keys, password (AUTH_SELF), as for shani-cassini-save
+//   battery-limit
+// Wheel members in an active local session only; anyone else gets polkit's
+// default for pkexec (an administrator's password).
+polkit.addRule(function (action, subject) {
+    if (action.id != "org.freedesktop.policykit.exec" ||
+        action.lookup("program") != "/usr/lib/shani-shell/shani-admin.py" ||
+        !subject.active || !subject.local || !subject.isInGroup("wheel")) {
+        return polkit.Result.NOT_HANDLED;
+    }
+    var cmd = action.lookup("command_line") || "";
+    if (/ (autologin|power-keys|battery-limit)$/.test(cmd)) {
+        return polkit.Result.AUTH_SELF_KEEP;
+    }
+    return polkit.Result.AUTH_ADMIN;
+});

@@ -1,0 +1,193 @@
+// ShaniOS niri session — system default (niri falls back to /etc/niri/config.kdl
+// when ~/.config/niri/config.kdl does not exist; a user copy replaces this whole file).
+// The bar, launcher, notifications and Chronoa panel are shani-shell, started by
+// niri.service's drop-in (Wants=shani-shell.service), not spawned from here.
+prefer-no-csd
+
+// the shell owns the screen corners (Settings > Hot corners); niri's own
+// top-left corner would open the overview a second time and close it again
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+input {
+    keyboard {
+        // no layout named: niri asks systemd-localed — the system keymap (localectl set-x11-keymap) unless the person chose layouts in
+        // the shell (the include below)
+        numlock
+    }
+    // niri's own touchpad gestures stay on: three fingers left/right move
+    // between columns, up/down between workspaces; four fingers open the overview
+    // tap, typing guard, natural scroll, speeds and key repeat are the shell's
+    // Settings > Keyboard & input, in the include below — a flag set here could
+    // not be turned off there
+    touchpad {
+        click-method "clickfinger"
+        scroll-factor 0.8
+    }
+    // focus-follows-mouse is the shell's (Settings > Windows): a flag here could not be turned off
+}
+// written by shani-shell (Settings > Keyboard & input); niri reloads it on change
+include optional=true "~/.config/niri/shani-input.kdl"
+
+layout {
+    gaps 12
+    center-focused-column "never"
+    background-color "#0b0d12"
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+    focus-ring {
+        width 2
+        active-color "#7fd1c1"
+        inactive-color "#2a3140"
+    }
+    border {
+        off
+    }
+}
+
+// The shell requests blur itself over ext-background-effect-v1 (measured in
+// shani-shell FINDINGS.md); this block only tunes how strong it is.
+blur {
+    passes 3
+    offset 3
+}
+
+// the wallpaper is drawn by shani-shell (settings: wallpaper), not swaybg
+// input methods: fcitx5 talks input-method-v2 / text-input-v3 to niri; the
+// variables are for X11 (XWayland) and Qt 5 apps, which still need a module
+spawn-at-startup "fcitx5" "-d" "--replace"
+environment {
+    XMODIFIERS "@im=fcitx"
+    QT_IM_MODULE "fcitx"
+}
+
+// clipboard history for the launcher's "c" mode, and a clipboard that
+// survives the app it was copied from closing
+spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    Mod+Space hotkey-overlay-title="Launcher" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
+    Mod+A hotkey-overlay-title="Chronoa" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleChronoa"; }
+    Mod+S hotkey-overlay-title="Lens: read or ask about part of the screen" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lens"; }
+    // accessibility: select to speak, the magnifier, live captions
+    Mod+Alt+S hotkey-overlay-title="Read the selected text aloud" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "readAloud"; }
+    Mod+Alt+Z hotkey-overlay-title="Magnifier" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "magnifier"; }
+    Mod+Alt+C hotkey-overlay-title="Live captions" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "captions"; }
+    // the shell holds the keyboard while the switcher is open, so it sees Alt's release
+    Alt+Tab hotkey-overlay-title="Switch windows" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcher"; }
+    Alt+Shift+Tab { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcherBack"; }
+    Mod+X hotkey-overlay-title="Ring (pie menu)" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "ring"; }
+    Mod+Comma hotkey-overlay-title="Sidebar" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleControlCenter"; }
+    Mod+N hotkey-overlay-title="Notifications" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleNotifications"; }
+    Mod+Shift+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
+    Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
+    Mod+Return hotkey-overlay-title="Terminal" { spawn "foot"; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05+" "-l" "1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    // media keys: the shell picks the player that is playing (MPRIS)
+    XF86AudioPlay  allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "media" "play-pause"; }
+    XF86AudioPause allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "media" "play-pause"; }
+    XF86AudioNext  allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "media" "next"; }
+    XF86AudioPrev  allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "media" "previous"; }
+    XF86AudioStop  allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "media" "stop"; }
+    // through the shell, so its OSD shows the new level
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "brightnessUp"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "brightnessDown"; }
+
+    Mod+O repeat=false { toggle-overview; }
+    Mod+Q repeat=false { close-window; }
+
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
+
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    // touchpad: three fingers move between columns (left/right) and workspaces
+    // (up/down), four fingers up open the overview — niri's own, no config.
+    // With Mod held, two-finger scroll (and the mouse wheel) does the same,
+    // one step per flick.
+    Mod+TouchpadScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+TouchpadScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+TouchpadScrollRight cooldown-ms=150 { focus-column-right; }
+    Mod+TouchpadScrollLeft  cooldown-ms=150 { focus-column-left; }
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown { focus-column-right; }
+    Mod+Shift+WheelScrollUp   { focus-column-left; }
+
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+C { center-column; }
+    Mod+V { toggle-window-floating; }
+    Mod+W { toggle-column-tabbed-display; }
+
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Shift+E { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P { power-off-monitors; }
+}

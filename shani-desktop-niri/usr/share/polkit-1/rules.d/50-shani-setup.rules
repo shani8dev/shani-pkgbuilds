@@ -1,0 +1,12 @@
+// First-boot setup (shani-shell's shani-setup) runs as the `greeter` user and
+// needs one privileged step: creating the first account. The greeter may run
+// exactly that program through pkexec, without a password — and the program
+// refuses as soon as any account exists, so this grants nothing on a machine
+// that has been set up.
+polkit.addRule(function (action, subject) {
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        action.lookup("program") == "/usr/lib/shani-shell/first-account.py" &&
+        subject.user == "greeter") {
+        return polkit.Result.YES;
+    }
+});

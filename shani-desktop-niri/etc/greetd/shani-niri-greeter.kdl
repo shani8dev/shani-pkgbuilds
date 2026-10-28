@@ -1,0 +1,37 @@
+// The compositor the login screen runs in: a bare niri, started by greetd as the
+// `greeter` user. It hosts the Quickshell greeter and exits with it, so greetd
+// can start the chosen session on the same VT.
+hotkey-overlay {
+    skip-at-startup
+}
+
+input {
+    keyboard {
+        // no layout named: niri asks systemd-localed — the system keymap (localectl set-x11-keymap; the shell's "Use for the login
+        // screen too"), US when none is set
+        numlock
+    }
+    touchpad {
+        tap
+    }
+}
+
+layout {
+    background-color "#0b0d12"
+}
+
+animations {
+    off
+}
+
+// No account yet (a new machine — ShaniOS installs none — or one just factory
+// reset): first-boot setup instead of the login screen. An account is UID
+// 1000-59999 with a login shell, as first-account.py counts them.
+// `qs` returns once Greetd.launch(..., quit=true) is accepted (or it crashes);
+// either way niri must go, or greetd waits on it forever. Each runs on a
+// session bus of its own: the screen reader (Orca, AT-SPI) needs one.
+spawn-at-startup "sh" "-c" "if getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 && $7 !~ /(nologin|false)$/ { found = 1 } END { exit found }'; then dbus-run-session -- qs -c shani-setup; else dbus-run-session -- qs -c shani-greeter; fi; niri msg action quit --skip-confirmation"
+
+// No session keybinds here — only the greeter's own input reaches anything.
+binds {
+}

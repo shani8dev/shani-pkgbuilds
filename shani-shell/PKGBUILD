@@ -1,0 +1,124 @@
+# shani-shell PKGBUILD
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+
+pkgname=shani-shell
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
+arch=('any')
+url="https://github.com/shani8dev/shani-shell"
+license=('GPL-3.0-only')
+depends=(
+    'quickshell'
+    'python'
+    'python-gobject'
+    'glib2'
+    # every icon is an Adwaita symbolic icon, recoloured (shell.qml's IconTheme pragma)
+    'adwaita-icon-theme'
+    'inter-font'
+    'noto-fonts'
+    'ttf-dejavu'
+    # Chronoa/Lens/recorder notices
+    'libnotify'
+    # the screen keyboard types through the virtual-keyboard protocol, and
+    # takes its layouts from xkb (libxkbcommon via ctypes, xkeyboard-config)
+    'wtype'
+    'libxkbcommon'
+    'xkeyboard-config'
+    # voice typing records with pw-record
+    'pipewire'
+)
+optdepends=(
+    # the Island and the conversation panel are clients of dev.shani.chronoa.Agent
+    'shani-chronoa: the assistant behind the Island, the panel and Lens; its speech model for voice typing'
+    # blur needs ext-background-effect-v1 or a layer-rule; niri has both
+    'niri: the compositor the shell is built and tested on'
+    'networkmanager: Wi-Fi, hotspot and VPN tiles'
+    'bluez: the Bluetooth tile and device list'
+    'upower: battery in the bar and on the lock screen'
+    'power-profiles-daemon: the power mode tile'
+    'brightnessctl: the brightness slider and the flashlight tile'
+    'wf-recorder: the screen record tile'
+    'ffmpeg: the call record tile (mic and speakers into one file)'
+    'speech-dispatcher: read aloud (select to speak); espeak-ng is used without it'
+    'espeak-ng: read aloud when speech-dispatcher is not installed'
+    'gnome-network-displays: the cast tile (Miracast, Chromecast; built in shani-pkgbuilds)'
+    'wlsunset: the night light tile'
+    'iio-sensor-proxy: the auto-rotate tile (only shown with an accelerometer)'
+    'cliphist: clipboard history (launcher "c", the clipboard tile)'
+    'wl-clipboard: copying from clipboard history and the color picker'
+    'grim: Lens and screenshots'
+    'slurp: selecting a region for Lens'
+    'tesseract: Lens reads text (add tesseract-data-<lang> for each language)'
+    'tesseract-data-eng: English for Lens'
+    'zbar: Lens decodes QR codes and barcodes'
+    'gsettings-desktop-schemas: the dark style tile'
+    'polkit: the authentication agent'
+    'udisks2: removable drives in the sidebar (mount, eject)'
+    'unicode-emoji: emoji in the launcher (":")'
+    'fcitx5: input methods (Devanagari phonetic and more) shown in the bar'
+    'wl-mirror: mirroring a screen from the Display tile'
+    'shani-deploy: update status in the sidebar'
+    'whisper-cpp: voice typing on the screen keyboard without Chronoa (with a ggml model)'
+    'fd: faster file search in the launcher'
+    'ripgrep: faster search inside files (without localsearch)'
+    'localsearch: search inside files through the desktop index'
+    'poppler: PDF previews in the launcher (pdftoppm)'
+    'kdeconnect: the phone tile (battery, ring, send files and clipboard)'
+    'satty: annotate a screenshot from its notification'
+    'shani-backup: the backup tile (schedule, back up now)'
+    'orca: the screen reader (Accessibility tile); every shell control is labelled for it'
+)
+makedepends=('git')
+install=$pkgname.install
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=fd6573ece2af2cff0c049876e61b811e989dc1e9")
+# git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+
+    # `qs -c shani` searches every XDG config dir, so /etc/xdg is the system
+    # copy and ~/.config/quickshell/shani still overrides it per user.
+    install -d "$pkgdir/etc/xdg/quickshell"
+    cp -r shani "$pkgdir/etc/xdg/quickshell/shani"
+    # the greetd greeter is a second config (`qs -c shani-greeter`); its Common/
+    # is a symlink to the shell's in the repo, copied in here so the greeter
+    # does not depend on the shell's directory layout
+    cp -rL greeter "$pkgdir/etc/xdg/quickshell/shani-greeter"
+    # first-boot setup (`qs -c shani-setup`), run by the greeter niri while the
+    # machine has no account; same Common/ copy as the greeter
+    cp -rL setup "$pkgdir/etc/xdg/quickshell/shani-setup"
+    find "$pkgdir/etc/xdg/quickshell" -type d -exec chmod 755 {} +
+    find "$pkgdir/etc/xdg/quickshell" -type f -exec chmod 644 {} +
+
+    # the lock screen's PAM stack (Modules/Lock/LockScreen.qml: config "shani-lock")
+    install -Dm644 data/pam.d/shani-lock "$pkgdir/etc/pam.d/shani-lock"
+    install -Dm644 assets/wallpaper.png "$pkgdir/usr/share/backgrounds/shani/shani-shell.png"
+
+    # The bridge imports its modules from its own directory.
+    install -Dm644 -t "$pkgdir/usr/lib/$pkgname" \
+        bridge/chronoa-bridge.py bridge/agent_contract.py bridge/turn_filter.py bridge/logind.py
+    # the screen keyboard's layouts, generated from xkb on demand
+    install -Dm755 bridge/osk-layout.py "$pkgdir/usr/lib/$pkgname/osk-layout.py"
+    # voice typing: transcribe one recording with Chronoa's speech engine
+    install -Dm755 bridge/dictate.py "$pkgdir/usr/lib/$pkgname/dictate.py"
+    # apps' own search results in the launcher (GNOME SearchProvider2)
+    install -Dm755 bridge/search-providers.py "$pkgdir/usr/lib/$pkgname/search-providers.py"
+    # the default Bluetooth pairing agent (niri has none of its own)
+    install -Dm755 bridge/bt-agent.py "$pkgdir/usr/lib/$pkgname/bt-agent.py"
+    # files received over Bluetooth (obexd's agent)
+    install -Dm755 bridge/obex-agent.py "$pkgdir/usr/lib/$pkgname/obex-agent.py"
+    # first-boot setup's one privileged step (pkexec; polkit rule in shani-desktop-niri)
+    install -Dm755 bridge/first-account.py "$pkgdir/usr/lib/$pkgname/first-account.py"
+    # Settings > Users and > Power: accounts, automatic login, lid/power button
+    # (pkexec; polkit rule 50-shani-admin.rules in shani-desktop-niri)
+    install -Dm755 bridge/shani-admin.py "$pkgdir/usr/lib/$pkgname/shani-admin.py"
+    install -Dm755 /dev/stdin "$pkgdir/usr/bin/shani-chronoa-bridge" <<SH
+#!/bin/sh
+exec /usr/bin/python3 /usr/lib/$pkgname/chronoa-bridge.py "\$@"
+SH
+
+    install -Dm644 -t "$pkgdir/usr/lib/systemd/user" \
+        data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service
+}

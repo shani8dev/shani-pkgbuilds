@@ -1,0 +1,13 @@
+post_install() {
+    post_upgrade
+}
+
+post_upgrade() {
+    # greetd aliases itself to display-manager.service, so this is the login screen
+    systemctl enable greetd.service
+}
+
+pre_remove() {
+    # `|| true`: it may already be disabled, or replaced by another desktop's DM
+    systemctl disable greetd.service || true
+}
