@@ -34,6 +34,8 @@ input {
 }
 // written by shani-shell (Settings > Keyboard & input); niri reloads it on change
 include optional=true "~/.config/niri/shani-input.kdl"
+// written by shani-shell (Settings > Windows > per-app rules); niri reloads it on change
+include optional=true "~/.config/niri/shani-windows.kdl"
 
 layout {
     gaps 12
@@ -93,6 +95,30 @@ window-rule {
     clip-to-geometry true
 }
 
+// see-through apps (the terminals: foot ships at alpha 0.94) get the blur the
+// shell's own surfaces have; an opaque window would only pay for it
+window-rule {
+    match app-id="^(foot|footclient|kitty|Alacritty|com\\.mitchellh\\.ghostty|org\\.wezfurlong\\.wezterm)$"
+    background-effect {
+        blur true
+    }
+}
+
+// the wallpaper stays behind the overview's workspaces (zooming out keeps it,
+// as GNOME's does) instead of a flat grey backdrop
+layer-rule {
+    match namespace="^shani-backdrop$"
+    place-within-backdrop true
+}
+
+// the shell's Settings window: floating and centred, like a dialog-sized app
+window-rule {
+    match app-id="^org\\.quickshell$" title="^Settings$"
+    open-floating true
+    default-column-width { fixed 1040; }
+    default-window-height { fixed 760; }
+}
+
 // Picture-in-Picture (Firefox, Chromium/Vivaldi): a small floating video in the
 // bottom-right corner, above the tiled windows — not a column of its own
 window-rule {
@@ -116,6 +142,9 @@ binds {
     Mod+Alt+S hotkey-overlay-title="Read the selected text aloud" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "readAloud"; }
     Mod+Alt+Z hotkey-overlay-title="Magnifier" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "magnifier"; }
     Mod+Alt+D hotkey-overlay-title="Draw on the screen" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "annotate"; }
+    // familiar from Windows and macOS: minimise (to the dock) and show the desktop
+    Mod+M hotkey-overlay-title="Minimise" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "minimise"; }
+    Mod+D hotkey-overlay-title="Show the desktop" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "showDesktop"; }
     Mod+Alt+C hotkey-overlay-title="Live captions" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "captions"; }
     // the shell holds the keyboard while the switcher is open, so it sees Alt's release
     Alt+Tab hotkey-overlay-title="Switch windows" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcher"; }
