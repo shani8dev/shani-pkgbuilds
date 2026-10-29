@@ -93,15 +93,29 @@ window-rule {
     clip-to-geometry true
 }
 
+// Picture-in-Picture (Firefox, Chromium/Vivaldi): a small floating video in the
+// bottom-right corner, above the tiled windows — not a column of its own
+window-rule {
+    match title="^Picture-in-Picture$"
+    match title="^Picture in picture$"
+    open-floating true
+    default-column-width { fixed 480; }
+    default-window-height { fixed 270; }
+    default-floating-position x=24 y=24 relative-to="bottom-right"
+}
+
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     Mod+Space hotkey-overlay-title="Launcher" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
     Mod+A hotkey-overlay-title="Chronoa" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleChronoa"; }
     Mod+S hotkey-overlay-title="Lens: read or ask about part of the screen" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lens"; }
+    // emoji, as Win+. and Ctrl+Cmd+Space do: the launcher's ":" search
+    Mod+Period hotkey-overlay-title="Emoji" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" ":"; }
     // accessibility: select to speak, the magnifier, live captions
     Mod+Alt+S hotkey-overlay-title="Read the selected text aloud" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "readAloud"; }
     Mod+Alt+Z hotkey-overlay-title="Magnifier" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "magnifier"; }
+    Mod+Alt+D hotkey-overlay-title="Draw on the screen" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "annotate"; }
     Mod+Alt+C hotkey-overlay-title="Live captions" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "captions"; }
     // the shell holds the keyboard while the switcher is open, so it sees Alt's release
     Alt+Tab hotkey-overlay-title="Switch windows" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcher"; }

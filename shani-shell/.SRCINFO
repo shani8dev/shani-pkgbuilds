@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -57,7 +57,7 @@ pkgbase = shani-shell
 	optdepends = satty: annotate a screenshot from its notification
 	optdepends = shani-backup: the backup tile (schedule, back up now)
 	optdepends = orca: the screen reader (Accessibility tile); every shell control is labelled for it
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=4938e330c7f3d88895bab9283270aa57004f606a
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=f1f8bdc92d031b46fbc3ded375cd159e378846d9
 	sha256sums = SKIP
 
 pkgname = shani-shell
