@@ -29,21 +29,54 @@ depends=(
 	wl-clipboard
 	cliphist
 	wl-clip-persist
-	# --- input methods: Devanagari and other scripts (etc/xdg/fcitx5/profile:
-	#     English + Hindi phonetic by default); niri speaks input-method-v2 ---
-	fcitx5
-	fcitx5-m17n
-	fcitx5-gtk
-	fcitx5-qt
-	fcitx5-configtool
+	# --- input methods: fcitx5, the one IBus alternative that speaks niri's
+	#     input-method-v2 (etc/xdg/fcitx5/profile: English + Hindi phonetic) ---
+	shani-input-fcitx5
+	# --- the apps and services GNOME's metapackage brings natively, which the
+	#     niri desktop otherwise lacks (the rest are Flatpaks, flatpak-packages.txt) ---
+	# files: the manager (also the portal's file chooser), quick preview,
+	# trash/phones/shares/cameras (gvfs), archives, disks, disk usage, thumbnails
+	nautilus
+	sushi
+	gvfs
+	gvfs-mtp
+	gvfs-smb
+	gvfs-gphoto2
+	gvfs-afc
+	gvfs-nfs
+	gvfs-wsdd
+	gvfs-dnssd
+	file-roller
+	gnome-disk-utility
+	baobab
+	ffmpegthumbnailer
+	gst-thumbnailers
+	webp-pixbuf-loader
+	# software and firmware updates for apps (Flatpak) and devices (fwupd)
+	gnome-software
+	gnome-firmware
+	# the shell's "Advanced connection settings", printers, GPU switching
+	nm-connection-editor
+	system-config-printer
+	switcheroo-control
+	xdg-user-dirs-gtk
+	# calendars Chronoa reads (eds_calendar), spelling, high-contrast themes
+	evolution-data-server
+	hunspell-en_us
+	gnome-themes-extra
 	# --- the shell's tiles and Lens; optional in shani-shell, standard here ---
 	networkmanager
 	bluez
 	bluez-utils
+	# user pictures the login screen can read (Settings > Your account sets them)
+	accountsservice
 	sound-theme-freedesktop
 	noise-suppression-for-voice
-	# the Cast tile (carried here from the AUR)
-	gnome-network-displays
+	# the look: GTK 3 apps like GTK 4 ones, Papirus icons, the fonts
+	adw-gtk-theme
+	papirus-icon-theme
+	ttf-jetbrains-mono
+	inter-font
 	# the camera: libcamera's cam/qcam for stills and the viewfinder, PipeWire
 	# (its libcamera plugin + GStreamer's pipewiresrc) for video
 	libcamera-tools

@@ -1,0 +1,32 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+# The input methods of the niri image: fcitx5, which speaks Wayland's
+# input-method-v2 (niri's), with the engines shani-input-ibus has for IBus —
+# and Indic (m17n: Devanagari for Marathi and Hindi, Tamil, Bengali …).
+pkgname=shani-input-fcitx5
+pkgver=1.0
+pkgrel=1
+pkgdesc="Input methods for Shani OS's niri desktop: fcitx5 with Indic, Chinese, Japanese, Korean and Vietnamese engines"
+arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-input-fcitx5"
+depends=(
+	fcitx5
+	fcitx5-gtk
+	fcitx5-qt
+	fcitx5-configtool
+	# the engines: shani-input-ibus's, one for one, plus Indic and tables
+	fcitx5-m17n
+	fcitx5-chinese-addons
+	fcitx5-mozc
+	fcitx5-anthy
+	fcitx5-hangul
+	fcitx5-unikey
+	fcitx5-table-extra
+	fcitx5-table-other
+)
+license=('GPL-3.0-only')
+source=('50-shani-fcitx5.conf')
+sha256sums=('1209265aeeb16ba96a0a88e275e7109b067cf707a79c0bb2bed43f3294c1430a')
+
+package() {
+	install -Dm644 "$srcdir/50-shani-fcitx5.conf" "$pkgdir/usr/lib/environment.d/50-shani-fcitx5.conf"
+}

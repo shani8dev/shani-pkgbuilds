@@ -42,7 +42,7 @@ optdepends=(
     'ffmpeg: the call record tile (mic and speakers into one file)'
     'speech-dispatcher: read aloud (select to speak); espeak-ng is used without it'
     'espeak-ng: read aloud when speech-dispatcher is not installed'
-    'gnome-network-displays: the cast tile (Miracast, Chromecast; built in shani-pkgbuilds)'
+    'gnome-network-displays: the cast tile, if the Flatpak org.gnome.NetworkDisplays is not installed'
     'wlsunset: the night light tile'
     'iio-sensor-proxy: the auto-rotate tile (only shown with an accelerometer)'
     'cliphist: clipboard history (launcher "c", the clipboard tile)'
@@ -71,7 +71,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=fd6573ece2af2cff0c049876e61b811e989dc1e9")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=4938e330c7f3d88895bab9283270aa57004f606a")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -94,7 +94,9 @@ package() {
 
     # the lock screen's PAM stack (Modules/Lock/LockScreen.qml: config "shani-lock")
     install -Dm644 data/pam.d/shani-lock "$pkgdir/etc/pam.d/shani-lock"
-    install -Dm644 assets/wallpaper.png "$pkgdir/usr/share/backgrounds/shani/shani-shell.png"
+    # the default pair, one for each style (assets/make-wallpapers.py renders them)
+    install -Dm644 assets/shani-dark.jpg "$pkgdir/usr/share/backgrounds/shani/shani-dark.jpg"
+    install -Dm644 assets/shani-light.jpg "$pkgdir/usr/share/backgrounds/shani/shani-light.jpg"
 
     # The bridge imports its modules from its own directory.
     install -Dm644 -t "$pkgdir/usr/lib/$pkgname" \

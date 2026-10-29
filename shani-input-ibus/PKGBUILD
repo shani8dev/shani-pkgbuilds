@@ -1,0 +1,20 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+# The input methods of the GNOME, Plasma and COSMIC images (split out of
+# shani-accessibility, which carried them until 1.2): IBus and its engines.
+# The niri image uses shani-input-fcitx5 instead — IBus speaks only Wayland's
+# input-method-v1, which niri does not implement.
+pkgname=shani-input-ibus
+pkgver=1.0
+pkgrel=1
+pkgdesc="Input methods for Shani OS: IBus with Chinese, Japanese, Korean, Vietnamese and typing-booster engines"
+arch=('any')
+url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-input-ibus"
+depends=(
+	ibus
+	ibus-typing-booster
+	ibus-libpinyin
+	ibus-anthy
+	ibus-hangul
+	ibus-unikey
+)
+license=('GPL-3.0-only')

@@ -31,7 +31,7 @@ pkgbase = shani-shell
 	optdepends = ffmpeg: the call record tile (mic and speakers into one file)
 	optdepends = speech-dispatcher: read aloud (select to speak); espeak-ng is used without it
 	optdepends = espeak-ng: read aloud when speech-dispatcher is not installed
-	optdepends = gnome-network-displays: the cast tile (Miracast, Chromecast; built in shani-pkgbuilds)
+	optdepends = gnome-network-displays: the cast tile, if the Flatpak org.gnome.NetworkDisplays is not installed
 	optdepends = wlsunset: the night light tile
 	optdepends = iio-sensor-proxy: the auto-rotate tile (only shown with an accelerometer)
 	optdepends = cliphist: clipboard history (launcher "c", the clipboard tile)
@@ -57,7 +57,7 @@ pkgbase = shani-shell
 	optdepends = satty: annotate a screenshot from its notification
 	optdepends = shani-backup: the backup tile (schedule, back up now)
 	optdepends = orca: the screen reader (Accessibility tile); every shell control is labelled for it
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=fd6573ece2af2cff0c049876e61b811e989dc1e9
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=4938e330c7f3d88895bab9283270aa57004f606a
 	sha256sums = SKIP
 
 pkgname = shani-shell

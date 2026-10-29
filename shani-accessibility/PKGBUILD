@@ -1,19 +1,15 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-accessibility
-pkgver=1.2
-pkgrel=3
-pkgdesc="Accessibility tools for Shani OS, including IBus for input methods"
+pkgver=1.3
+pkgrel=1
+pkgdesc="Accessibility tools for Shani OS: the Orca screen reader, console speech and braille"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-accessibility"
 depends=(
     orca
     espeakup
     brltty
-	ibus
-	ibus-typing-booster
-	ibus-libpinyin
-	ibus-anthy
-	ibus-hangul
-	ibus-unikey
 )
+# Input methods were here until 1.2; they are a choice of the desktop, not of
+# accessibility: shani-input-ibus (GNOME, Plasma, COSMIC) and shani-input-fcitx5 (niri).
 license=('GPL-3.0-only')
