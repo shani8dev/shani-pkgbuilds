@@ -3,14 +3,16 @@
 
 pkgname=shani-backup
 pkgver=0.0.1
-pkgrel=6
+pkgrel=7
 pkgdesc="Backup utility for Shanios with Btrfs snapshots and restic"
 arch=('x86_64')
 url="https://github.com/shani8dev/shani-backup"
 license=('GPL-3.0-only')
 depends=(
     'btrfs-progs'
+    'acl'            # setfacl: each home's snapshot folder opened to its owner only
     'restic'
+    'libsecret'      # secret-tool: the backup password lives in the keyring
     'gtk4'
     'libadwaita'
     'python3'
@@ -20,7 +22,7 @@ makedepends=('git')
 backup=()
 options=()
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-backup.git#commit=bc068ba6857550c990d3b4e6363fb125263c7aed")
+source=("git+https://github.com/shani8dev/shani-backup.git#commit=08a9eeec53025557a041a51787e687f3cc55c36c")
 sha256sums=('SKIP')
 
 package() {
@@ -51,6 +53,20 @@ EOF
     # Install the desktop entry
     install -Dm644 "$srcdir/$pkgname/data/shani-backup.desktop" \
         "$pkgdir/usr/share/applications/$pkgname.desktop"
+
+    # Daily snapshots of the homes (shani-backup home daily), enabled on first
+    # install by the .install
+    install -Dm644 "$srcdir/$pkgname/data/shani-backup-home.service" \
+        "$pkgdir/usr/lib/systemd/system/shani-backup-home.service"
+    install -Dm644 "$srcdir/$pkgname/data/shani-backup-home.timer" \
+        "$pkgdir/usr/lib/systemd/system/shani-backup-home.timer"
+
+    # The daily backup to another drive: a user timer, so it runs as the person
+    # with their keyring (Backups > Schedule turns it on)
+    install -Dm644 "$srcdir/$pkgname/data/shani-backup-restic.service" \
+        "$pkgdir/usr/lib/systemd/user/shani-backup-restic.service"
+    install -Dm644 "$srcdir/$pkgname/data/shani-backup-restic.timer" \
+        "$pkgdir/usr/lib/systemd/user/shani-backup-restic.timer"
 
     # Install the GSettings schema
     install -Dm644 "$srcdir/$pkgname/data/org.shani.backup.gschema.xml" \

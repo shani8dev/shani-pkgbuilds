@@ -1,13 +1,17 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 55
+	pkgrel = 59
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
 	makedepends = git
 	depends = python
+	depends = gtk4-layer-shell
+	depends = wl-clipboard
+	depends = xdg-utils
 	depends = python-gobject
+	depends = glib2
 	depends = gtk4
 	depends = libadwaita
 	depends = python-httpx
@@ -87,7 +91,10 @@ pkgbase = shani-chronoa
 	optdepends = avahi: discover_hosts - devices that announce themselves by name (avahi-browse)
 	optdepends = iproute2: check_internet and neighbour_table - the route and the ARP cache (ip neigh)
 	optdepends = fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=d077ede6996b26980466d1d79be878d6ca3b29c3
+	provides = gnome-shell-extension-shani-circle-to-search
+	conflicts = gnome-shell-extension-shani-circle-to-search
+	replaces = gnome-shell-extension-shani-circle-to-search
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=dbce6918b320c3e665c20d485d63dde3832c078e
 	sha256sums = SKIP
 
 pkgname = shani-chronoa

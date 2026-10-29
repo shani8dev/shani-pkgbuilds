@@ -1,14 +1,21 @@
 # shani-backup.install
 
-post_install() {
+_schemas() {
     # Compile GSettings schemas
     glib-compile-schemas /usr/share/glib-2.0/schemas/ >/dev/null 2>&1 || true
 }
 
+post_install() {
+    _schemas
+    # daily snapshots of the homes: on from the first install; an upgrade
+    # leaves the choice alone (systemctl disable shani-backup-home.timer)
+    systemctl enable shani-backup-home.timer >/dev/null 2>&1 || true
+}
+
 post_upgrade() {
-    post_install "$1"
+    _schemas
 }
 
 post_remove() {
-    post_install "$1"
+    _schemas
 }
