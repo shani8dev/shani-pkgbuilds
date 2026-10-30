@@ -5,6 +5,14 @@ post_install() {
 post_upgrade() {
     # greetd aliases itself to display-manager.service, so this is the login screen
     systemctl enable greetd.service
+
+    # foot's own package owns /etc/xdg/foot/foot.ini; we ship our themed
+    # default as a template to avoid that file conflict, and seed it here.
+    # A person's own ~/.config/foot/foot.ini still takes precedence (foot
+    # reads user config first), so this only sets the system default.
+    if [[ -f /usr/share/shani-desktop-niri/foot.ini ]]; then
+        install -Dm644 /usr/share/shani-desktop-niri/foot.ini /etc/xdg/foot/foot.ini
+    fi
 }
 
 pre_remove() {

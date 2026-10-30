@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -131,7 +131,11 @@ package() {
     # Settings > Users and > Power: accounts, automatic login, lid/power button
     # (pkexec; polkit rule 50-shani-admin.rules in shani-desktop-niri)
     install -Dm755 bridge/shani-admin.py "$pkgdir/usr/lib/$pkgname/shani-admin.py"
-    install -Dm755 /dev/stdin "$pkgdir/usr/bin/shani-chronoa-bridge" <<SH
+    # patch the service file to use the renamed launcher (avoids a file
+    # conflict with shani-chronoa, which also ships /usr/bin/shani-chronoa-bridge)
+    sed -i 's/shani-chronoa-bridge/shani-shell-chronoa-bridge/g' \
+        data/systemd/shani-chronoa-bridge.service
+    install -Dm755 /dev/stdin "$pkgdir/usr/bin/shani-shell-chronoa-bridge" <<SH
 #!/bin/sh
 exec /usr/bin/python3 /usr/lib/$pkgname/chronoa-bridge.py "\$@"
 SH
