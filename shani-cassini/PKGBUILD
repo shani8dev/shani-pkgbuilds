@@ -3,7 +3,7 @@
 
 pkgname=shani-cassini
 pkgver=0.1.0
-pkgrel=28
+pkgrel=29
 pkgdesc="Shani Cassini - keeps a Shanios system updated, healthy and recoverable"
 arch=('any')
 url="https://github.com/shani8dev/shani-cassini"
@@ -62,4 +62,7 @@ PY
     # the background agent (it replaced shani-update); enabled by the .install
     install -Dm644 data/systemd/shani-cassini-agent.service "$pkgdir/usr/lib/systemd/user/shani-cassini-agent.service"
     install -Dm644 data/systemd/shani-cassini-agent.timer "$pkgdir/usr/lib/systemd/user/shani-cassini-agent.timer"
+    # Self-check doctor: lists every external binary each page calls, marks
+    # present/missing, prints distro install commands for anything missing.
+    install -Dm755 tools/shani-cassini-doctor.py "$pkgdir/usr/bin/shani-cassini-doctor"
 }
