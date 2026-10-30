@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -139,6 +139,10 @@ package() {
 #!/bin/sh
 exec /usr/bin/python3 /usr/lib/$pkgname/chronoa-bridge.py "\$@"
 SH
+    # The self-check doctor: verifies all external tools shani-shell needs
+    # are installed, one per feature, with distro install commands for
+    # anything missing.
+    install -Dm755 bin/shani-doctor.py "$pkgdir/usr/bin/shani-doctor"
 
     install -Dm644 -t "$pkgdir/usr/lib/systemd/user" \
         data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service

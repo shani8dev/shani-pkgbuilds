@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=60
+pkgrel=61
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -295,6 +295,10 @@ package() {
     # The LAN phone bridge (KDE Connect -> gateway.Submit). A caller, not a door:
     # gateway.py is on the session bus and this process only ever calls it.
     install -Dm755 usr/bin/shani-chronoa-lan-bridge "$pkgdir/usr/bin/shani-chronoa-lan-bridge"
+    # The self-check doctor: verifies all external tools shani-chronoa needs are
+    # installed, one per feature, with distro install commands for anything
+    # missing.
+    install -Dm755 tools/shani-chronoa-doctor.py "$pkgdir/usr/bin/shani-chronoa-doctor"
     # The lab_network_* skills' privileged half: lab_network.py runs
     # `pkexec /usr/bin/shani-chronoa-lab-network` for the namespace/NAT work
     # and the polkit rule in shani-settings authorises exactly this path. A
