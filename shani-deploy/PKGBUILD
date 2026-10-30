@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=105
+pkgrel=106
 # NOT a5867ac, which is the config-validation commit. At a5867ac the bundled
 # scripts/shani-deploy.sh.sha256 is STALE: it records fbc1614f... while
 # shani-deploy.sh itself hashes to 202695f8..., because re-signing runs in CI
@@ -21,10 +21,14 @@ pkgrel=105
 # would not fail a check on an installed machine. What it would ship is a
 # package whose bundled shani-deploy.sh.sha256 does not describe the bundled
 # shani-deploy - wrong metadata, in a file whose whole job is to describe it.
-# The 2026-10-25 shani-health commits (87d64c7, 5ef0bff) did NOT touch
-# scripts/shani-deploy.sh, so no re-sign follow-up is pending and the pin can
-# carry them directly.
-_commit='5ef0bff21ba1153c9aef6ccbb3de192e03e3202d'   # Replace with the specific commit hash
+# The pin is one commit behind the newest script until the re-sign follow-up
+# lands: re-signing runs in CI (sign-deploy-script.yml) and lands as a
+# follow-up commit "chore: update shani-deploy.sh checksum and signature".
+# A mid-cycle pin would ship a package whose bundled .sha256 describes the
+# *previous* script - wrong metadata, not a failed check. The pin below
+# carries the re-sign follow-up itself (e899c60), so script and .sha256/.asc
+# always describe the same script bytes.
+_commit='e899c60c23c499dd99cccad7e8bc48fceb035e43'   # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')

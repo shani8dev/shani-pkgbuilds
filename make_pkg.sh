@@ -95,7 +95,14 @@ BUILT=()
 # DB is at the image snapshot, and the mirror rotates old package versions, so
 # syncing only the first build of a multi-package run 404s on the rest
 # (caught live: poppler-26.07.0-1/nss 404s in builds #2/#3 of brscan4-escpr-escpr2).
-SYNC_CMD="sudo pacman -Sy --noconfirm && "
+# -u is load-bearing, not cosmetic: the image snapshot ages while the mirrors
+# move on, and makepkg installs only the targets a build names (a partial
+# upgrade). Caught live 2026-10-30: os-installer-git's makepkg installed
+# gtk4 4.24.1 onto the image's glib2 2.88.3 and meson died at
+# `gio-2.0 >= 2.89.3` (the same class as build.yaml run 37317352283's
+# systemd 262-1/stale-sysvcompat failure); one full -Syu pairs the repo
+# state and the build succeeds without touching anything else.
+SYNC_CMD="sudo pacman -Syu --noconfirm && "
 
 for pkg in "${PACKAGES[@]}"; do
     pkg_name="$(basename "${pkg%/}")"
