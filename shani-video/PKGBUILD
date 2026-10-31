@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Video drivers and related packages for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-video"
@@ -37,5 +37,12 @@ depends=(
     nvidia-prime
     nvidia-utils
     nvidia-open
+
+    # Virtual devices: v4l2loopback (virtual webcam for OBS) and vhba (virtual
+    # CD/DVD for CDEmu). Both are DKMS modules, so linux-headers (in
+    # shani-core) must be installed first. ntsync is in the kernel itself.
+    v4l2loopback-dkms
+    v4l2loopback-utils
+    vhba-module-dkms
 )
 license=('GPL-3.0-only')

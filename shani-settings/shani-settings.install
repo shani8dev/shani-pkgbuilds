@@ -248,6 +248,9 @@ post_upgrade() {
 	systemctl enable systemd-timesyncd
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
+	# sched-ext loader (scx-tools): enable only if installed; the default
+	# scheduler is scx_lavd (see /etc/scx_loader/config.toml).
+	command -v scx_loader >/dev/null 2>&1 && systemctl enable scx_loader.service 2>/dev/null || true
 	systemctl --global enable gamemoded
 	plymouth-set-default-theme bgrt
 	add_samba_group

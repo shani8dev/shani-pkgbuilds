@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=20
+pkgrel=21
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -11,6 +11,7 @@ depends=(
     amd-ucode
     intel-ucode
     linux
+    linux-headers
     linux-firmware
     glibc-locales
     lsb-release
