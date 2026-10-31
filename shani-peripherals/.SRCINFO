@@ -1,7 +1,7 @@
 pkgbase = shani-peripherals
 	pkgdesc = peripheral devices and tools for Shani OS
 	pkgver = 1.0
-	pkgrel = 8
+	pkgrel = 10
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals
 	install = shani-peripherals.install
 	arch = any
@@ -25,8 +25,13 @@ pkgbase = shani-peripherals
 	depends = iio-sensor-proxy
 	depends = libratbag
 	depends = geoclue
+	depends = nut
 	depends = apcupsd
 	depends = usbmuxd
 	depends = upower
+	depends = yubikey-manager
+	depends = pcsc-tools
+	depends = oath-toolkit
+	depends = rtl-sdr
 
 pkgname = shani-peripherals

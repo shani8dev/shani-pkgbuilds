@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 5
+	pkgrel = 8
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -60,7 +60,7 @@ pkgbase = shani-shell
 	optdepends = orca: the screen reader (Accessibility tile); every shell control is labelled for it
 	optdepends = scrcpy: an Android phone screen in a window (control centre > Phone, launcher)
 	optdepends = malcontent: parental controls - the launcher and dock leave out apps a standard account may not run
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=93963e0e1145ad0777f34097d05621fd0b1ed17a
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=a9c3bfc27cecd7b8569aaff3ba354bf2dfb707e0
 	sha256sums = SKIP
 
 pkgname = shani-shell

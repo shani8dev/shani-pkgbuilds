@@ -1,7 +1,7 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 59
+	pkgrel = 61
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
@@ -94,7 +94,7 @@ pkgbase = shani-chronoa
 	provides = gnome-shell-extension-shani-circle-to-search
 	conflicts = gnome-shell-extension-shani-circle-to-search
 	replaces = gnome-shell-extension-shani-circle-to-search
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=dbce6918b320c3e665c20d485d63dde3832c078e
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=8c5e197359017979e85b385ab47f13d9bb631b3f
 	sha256sums = SKIP
 
 pkgname = shani-chronoa
