@@ -268,7 +268,7 @@ optdepends=(
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=cf71aa22a5180724392a6b8f8c1204883e06c992")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=8c5e197359017979e85b385ab47f13d9bb631b3f")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')
