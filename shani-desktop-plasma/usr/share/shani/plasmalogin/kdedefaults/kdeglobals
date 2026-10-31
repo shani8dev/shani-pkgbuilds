@@ -1,0 +1,9 @@
+[General]
+ColorScheme=SaturnDark
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+widgetStyle=kvantum
+LookAndFeelPackage=Saturn-Dark

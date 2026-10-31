@@ -1,0 +1,23 @@
+[Unit]
+Description=Apply ShaniOS branding to the plasmalogin greeter
+# /var is tmpfs at runtime (systemd.volatile=state), so anything written to
+# /var/lib/plasmalogin by the package's post_install hook is gone on the next
+# boot. This unit re-applies the branding from /usr/share (which lives in the
+# read-only slot and survives reboots) before plasmalogin starts, so the
+# greeter always shows the ShaniOS theme instead of stock Breeze.
+Before=plasmalogin.service
+Wants=plasmalogin.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/install -d -m 755 -o plasmalogin -g plasmalogin /var/lib/plasmalogin/.config/kdedefaults
+ExecStart=/usr/bin/install -d -m 755 -o plasmalogin -g plasmalogin /var/lib/plasmalogin/.config/Kvantum
+ExecStart=/usr/bin/cp -f /usr/share/shani/plasmalogin/kdedefaults/kdeglobals /var/lib/plasmalogin/.config/kdedefaults/kdeglobals
+ExecStart=/usr/bin/cp -f /usr/share/shani/plasmalogin/kdedefaults/plasmarc /var/lib/plasmalogin/.config/kdedefaults/plasmarc
+ExecStart=/usr/bin/cp -f /usr/share/shani/plasmalogin/kdedefaults/kcminputrc /var/lib/plasmalogin/.config/kdedefaults/kcminputrc
+ExecStart=/usr/bin/cp -f /usr/share/shani/plasmalogin/kdedefaults/Kvantum/kvantum.kvconfig /var/lib/plasmalogin/.config/Kvantum/kvantum.kvconfig
+ExecStart=/usr/bin/chown -R plasmalogin:plasmalogin /var/lib/plasmalogin/.config
+
+[Install]
+WantedBy=multi-user.target

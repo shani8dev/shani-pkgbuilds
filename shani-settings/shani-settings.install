@@ -60,7 +60,7 @@ post_install() {
 # corrected baseline could never reach an existing install again.
 install_nut_baseline() {
 	local tdir=/usr/share/shani/nut
-	local manifest=/var/lib/shani-settings/nut-baseline.sha256
+	local manifest=/data/varlib/shani-settings/nut-baseline.sha256
 	local -a files=(nut.conf ups.conf upsd.conf upsmon.conf)
 	local f want have recorded stock took=0 skipped=0
 
@@ -146,7 +146,7 @@ install_nut_baseline() {
 # Only files install_nut_baseline actually owns are recorded - a file skipped
 # as the admin's is left out, and stays out until the admin changes it.
 record_nut_baseline() {
-	local manifest=/var/lib/shani-settings/nut-baseline.sha256
+	local manifest=/data/varlib/shani-settings/nut-baseline.sha256
 	local tdir=/usr/share/shani/nut
 	local -a files=(nut.conf ups.conf upsd.conf upsmon.conf)
 	local f tmp
