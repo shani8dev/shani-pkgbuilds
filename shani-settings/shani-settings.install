@@ -241,7 +241,10 @@ PY
 post_upgrade() {
 	echo "Attempting to enable services..."
 	systemctl enable btrfs-balance.timer
-	systemctl enable btrfs-defrag.timer
+	# btrfs-defrag.timer is deliberately NOT enabled: BTRFS_DEFRAG_PERIOD is
+	# set to "none" (see image_profiles/*/btrfsmaintenance) because periodic
+	# defragmentation breaks reflinks/dedup and adds SSD wear. Defrag remains
+	# available on demand via `btrfs filesystem defragment`.
 	systemctl enable btrfs-scrub.timer
 	systemctl enable btrfs-trim.timer
 	systemctl enable systemd-oomd
