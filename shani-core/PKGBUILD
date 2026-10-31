@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=19
+pkgrel=20
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -88,7 +88,20 @@ depends=(
     # Virtualization (@libvirt + @qemu subvolumes)
     libvirt
     qemu-base
+    # TPM 2.0 emulator for VMs (swtpm), UEFI firmware (edk2-ovmf) and the
+    # virtio-fs daemon (virtiofsd) were missing even though libvirt/qemu are
+    # shipped — a VM with TPM/UEFI/virtio-fs support could not actually be
+    # created out of the box. All three are in Arch [extra].
+    swtpm
+    edk2-ovmf
+    virtiofsd
     #virt-manager
+
+    # CPU scheduling (sched_ext): userspace schedulers + tooling from Arch
+    # [extra]. Dragon OS comparison gap; scx-scheds ships the schedulers,
+    # scx-tools the `scxctl`/`scxtop` front-ends.
+    scx-scheds
+    scx-tools
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
