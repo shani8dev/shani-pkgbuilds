@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-extra
 pkgver=1.2
-pkgrel=15
+pkgrel=16
 pkgdesc="Extra Tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-extra"
@@ -62,13 +62,11 @@ depends=(
     elfutils
     cabextract
     
-    #input
+    #input — ydotool only (its daemon is enabled here); wtype, wl-clipboard,
+    # grim and slurp are already guaranteed by shani-shell and shani-desktop-niri
     brightnessctl
     wl-clipboard
     ydotool
-    wtype
-    grim
-    slurp
 
     # GPU & hardware diagnostics
     vulkan-tools

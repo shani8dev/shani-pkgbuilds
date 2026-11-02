@@ -6,4 +6,11 @@ post_upgrade() {
 	systemctl enable cronie
 	systemctl enable smartd
 	systemctl enable sysstat
+	# ydotool injects clicks/keys through /dev/uinput, which the input group
+	# owns (80-uinput.rules). Its daemon ships only as a *user* unit
+	# (usr/lib/systemd/user/ydotool.service — there is no system ydotoold.service
+	# to enable), so it is enabled per-login for every future login. Members of
+	# the input group can then run ydotool against their own login's daemon:
+	#   usermod -aG input <you>
+	systemctl --global enable ydotool.service
 }

@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools
 pkgver=1.2
-pkgrel=5
+pkgrel=6
 pkgdesc="Tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools"
@@ -12,6 +12,9 @@ depends=(
     diffutils
     patch
     time
+    file
+    procps-ng       # ps, pgrep, pkill
+    findutils       # find and xargs
     git
     gnupg
     man-db
