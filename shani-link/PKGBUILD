@@ -1,0 +1,56 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-link: the computer's phone line, phone and watch - device plumbing that
+# was inside Shani Chronoa (the JioFiber landline, the phone link, the phone over
+# Bluetooth, MoYoung watches, Bluetooth roles, pairing and receiving files,
+# Android over adb, FM radio, NFC, infrared), as a desktop-neutral user service
+# on the session bus (dev.shani.Link) and a library. Chronoa's skills and the
+# shani-shell call card use it; it runs with every window closed. The app,
+# Shani Link (shani-link-app), is the same plumbing for a person: Phone, Watch,
+# Devices, Radio, NFC, Remote and the Background switches.
+pkgname=shani-link
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Shani Link - the phone line, phone and watch for ShaniOS desktops"
+arch=('any')
+url="https://github.com/shani8dev/shani-link"
+license=('GPL-3.0-only')
+depends=(
+    'python'
+    'python-gobject'
+    'glib2'
+    'pipewire'          # pw-cat: the landline's audio
+    'wireplumber'       # wpctl: mute, volume, the call's audio route
+    'bluez'
+    'bluez-utils'       # bluetoothctl: pairing, the watch, GATT
+    'gtk4'              # the app (shani-link-app)
+    'libadwaita'
+)
+optdepends=(
+    'ffmpeg: the landline video call, and the watch camera button'
+    'android-tools: an Android phone over adb (pairing, screen)'
+    'scrcpy: an Android phone screen in a window'
+    'rtl-sdr: FM radio with an RTL-SDR dongle'
+    'libnfc: reading and writing NFC tags'
+    'v4l-utils: sending and receiving infrared (ir-ctl)'
+    'kdeconnect: the phone link through KDE Connect (built in otherwise)'
+    'bluez-obex: receiving files a phone shares over Bluetooth'
+    'gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)'
+)
+install=shani-link.install
+source=("git+https://github.com/shani8dev/shani-link.git#commit=f307084091c3d1913812d1d7b452baca3dff7822")
+# git+ pinned to a commit: makepkg ignores checksums for VCS sources
+sha256sums=('SKIP')
+
+package() {
+    cd "$srcdir/$pkgname"
+    install -dm755 "$pkgdir/usr/lib/shani-link"
+    cp -r shani_link "$pkgdir/usr/lib/shani-link/"
+    find "$pkgdir/usr/lib/shani-link" -name __pycache__ -prune -exec rm -rf {} +
+    install -Dm755 bin/shani-link "$pkgdir/usr/bin/shani-link"
+    install -Dm755 bin/shani-link-app "$pkgdir/usr/bin/shani-link-app"
+    install -Dm644 data/applications/dev.shani.Link.App.desktop \
+        "$pkgdir/usr/share/applications/dev.shani.Link.App.desktop"
+    install -Dm644 data/systemd/shani-link.service "$pkgdir/usr/lib/systemd/user/shani-link.service"
+    install -Dm644 data/dbus/dev.shani.Link.service "$pkgdir/usr/share/dbus-1/services/dev.shani.Link.service"
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

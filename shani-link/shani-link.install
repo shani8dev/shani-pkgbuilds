@@ -1,0 +1,11 @@
+# The line has to ring with nothing open: the service starts with every graphical
+# session, for every account (D-Bus activation also starts it when asked).
+post_install() {
+    systemctl --global enable shani-link.service >/dev/null 2>&1 || true
+}
+post_upgrade() {
+    post_install
+}
+pre_remove() {
+    systemctl --global disable shani-link.service >/dev/null 2>&1 || true
+}
