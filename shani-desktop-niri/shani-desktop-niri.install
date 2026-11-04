@@ -5,6 +5,11 @@ post_install() {
 post_upgrade() {
     # greetd aliases itself to display-manager.service, so this is the login screen
     systemctl enable greetd.service
+    # the graphics cards (the shell starts an app on the other one through
+    # switcheroo-control) and the power modes (the quick-settings tile), as the
+    # GNOME and Plasma desktops enable them
+    systemctl enable switcheroo-control.service
+    systemctl enable power-profiles-daemon.service
 
     # foot's own package owns /etc/xdg/foot/foot.ini; we ship our themed
     # default as a template to avoid that file conflict, and seed it here.

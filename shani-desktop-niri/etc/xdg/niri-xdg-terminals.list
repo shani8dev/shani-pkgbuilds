@@ -1,0 +1,3 @@
+# the terminal xdg-terminal-exec opens in a niri session (freedesktop default-terminal spec);
+# a person's own ~/.config/niri-xdg-terminals.list comes first
+foot.desktop

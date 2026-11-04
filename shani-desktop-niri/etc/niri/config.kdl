@@ -2,7 +2,9 @@
 // when ~/.config/niri/config.kdl does not exist; a user copy replaces this whole file).
 // The bar, launcher, notifications and Chronoa panel are shani-shell, started by
 // niri.service's drop-in (Wants=shani-shell.service), not spawned from here.
-prefer-no-csd
+// No prefer-no-csd: niri draws no titlebars of its own, so with it apps that
+// take server-side decorations (foot, Qt, many others) had none at all - no
+// title, no close button. Every app draws its own, as on GNOME.
 
 // the shell owns the screen corners (Settings > Hot corners); niri's own
 // top-left corner would open the overview a second time and close it again
@@ -57,9 +59,10 @@ layout {
         proportion 0.66667
     }
     default-column-width { proportion 0.5; }
+    // the shell's accent (Saturn coral; shani-input.kdl follows a changed accent)
     focus-ring {
         width 2
-        active-color "#7fd1c1"
+        active-color "#ff7f50"
         inactive-color "#2a3140"
     }
     border {
@@ -68,7 +71,7 @@ layout {
 }
 
 // The shell requests blur itself over ext-background-effect-v1 (measured in
-// shani-shell FINDINGS.md); this block only tunes how strong it is.
+// shani-shell docs/FINDINGS.md); this block only tunes how strong it is.
 blur {
     passes 3
     offset 3
@@ -81,6 +84,11 @@ spawn-at-startup "fcitx5" "-d" "--replace"
 environment {
     XMODIFIERS "@im=fcitx"
     QT_IM_MODULE "fcitx"
+    // Qt apps follow the GTK theme (dark or light, Papirus, adw-gtk3 colours);
+    // without it, under niri they come up light and in Qt's own style
+    QT_QPA_PLATFORMTHEME "gtk3"
+    // Qt apps' titlebars: qt6-wayland's own Adwaita one (Qt 6.8+), not Qt's default
+    QT_WAYLAND_DECORATION "adwaita"
 }
 
 // clipboard history for the launcher's "c" mode, and a clipboard that
@@ -93,6 +101,16 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
+}
+
+// scratchpads (the shell's drop-down apps, Mod+`): float over the top of the
+// screen, two thirds wide
+window-rule {
+    match app-id="^shani-pad-"
+    open-floating true
+    default-column-width { proportion 0.7; }
+    default-window-height { proportion 0.6; }
+    default-floating-position x=0 y=56 relative-to="top"
 }
 
 // see-through apps (the terminals: foot ships at alpha 0.94) get the blur the
@@ -153,6 +171,7 @@ binds {
     Mod+Comma hotkey-overlay-title="Sidebar" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleControlCenter"; }
     Mod+N hotkey-overlay-title="Notifications" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleNotifications"; }
     Mod+Shift+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
+    Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "terminal"; }
     Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     Mod+Return hotkey-overlay-title="Terminal" { spawn "foot"; }
 

@@ -3,7 +3,7 @@
 # person). Compiled by pacman's glib2 hook.
 [org.gnome.desktop.interface]
 color-scheme='prefer-dark'
-accent-color='teal'
+accent-color='orange'
 gtk-theme='adw-gtk3-dark'
 icon-theme='Papirus-Dark'
 cursor-theme='Adwaita'
@@ -13,3 +13,8 @@ document-font-name='Inter 11'
 monospace-font-name='JetBrains Mono 11'
 font-hinting='slight'
 font-antialiasing='grayscale'
+
+[org.gnome.desktop.wm.preferences]
+# maximize and close on every titlebar; no minimize: niri ignores an app's
+# minimize request (the dock and Super+M minimize instead)
+button-layout='appmenu:maximize,close'

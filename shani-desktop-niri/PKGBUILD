@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -13,6 +13,10 @@ depends=(
 	# niri.service's drop-in starts it (usr/lib/systemd/user/niri.service.d)
 	shani-shell
 	xwayland-satellite
+	# the shell's "what to do with a file": convert pictures, fit a form's
+	# size limit (jpeg:extent), shrink a PDF; without them those actions hide
+	imagemagick
+	ghostscript
 	# --- login: greetd runs a bare niri hosting shani-shell's Quickshell greeter ---
 	greetd
 	# --- portals: niri-portals.conf asks for gnome first, gtk as fallback ---
@@ -21,6 +25,9 @@ depends=(
 	gnome-keyring
 	# --- keybinds in etc/niri/config.kdl ---
 	foot
+	# Terminal=true apps and "open in a terminal" from any app: the freedesktop way,
+	# with foot as niri's default (etc/xdg/niri-xdg-terminals.list)
+	xdg-terminal-exec
 	wireplumber
 	brightnessctl
 	xdg-user-dirs
