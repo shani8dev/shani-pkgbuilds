@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=8
+pkgrel=9
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -39,6 +39,7 @@ optdepends=(
     'power-profiles-daemon: the power mode tile'
     'brightnessctl: the brightness slider and the flashlight tile'
     'geoclue: location services (auto-fill weather and night-light coordinates)'
+    'gpsd: a GPS receiver as the location source, ahead of GeoClue'
     'wf-recorder: the screen record tile'
     'ffmpeg: the call record tile (mic and speakers into one file)'
     'speech-dispatcher: read aloud (select to speak); espeak-ng is used without it'
@@ -70,11 +71,16 @@ optdepends=(
     'shani-backup: the backup tile (schedule, back up now)'
     'orca: the screen reader (Accessibility tile); every shell control is labelled for it'
     'scrcpy: an Android phone screen in a window (control centre > Phone, launcher)'
+    'imagemagick: what to do with a file - convert pictures and fit a form size limit'
+    'ghostscript: shrink a PDF to fit a size limit'
+    'libarchive: make or unpack a zip from a dropped file (bsdtar)'
+    'switcheroo-control: start an app on the other graphics card'
+    'xdg-terminal-exec: open terminal apps in the terminal you chose'
     'malcontent: parental controls - the launcher and dock leave out apps a standard account may not run'
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=a9c3bfc27cecd7b8569aaff3ba354bf2dfb707e0")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=fa197f108e8d679fdd7859a7fc8bbbcdf44d74af")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -97,8 +103,10 @@ package() {
 
     # the lock screen's PAM stack (Modules/Lock/LockScreen.qml: config "shani-lock")
     install -Dm644 data/pam.d/shani-lock "$pkgdir/etc/pam.d/shani-lock"
-    # the default pair, one for each style (assets/make-wallpapers.py renders them)
+    # the default pair plus the night art for the picker (assets/make-wallpapers.py
+    # renders them; dark is the amber dusk, so the shipped look carries the brand)
     install -Dm644 assets/shani-dark.jpg "$pkgdir/usr/share/backgrounds/shani/shani-dark.jpg"
+    install -Dm644 assets/shani-night.jpg "$pkgdir/usr/share/backgrounds/shani/shani-night.jpg"
     install -Dm644 assets/shani-light.jpg "$pkgdir/usr/share/backgrounds/shani/shani-light.jpg"
 
     # The bridge imports its modules from its own directory.
@@ -122,6 +130,8 @@ package() {
     install -Dm755 bridge/translate.py "$pkgdir/usr/lib/$pkgname/translate.py"
     # apps' own counts and progress on the dock (LauncherEntry, session bus)
     install -Dm755 bridge/launcher-entry.py "$pkgdir/usr/lib/$pkgname/launcher-entry.py"
+    # every app start: desktop-file launch with the GPU, environment and terminal it asks for
+    install -Dm755 bridge/launch-app.py "$pkgdir/usr/lib/$pkgname/launch-app.py"
     # parental controls: the apps malcontent's app filter blocks for this person
     install -Dm755 bridge/appfilter.py "$pkgdir/usr/lib/$pkgname/appfilter.py"
     # location: GeoClue's where-am-i, for weather and night light (opt-in)
