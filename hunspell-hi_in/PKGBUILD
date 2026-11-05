@@ -1,0 +1,25 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+# Hunspell dictionary for Hindi (hi_IN), sourced from the
+# LibreOffice dictionaries project, which ships no versioned release:
+# the source is pinned to a full commit hash instead (bump pkgrel
+# whenever _commit changes — see README.md "Updating a pinned-commit
+# package"). Marathi (mr_IN) and Tamil (ta_IN) are not included in
+# this set of packages.
+pkgname=hunspell-hi_in
+pkgver=1.0
+_commit=4f1df64b2e8e14751aa7c2205d170ca016071315
+pkgrel=1
+pkgdesc="Hindi hunspell dictionary"
+arch=('any')
+url="https://github.com/LibreOffice/dictionaries/tree/master/hi_IN"
+license=('GPL-2.0-or-later')
+depends=('hunspell')
+source=("hi_IN.dic::https://raw.githubusercontent.com/LibreOffice/dictionaries/${_commit}/hi_IN/hi_IN.dic"
+        "hi_IN.aff::https://raw.githubusercontent.com/LibreOffice/dictionaries/${_commit}/hi_IN/hi_IN.aff")
+sha256sums=('1e01f962a02638ef73e3f8de3c44bfd854f7059d31c9fa96cff0b73a2840f9d9'
+            '3ab96772dc3d1cdbec4141798efb8b7a091b92c9acbeb5dfd3c4998a5c508302')
+
+package() {
+  install -Dm644 "$srcdir/hi_IN.dic" "$pkgdir/usr/share/hunspell/hi_IN.dic"
+  install -Dm644 "$srcdir/hi_IN.aff" "$pkgdir/usr/share/hunspell/hi_IN.aff"
+}

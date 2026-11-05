@@ -1,0 +1,25 @@
+# Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
+# Hunspell dictionary for Bengali (bn_BD), sourced from the
+# LibreOffice dictionaries project, which ships no versioned release:
+# the source is pinned to a full commit hash instead (bump pkgrel
+# whenever _commit changes — see README.md "Updating a pinned-commit
+# package"). Marathi (mr_IN) and Tamil (ta_IN) are not included in
+# this set of packages.
+pkgname=hunspell-bn_bd
+pkgver=1.0
+_commit=4f1df64b2e8e14751aa7c2205d170ca016071315
+pkgrel=1
+pkgdesc="Bengali hunspell dictionary"
+arch=('any')
+url="https://github.com/LibreOffice/dictionaries/tree/master/bn_BD"
+license=('GPL-2.0-only')
+depends=('hunspell')
+source=("bn_BD.dic::https://raw.githubusercontent.com/LibreOffice/dictionaries/${_commit}/bn_BD/bn_BD.dic"
+        "bn_BD.aff::https://raw.githubusercontent.com/LibreOffice/dictionaries/${_commit}/bn_BD/bn_BD.aff")
+sha256sums=('cfc78b361861a726d22f0654d7c4e0b47f843c4a9e8b605c4c99e91ea683e116'
+            '6beeacefab0f691cb415c9ab8de227091a3be65510c3d8c0479513b261e61b97')
+
+package() {
+  install -Dm644 "$srcdir/bn_BD.dic" "$pkgdir/usr/share/hunspell/bn_BD.dic"
+  install -Dm644 "$srcdir/bn_BD.aff" "$pkgdir/usr/share/hunspell/bn_BD.aff"
+}
