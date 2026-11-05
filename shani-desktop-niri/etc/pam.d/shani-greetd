@@ -14,6 +14,11 @@ auth       requisite    pam_deny.so
 # Face (linux-hello, an IR camera), when installed and its daemon is up: a few
 # seconds, then the password. Skipped at once when it is not.
 -auth      sufficient   pam_linux_hello.so timeout=3000 quiet
+# A security key (pam-u2f), registered in Settings > Your account: touched, it signs
+# in. No key plugged in, or none registered (nouserok), falls through to the
+# password at once. After the fingerprint block, so its default=2 jump (over
+# pam_fprintd and pam_deny, onto pam_linux_hello) is unchanged.
+-auth      sufficient   pam_u2f.so cue [cue_prompt=Touch your security key] nouserok
 auth       include      system-local-login
 auth       optional     pam_gnome_keyring.so
 account    include      system-local-login
