@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 11
+	pkgrel = 12
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -66,7 +66,7 @@ pkgbase = shani-shell
 	optdepends = switcheroo-control: start an app on the other graphics card
 	optdepends = xdg-terminal-exec: open terminal apps in the terminal you chose
 	optdepends = malcontent: parental controls - the launcher and dock leave out apps a standard account may not run
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=58dfa428a65a2c1dacde903ee255e717b608d8d4
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=5f04a54e29b9ccf25a43bd1b4906c0337099aab3
 	sha256sums = SKIP
 
 pkgname = shani-shell

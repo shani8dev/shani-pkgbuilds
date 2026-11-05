@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -102,6 +102,9 @@ depends=(
 	slurp
 	tesseract
 	tesseract-data-eng
+	# handwriting and Lens in the Indian languages first setup offers
+	tesseract-data-hin
+	tesseract-data-mar
 	zbar
 	udisks2
 	unicode-emoji
