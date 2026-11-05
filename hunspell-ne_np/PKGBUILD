@@ -3,8 +3,8 @@
 # LibreOffice dictionaries project, which ships no versioned release:
 # the source is pinned to a full commit hash instead (bump pkgrel
 # whenever _commit changes — see README.md "Updating a pinned-commit
-# package"). Marathi (mr_IN) and Tamil (ta_IN) are not included in
-# this set of packages.
+# package"). Part of the Indian-language set, which also includes
+# Marathi (hunspell-mr_in) and Tamil (hunspell-ta_in).
 pkgname=hunspell-ne_np
 pkgver=1.0
 _commit=4f1df64b2e8e14751aa7c2205d170ca016071315
