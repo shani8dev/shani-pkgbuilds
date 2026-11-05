@@ -4,6 +4,16 @@
 # password (and created at the first login), so apps never ask for it again.
 auth       required     pam_securetty.so
 auth       requisite    pam_nologin.so
+# Fingerprint, only when asked for at the greeter ("Use fingerprint", or Enter on
+# an empty password): greetd runs one conversation, and fprintd holds it until a
+# finger or its timeout. The greeter leaves a flag; this takes it. It can only
+# choose this path - the finger is still checked - and a miss ends the attempt.
+auth       [success=ignore default=2]  pam_exec.so quiet /usr/lib/shani-desktop-niri/greeter-fingerprint
+-auth      [success=done default=die]  pam_fprintd.so max-tries=3 timeout=20
+auth       requisite    pam_deny.so
+# Face (linux-hello, an IR camera), when installed and its daemon is up: a few
+# seconds, then the password. Skipped at once when it is not.
+-auth      sufficient   pam_linux_hello.so timeout=3000 quiet
 auth       include      system-local-login
 auth       optional     pam_gnome_keyring.so
 account    include      system-local-login

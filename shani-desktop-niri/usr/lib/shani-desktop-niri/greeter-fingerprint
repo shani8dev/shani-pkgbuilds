@@ -1,0 +1,7 @@
+#!/bin/sh
+# pam_exec, first in /etc/pam.d/shani-greetd: did the greeter ask for the
+# fingerprint this time? The flag is taken either way, so it counts once.
+f=/run/shani-greeter/fingerprint
+[ -e "$f" ] || exit 1
+rm -f "$f"
+exit 0

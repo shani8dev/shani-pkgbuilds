@@ -170,7 +170,8 @@ binds {
     Mod+X hotkey-overlay-title="Ring (pie menu)" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "ring"; }
     Mod+Comma hotkey-overlay-title="Sidebar" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleControlCenter"; }
     Mod+N hotkey-overlay-title="Notifications" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleNotifications"; }
-    Mod+Shift+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
+    // clipboard history on Super+V, where Windows has it
+    Mod+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
     Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "terminal"; }
     Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     Mod+Return hotkey-overlay-title="Terminal" { spawn "foot"; }
@@ -251,7 +252,7 @@ binds {
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
     Mod+C { center-column; }
-    Mod+V { toggle-window-floating; }
+    Mod+Shift+V hotkey-overlay-title="Float or tile the window" { toggle-window-floating; }
     Mod+W { toggle-column-tabbed-display; }
 
     Print { screenshot; }

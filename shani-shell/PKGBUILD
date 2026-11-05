@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=9
+pkgrel=10
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -80,7 +80,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=fa197f108e8d679fdd7859a7fc8bbbcdf44d74af")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=40a71f4795fd3d0f7af1d4974ffc65461cebc929")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -103,6 +103,7 @@ package() {
 
     # the lock screen's PAM stack (Modules/Lock/LockScreen.qml: config "shani-lock")
     install -Dm644 data/pam.d/shani-lock "$pkgdir/etc/pam.d/shani-lock"
+    install -Dm644 data/pam.d/shani-lock-biometric "$pkgdir/etc/pam.d/shani-lock-biometric"
     # the default pair plus the night art for the picker (assets/make-wallpapers.py
     # renders them; dark is the amber dusk, so the shipped look carries the brand)
     install -Dm644 assets/shani-dark.jpg "$pkgdir/usr/share/backgrounds/shani/shani-dark.jpg"
