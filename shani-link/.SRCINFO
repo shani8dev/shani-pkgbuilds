@@ -1,7 +1,7 @@
 pkgbase = shani-link
 	pkgdesc = Shani Link - the phone line, phone and watch for ShaniOS desktops
 	pkgver = 0.1.0
-	pkgrel = 3
+	pkgrel = 4
 	url = https://github.com/shani8dev/shani-link
 	install = shani-link.install
 	arch = any
@@ -24,7 +24,7 @@ pkgbase = shani-link
 	optdepends = kdeconnect: the phone link through KDE Connect (built in otherwise)
 	optdepends = bluez-obex: receiving files a phone shares over Bluetooth
 	optdepends = gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)
-	source = git+https://github.com/shani8dev/shani-link.git#commit=73dbee5a8f57a3c8600de7e763d40251508d2554
+	source = git+https://github.com/shani8dev/shani-link.git#commit=8884bd0a327da2d3e90c564fd7955118297de7da
 	sha256sums = SKIP
 
 pkgname = shani-link
