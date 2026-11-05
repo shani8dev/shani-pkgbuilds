@@ -168,6 +168,10 @@ binds {
     Alt+Tab hotkey-overlay-title="Switch windows" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcher"; }
     Alt+Shift+Tab { spawn "qs" "-c" "shani" "ipc" "call" "shani" "switcherBack"; }
     Mod+X hotkey-overlay-title="Ring (pie menu)" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "ring"; }
+    // the keyboard into the dock, the bar, the desktop menu (Windows' Win+T and Win+B); Escape gives it back
+    Mod+T hotkey-overlay-title="Keyboard to the dock" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "focusDock"; }
+    Mod+B hotkey-overlay-title="Keyboard to the bar" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "focusBar"; }
+    Mod+F10 hotkey-overlay-title="Desktop menu" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "desktopMenu"; }
     Mod+Comma hotkey-overlay-title="Sidebar" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleControlCenter"; }
     Mod+N hotkey-overlay-title="Notifications" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleNotifications"; }
     // clipboard history on Super+V, where Windows has it
