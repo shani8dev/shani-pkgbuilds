@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=12
+pkgrel=13
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -80,7 +80,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=5f04a54e29b9ccf25a43bd1b4906c0337099aab3")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=8ffcab6286adf454d2df7e5df5ae52b64ffb7a51")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -121,6 +121,14 @@ package() {
     install -Dm755 bridge/search-providers.py "$pkgdir/usr/lib/$pkgname/search-providers.py"
     install -Dm755 bridge/face.py "$pkgdir/usr/lib/$pkgname/face.py"
     install -Dm755 bridge/handwriting.py "$pkgdir/usr/lib/$pkgname/handwriting.py"
+    # devices plugged in, controllers, gaming mice, security keys, tablets
+    install -Dm755 bridge/plugwatch.py "$pkgdir/usr/lib/$pkgname/plugwatch.py"
+    install -Dm755 bridge/gamepad.py "$pkgdir/usr/lib/$pkgname/gamepad.py"
+    install -Dm755 bridge/ratbag.py "$pkgdir/usr/lib/$pkgname/ratbag.py"
+    install -Dm755 bridge/u2f.py "$pkgdir/usr/lib/$pkgname/u2f.py"
+    install -Dm755 bridge/input-kinds.py "$pkgdir/usr/lib/$pkgname/input-kinds.py"
+    install -Dm755 bridge/tablet-mode.py "$pkgdir/usr/lib/$pkgname/tablet-mode.py"
+    install -Dm755 bridge/mounts.py "$pkgdir/usr/lib/$pkgname/mounts.py"
     # the default Bluetooth pairing agent (niri has none of its own)
     install -Dm755 bridge/bt-agent.py "$pkgdir/usr/lib/$pkgname/bt-agent.py"
     # files received over Bluetooth (obexd's agent)
