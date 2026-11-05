@@ -6,7 +6,6 @@ pkgbase = shani-peripherals
 	install = shani-peripherals.install
 	arch = any
 	license = GPL-3.0-only
-	depends = alsa-utils
 	depends = fprintd
 	depends = linuxconsole
 	depends = lirc

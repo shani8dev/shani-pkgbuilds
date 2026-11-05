@@ -6,8 +6,6 @@ pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals"
 depends=(
-	# MIDI keyboards and controllers: aconnect lists them for the device greeting
-	alsa-utils
 	fprintd
 	linuxconsole
 	lirc
