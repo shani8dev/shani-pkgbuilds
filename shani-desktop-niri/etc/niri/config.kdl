@@ -190,6 +190,21 @@ binds {
     // through the shell, so its OSD shows the new level
     XF86MonBrightnessUp   allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "brightnessUp"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "brightnessDown"; }
+    // a laptop's own keys: the keyboard light, the touchpad, the radios, the display,
+    // and the apps some keyboards have a key for
+    XF86KbdBrightnessUp   allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "kbdBacklightUp"; }
+    XF86KbdBrightnessDown allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "kbdBacklightDown"; }
+    XF86KbdLightOnOff     allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "kbdBacklightToggle"; }
+    XF86TouchpadToggle { spawn "qs" "-c" "shani" "ipc" "call" "shani" "touchpad"; }
+    XF86RFKill         { spawn "qs" "-c" "shani" "ipc" "call" "shani" "airplane"; }
+    XF86Display        { spawn "qs" "-c" "shani" "ipc" "call" "shani" "settingsCategory" "displays"; }
+    XF86Tools          { spawn "qs" "-c" "shani" "ipc" "call" "shani" "settings"; }
+    XF86Calculator     { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "="; }
+    XF86Search         { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
+    XF86ScreenSaver    allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
+    XF86Mail           { spawn "xdg-open" "mailto:"; }
+    XF86WWW            { spawn "sh" "-c" "gtk-launch \"$(xdg-settings get default-web-browser)\""; }
+    XF86Explorer       { spawn "xdg-open" "."; }
 
     Mod+O repeat=false { toggle-overview; }
     Mod+Q repeat=false { close-window; }

@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=10
+pkgrel=11
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -80,7 +80,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=40a71f4795fd3d0f7af1d4974ffc65461cebc929")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=58dfa428a65a2c1dacde903ee255e717b608d8d4")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -119,6 +119,7 @@ package() {
     install -Dm755 bridge/dictate.py "$pkgdir/usr/lib/$pkgname/dictate.py"
     # apps' own search results in the launcher (GNOME SearchProvider2)
     install -Dm755 bridge/search-providers.py "$pkgdir/usr/lib/$pkgname/search-providers.py"
+    install -Dm755 bridge/face.py "$pkgdir/usr/lib/$pkgname/face.py"
     # the default Bluetooth pairing agent (niri has none of its own)
     install -Dm755 bridge/bt-agent.py "$pkgdir/usr/lib/$pkgname/bt-agent.py"
     # files received over Bluetooth (obexd's agent)

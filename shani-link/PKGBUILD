@@ -9,7 +9,7 @@
 # Devices, Radio, NFC, Remote and the Background switches.
 pkgname=shani-link
 pkgver=0.1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Shani Link - the phone line, phone and watch for ShaniOS desktops"
 arch=('any')
 url="https://github.com/shani8dev/shani-link"
@@ -26,6 +26,8 @@ depends=(
     'libadwaita'
 )
 optdepends=(
+    'qrencode: share a contact as a QR code'
+    'modemmanager: calls through a mobile modem built into the laptop'
     'ffmpeg: the landline video call, and the watch camera button'
     'android-tools: an Android phone over adb (pairing, screen)'
     'scrcpy: an Android phone screen in a window'
@@ -37,7 +39,7 @@ optdepends=(
     'gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)'
 )
 install=shani-link.install
-source=("git+https://github.com/shani8dev/shani-link.git#commit=c2cd76fd1f7148c10bd6a9b359c7f6d18821cfba")
+source=("git+https://github.com/shani8dev/shani-link.git#commit=73dbee5a8f57a3c8600de7e763d40251508d2554")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources
 sha256sums=('SKIP')
 
@@ -50,6 +52,9 @@ package() {
     install -Dm755 bin/shani-link-app "$pkgdir/usr/bin/shani-link-app"
     install -Dm644 data/applications/dev.shani.Link.App.desktop \
         "$pkgdir/usr/share/applications/dev.shani.Link.App.desktop"
+    # tel: links anywhere open the dial pad, filled in (never dialled by the link)
+    install -Dm644 data/applications/dev.shani.Link.Dial.desktop \
+        "$pkgdir/usr/share/applications/dev.shani.Link.Dial.desktop"
     install -Dm644 data/systemd/shani-link.service "$pkgdir/usr/lib/systemd/user/shani-link.service"
     install -Dm644 data/dbus/dev.shani.Link.service "$pkgdir/usr/share/dbus-1/services/dev.shani.Link.service"
     install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"

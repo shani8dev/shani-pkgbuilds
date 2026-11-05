@@ -58,6 +58,7 @@ application/xhtml+xml=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/ftp=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/http=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/https=com.vivaldi.Vivaldi.desktop;
+x-scheme-handler/tel=dev.shani.Link.Dial.desktop;
 x-scheme-handler/about=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/chrome=com.vivaldi.Vivaldi.desktop;
 x-scheme-handler/unknown=com.vivaldi.Vivaldi.desktop;
