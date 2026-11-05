@@ -1,0 +1,84 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 31251d2..ab7b96c 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1709,6 +1709,7 @@ dependencies = [
+  "cfg-if",
+  "cfg_aliases",
+  "libc",
++ "memoffset",
+ ]
+ 
+ [[package]]
+diff --git a/Cargo.toml b/Cargo.toml
+index 1683733..972e9b5 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -25,7 +25,7 @@ env_logger = "0.11"
+ image = { version = "0.25", default-features = false, features = ["png"] }
+ libc = "0.2"
+ log = "0.4"
+-nix = { version = "0.29", features = ["fs", "ioctl", "mman", "poll", "signal", "user"] }
++nix = { version = "0.29", features = ["fs", "ioctl", "mman", "poll", "signal", "socket", "user"] }
+ serde = { version = "1.0", features = ["derive"] }
+ serde_json = "1.0"
+ tempfile = "3.21"
+diff --git a/crates/linux-hellod/src/main.rs b/crates/linux-hellod/src/main.rs
+index 3bf5b25..b08f5cb 100644
+--- a/crates/linux-hellod/src/main.rs
++++ b/crates/linux-hellod/src/main.rs
+@@ -106,6 +106,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
+ 
+ 
+ 
++/// Whether the process at the other end of the socket may make this request: the
++/// socket is open to every local user (PAM runs in the screen locker as the user),
++/// so a request naming a user is served only for root or that same user. Without
++/// this, anyone could enroll their own face as another account - root included.
++fn peer_may_ask(stream: &UnixStream, req: &Request) -> bool {
++    use nix::sys::socket::{getsockopt, sockopt::PeerCredentials};
++    let username = match req {
++        Request::Authenticate { username, .. } | Request::Enroll { username, .. } => username,
++        Request::Status => return true,
++    };
++    let uid = match getsockopt(stream, PeerCredentials) {
++        Ok(cred) => cred.uid(),
++        Err(_) => return false,
++    };
++    if uid == 0 {
++        return true;
++    }
++    matches!(nix::unistd::User::from_name(username), Ok(Some(user)) if user.uid.as_raw() == uid)
++}
++
+ fn handle_client(mut stream: UnixStream, service: &HelloService) {
+     let mut reader = BufReader::new(match stream.try_clone() {
+         Ok(s) => s,
+@@ -119,6 +139,9 @@ fn handle_client(mut stream: UnixStream, service: &HelloService) {
+         }
+ 
+         let resp = match serde_json::from_str::<Request>(&line) {
++            Ok(req) if !peer_may_ask(&stream, &req) => Response::Error {
++                message: "Not allowed: only root or that user may authenticate or enroll a face".into(),
++            },
+             Ok(req) => service.handle_request(req),
+             Err(e) => Response::Error {
+                 message: format!("Malformed request JSON: {}", e),
+diff --git a/crates/pam_linux_hello/src/lib.rs b/crates/pam_linux_hello/src/lib.rs
+index 80e8c1f..ed4dea9 100644
+--- a/crates/pam_linux_hello/src/lib.rs
++++ b/crates/pam_linux_hello/src/lib.rs
+@@ -156,9 +156,11 @@ pub unsafe extern "C" fn pam_sm_authenticate(
+         send_pam_info(pamh, "[Linux-Hello] Identifying face via IR camera...");
+     }
+ 
++    // built by serde, not by hand: a user name with a quote in it (typed at a
++    // greeter) must stay one string, not become more fields
+     let req = format!(
+-        "{{\"action\":\"authenticate\",\"username\":\"{}\",\"timeout_ms\":{}}}\n",
+-        username, timeout_ms
++        "{}\n",
++        serde_json::json!({ "action": "authenticate", "username": username, "timeout_ms": timeout_ms })
+     );
+ 
+     let mut stream = stream;

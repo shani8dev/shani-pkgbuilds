@@ -1,0 +1,56 @@
+# Face sign-in (Windows Hello's way) with an IR camera: linux-hello by kennycoder,
+# packaged for ShaniOS. In the niri image with its service off: Settings >
+# Account > Sign in faster turns it on (pkexec) and takes five looks through the
+# daemon's socket - on a computer with an infrared camera, and only then.
+# The niri desktop's greeter and the shell's lock screen already ask it first
+# (/etc/pam.d/shani-greetd, shani-lock-biometric) once the service runs; nothing
+# here edits the system's PAM files.
+# peer-check.patch: the daemon's socket is open to every local user, and it would
+# enroll a face for any user name asked - anyone could add their face as root.
+# Now only root or that same user may; the PAM module builds its request with serde.
+pkgname=linux-hello
+pkgver=0.1.0.r1.g9d911f9
+pkgrel=1
+pkgdesc="Face sign-in with an IR camera (Windows Hello style): daemon, PAM module, enrolment app"
+arch=('x86_64')
+url="https://github.com/kennycoder/linux-hello"
+license=('Apache-2.0')
+depends=('opencv' 'pam' 'polkit' 'hicolor-icon-theme' 'gcc-libs' 'glibc')
+makedepends=('cargo' 'clang' 'cmake' 'pkgconf' 'git')
+options=('!debug' '!lto')
+install=linux-hello.install
+source=("git+https://github.com/kennycoder/linux-hello.git#commit=9d911f932af852d1adb09e0d293c163b4197025c"
+        "peer-check.patch"
+        "linux-hello-hardening.conf")
+sha256sums=('SKIP'
+            '4b08d26ccec4e91b66e8c30d2faf72ee169f242199f0d9df1fcf6c6eaa7dad3f'
+            'f33ac577f8a72c116a67bd9722c4136eac398cb7fe56423e90337a8afd1784fb')
+
+prepare() {
+    cd "$pkgname"
+    patch -Np1 -i "$srcdir/peer-check.patch"
+    export RUSTUP_TOOLCHAIN=stable
+    cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+    cd "$pkgname"
+    export RUSTUP_TOOLCHAIN=stable CARGO_TARGET_DIR=target
+    cargo build --frozen --release
+}
+
+package() {
+    cd "$pkgname"
+    install -Dm755 target/release/linux-hello     "$pkgdir/usr/bin/linux-hello"
+    install -Dm755 target/release/linux-hellod    "$pkgdir/usr/bin/linux-hellod"
+    install -Dm755 target/release/linux-hello-gui "$pkgdir/usr/bin/linux-hello-gui"
+    install -Dm644 target/release/libpam_linux_hello.so "$pkgdir/usr/lib/security/pam_linux_hello.so"
+    install -Dm644 -t "$pkgdir/usr/share/linux-hello/models" models/*.onnx
+    install -dm755 "$pkgdir/var/lib/linux-hello/models"
+    install -Dm644 debian/linux-hello.service "$pkgdir/usr/lib/systemd/system/linux-hello.service"
+    install -Dm644 "$srcdir/linux-hello-hardening.conf" "$pkgdir/usr/lib/systemd/system/linux-hello.service.d/10-shani.conf"
+    install -Dm644 debian/linux-hello-gui.desktop "$pkgdir/usr/share/applications/linux-hello-gui.desktop"
+    install -Dm644 assets/linux-hello-logo-cropped.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/linux-hello.svg"
+    install -Dm644 debian/org.linuxhello.pkexec.policy "$pkgdir/usr/share/polkit-1/actions/org.linuxhello.pkexec.policy"
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
