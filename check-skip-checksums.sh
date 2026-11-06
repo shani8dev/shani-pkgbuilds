@@ -32,6 +32,12 @@ SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 # string to avoid a nested-quoting mess around the printf/array syntax below.
 if [[ "${1:-}" == "__extract" ]]; then
     pkgbuild="$2"
+    # makepkg always defines these before sourcing; a PKGBUILD such as brscan4
+    # picks its source URL off $CARCH at top level, and `set -u` here turned
+    # that into "could not check" rather than checking it. Default to the
+    # host's architecture, the same way makepkg does.
+    CARCH="${CARCH:-$(uname -m)}"
+    export CARCH
     # shellcheck disable=SC1090
     source "$pkgbuild"
     # makepkg accepts any one of these checksum-array algorithms per
@@ -154,5 +160,5 @@ if [[ ${#FLAGGED[@]} -eq 0 && ${#PARSE_FAILED[@]} -eq 0 ]]; then
     echo "✓ No illegitimate SKIP checksums found."
 fi
 
-(( ${#FLAGGED[@]} > 0 )) && exit 1
+(( ${#FLAGGED[@]} > 0 || ${#PARSE_FAILED[@]} > 0 )) && exit 1
 exit 0
