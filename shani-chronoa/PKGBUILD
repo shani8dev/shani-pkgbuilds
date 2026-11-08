@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=71
+pkgrel=72
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -19,7 +19,6 @@ depends=(
     'python'
     # Circle to Search's overlay and its clipboard / browser hand-offs.
     'gtk4-layer-shell'
-    'wl-clipboard'
     'xdg-utils'
     'python-gobject'
     # `gio`, which `delete_file` needs to move anything to the desktop trash.
