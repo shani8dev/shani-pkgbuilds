@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=9
+pkgrel=10
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -102,19 +102,11 @@ depends=(
 	slurp
 	tesseract
 	tesseract-data-eng
-	# handwriting and Lens in the Indian languages first setup offers
-	tesseract-data-hin
-	tesseract-data-mar
-	tesseract-data-tam
-	tesseract-data-tel
-	tesseract-data-ben
-	tesseract-data-guj
-	tesseract-data-kan
-	tesseract-data-mal
-	tesseract-data-pan
-	tesseract-data-ori
-	tesseract-data-urd
-	tesseract-data-san
+	# Indian-language OCR data is NOT baked in: the setup wizard downloads
+	# each chosen language's traineddata into the user's directory
+	# (~/.local/share/shani-chronoa/tessdata, pinned by sha256), so shipping
+	# 12 packs here would make every user pay for languages they never pick -
+	# and the wizard would download its own copy anyway.
 	zbar
 	udisks2
 	unicode-emoji
