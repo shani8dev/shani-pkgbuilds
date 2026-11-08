@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-mr: ONE piper voice - mr_IN-google (Marathi),
+# Shani Chronoa's Marathi voice (voices.VOICES). No AUR package exists
+# for Marathi piper voices; packaged from the same pinned piper-voices
+# revision the provisioner uses, digests identical to its pins.
+pkgname=shani-piper-voice-mr
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: mr_IN-google (Marathi)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("mr_IN-google-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/mr/mr_IN/google/medium/mr_IN-google-medium.onnx"
+        "mr_IN-google-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/mr/mr_IN/google/medium/mr_IN-google-medium.onnx.json")
+sha256sums=('e1200d474a74ebd6d1737be2c7affe56f1f9efc18915d4595d7f5c2b15cf06f4'
+            '11055302ee1e3c9902e5e96c03cbfc0a9eec29b1b06b91ef52a3c66e9873edbb')
+
+package() {
+  install -Dm644 "$srcdir"/mr_IN-google-medium.onnx "$pkgdir"/usr/share/piper/voices/mr_IN-google-medium.onnx
+  install -Dm644 "$srcdir"/mr_IN-google-medium.onnx.json "$pkgdir"/usr/share/piper/voices/mr_IN-google-medium.onnx.json
+}

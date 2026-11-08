@@ -1,0 +1,17 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-tessdata-hin: tesseract Hindi OCR data (tessdata_fast, pinned
+# commit), installed where OCR looks system-wide: /usr/share/tessdata.
+# Digest matches shani-chronoa languages.LANGUAGES["hi"].tess_sha256.
+pkgname=shani-tessdata-hin
+pkgver=1.0
+pkgrel=1
+pkgdesc="Tesseract Hindi OCR data for ShaniOS (hi_IN light tessdata)"
+arch=('any')
+url="https://github.com/tesseract-ocr/tessdata_fast"
+license=('Apache-2.0')
+source=("hin.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/hin.traineddata")
+sha256sums=('4c73ffc59d497c186b19d1e90f5d721d678ea6b2e277b719bee4e2af12271825')
+
+package() {
+  install -Dm644 "$srcdir"/hin.traineddata "$pkgdir"/usr/share/tessdata/hin.traineddata
+}

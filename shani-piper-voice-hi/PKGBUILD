@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-hi: ONE piper voice - hi_IN-priyamvada (Hindi),
+# Shani Chronoa's Hindi voice (voices.VOICES). Packaged beside the
+# English voice so a Hindi-speaking person has a voice without the
+# setup download; the digest matches the provisioner's pin exactly.
+pkgname=shani-piper-voice-hi
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: hi_IN-priyamvada (Hindi)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("hi_IN-priyamvada-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/hi/hi_IN/priyamvada/medium/hi_IN-priyamvada-medium.onnx"
+        "hi_IN-priyamvada-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/hi/hi_IN/priyamvada/medium/hi_IN-priyamvada-medium.onnx.json")
+sha256sums=('aa63bcf2cd493b55a450f280e23cf77f03afc9af7015e6e5acd43b652f166c88'
+            '5efc0ccf7529f3528996d46e0fac1f969f681d44a8e55bfa6236ff8841b5d52d')
+
+package() {
+  install -Dm644 "$srcdir"/hi_IN-priyamvada-medium.onnx "$pkgdir"/usr/share/piper/voices/hi_IN-priyamvada-medium.onnx
+  install -Dm644 "$srcdir"/hi_IN-priyamvada-medium.onnx.json "$pkgdir"/usr/share/piper/voices/hi_IN-priyamvada-medium.onnx.json
+}

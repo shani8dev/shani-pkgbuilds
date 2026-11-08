@@ -1,0 +1,17 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-tessdata-mar: tesseract Marathi OCR data (tessdata_fast, pinned
+# commit), installed where OCR looks system-wide: /usr/share/tessdata.
+# Digest matches shani-chronoa languages.LANGUAGES["mr"].tess_sha256.
+pkgname=shani-tessdata-mar
+pkgver=1.0
+pkgrel=1
+pkgdesc="Tesseract Marathi OCR data for ShaniOS (mar light tessdata)"
+arch=('any')
+url="https://github.com/tesseract-ocr/tessdata_fast"
+license=('Apache-2.0')
+source=("mar.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/mar.traineddata")
+sha256sums=('0ba3f2d116972e72fe9e176bc84c38e81dfb6670f4ed1f7f6c8e16a27da7cb61')
+
+package() {
+  install -Dm644 "$srcdir"/mar.traineddata "$pkgdir"/usr/share/tessdata/mar.traineddata
+}
