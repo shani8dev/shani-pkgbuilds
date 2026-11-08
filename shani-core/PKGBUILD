@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=21
+pkgrel=22
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -11,7 +11,6 @@ depends=(
     amd-ucode
     intel-ucode
     linux
-    linux-headers
     linux-firmware
     glibc-locales
     lsb-release
@@ -75,34 +74,17 @@ depends=(
     podman-docker
     podman-compose
 
-    # Apptainer — HPC/scientific container runtime
-    apptainer
-
     # systemd-nspawn (@machines subvolume — systemd already in base)
 
-    # LXC (@lxc and @lxd subvolume)
+    # LXC (@lxc subvolume)
     lxc
     lxcfs
-    lxd
     cdrtools
-
-    # Virtualization (@libvirt + @qemu subvolumes)
-    libvirt
-    qemu-base
-    # TPM 2.0 emulator for VMs (swtpm), UEFI firmware (edk2-ovmf) and the
-    # virtio-fs daemon (virtiofsd) were missing even though libvirt/qemu are
-    # shipped — a VM with TPM/UEFI/virtio-fs support could not actually be
-    # created out of the box. All three are in Arch [extra].
-    swtpm
-    edk2-ovmf
-    virtiofsd
-    #virt-manager
-
-    # CPU scheduling (sched_ext): userspace schedulers + tooling from Arch
-    # [extra]. Dragon OS comparison gap; scx-scheds ships the schedulers,
-    # scx-tools the `scxctl`/`scxtop` front-ends.
-    scx-scheds
-    scx-tools
+    # Dropped from the container/VM fleet (full-coverage review): lxd,
+    # apptainer, libvirt, qemu-base, swtpm, edk2-ovmf, virtiofsd and the
+    # scx schedulers. Podman above is the container runtime; the rest were
+    # ~600 MB of capability the image never used. Re-add as optdepends or a
+    # separate metapackage if a profile wants VMs.
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"

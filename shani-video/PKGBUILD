@@ -38,11 +38,8 @@ depends=(
     nvidia-utils
     nvidia-open
 
-    # Virtual devices: v4l2loopback (virtual webcam for OBS) and vhba (virtual
-    # CD/DVD for CDEmu). Both are DKMS modules, so linux-headers (in
-    # shani-core) must be installed first. ntsync is in the kernel itself.
-    v4l2loopback-dkms
-    v4l2loopback-utils
-    vhba-module-dkms
+    # Virtual devices (v4l2loopback, vhba) are gone with dkms itself (see
+    # shani-core): ~600 MB of build chain (gcc, make, linux-headers) for two
+    # kernel modules a desktop rarely uses. ntsync is in the kernel itself.
 )
 license=('GPL-3.0-only')

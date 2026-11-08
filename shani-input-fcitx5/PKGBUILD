@@ -4,7 +4,7 @@
 # and Indic (m17n: Devanagari for Marathi and Hindi, Tamil, Bengali …).
 pkgname=shani-input-fcitx5
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Input methods for Shani OS's niri desktop: fcitx5 with Indic, Chinese, Japanese, Korean and Vietnamese engines"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-input-fcitx5"
@@ -15,13 +15,15 @@ depends=(
 	fcitx5-configtool
 	# the engines: shani-input-ibus's, one for one, plus Indic and tables
 	fcitx5-m17n
-	fcitx5-chinese-addons
+	# Chinese input via RIME, not fcitx5-chinese-addons: the addons pull
+	# qt6-webengine (297 MB) and libime for a browser engine inside an input
+	# method. fcitx5-rime + librime is ~5 MB and does pinyin/wubi/stroke.
+	# fcitx5-table-extra/other go with the addons (they depend on it).
+	fcitx5-rime
 	fcitx5-mozc
 	fcitx5-anthy
 	fcitx5-hangul
 	fcitx5-unikey
-	fcitx5-table-extra
-	fcitx5-table-other
 )
 license=('GPL-3.0-only')
 source=('50-shani-fcitx5.conf')

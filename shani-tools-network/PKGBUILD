@@ -1,45 +1,37 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=17
+pkgrel=18
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-network"
 depends=(
-	iftop
-	bandwhich
+	# Trimmed (full-coverage review): diagnostics/transfer tools no skill
+	# or sense invokes (Chronoa audit) - iftop, bandwhich, traceroute,
+	# arpwatch, aria2, socat, ngrep, rclone, cloudflared, caddy,
+	# wireshark-cli, gobuster. zsync stays (shani-deploy needs it).
 	ethtool
 	net-tools
 	nmap
-	traceroute
 	whois
 	wireless_tools
 	tcpdump
 	vnstat
-	arpwatch
 	inetutils
 	usbutils
 	bind
 	openbsd-netcat
 	curl
 	wget
-	aria2
 	nbd
 	rsync
 	zsync
 	iperf3
 	mtr
-	socat
-	ngrep
 	nethogs
-	rclone
 	restic
 	tailscale
-	cloudflared
-	caddy
-	wireshark-cli
 	arp-scan
-	gobuster
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
