@@ -30,7 +30,7 @@ pkgrel=108
 # snapshot change in 109d81b), so script and .sha256/.asc always describe the
 # same script bytes: .sha256 records bb2a627d..., which is what
 # shani-deploy.sh hashes to at that commit.
-_commit='21fafbce766fe9410765c77e88e085e7fc9cb5db'   # Replace with the specific commit hash
+_commit='e933d1971bf11c7ec0a948b6548237bc12501d66'   # Replace with the specific commit hash
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')

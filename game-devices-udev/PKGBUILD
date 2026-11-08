@@ -2,7 +2,7 @@
 
 pkgname=game-devices-udev
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Udev rules for controllers"
 url='https://codeberg.org/fabiscafe/game-devices-udev'
 arch=('any')
@@ -31,7 +31,7 @@ install="install"
 # verification is still strictly better than none. If a future rebuild
 # starts hard-failing here, it means upstream rotated to a new key with
 # nothing in `validpgpkeys` yet, not that this pin is stale.
-_commit='aaaf684043b33a330630335a3782b02ecf87a52e'
+_commit='f0c821eb3f1c3e87f3a6b2d9a5400905f32f84c8'
 source=("git+${url}.git?signed#commit=$_commit"
         "uinput.conf")
 validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229') # Fabian Bornschein <fabiscafe@mailbox.org>

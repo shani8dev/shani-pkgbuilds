@@ -16,7 +16,7 @@ optdepends=('xdotool: active-window tracking on X11'
             'gnome-screenshot: screenshots on GNOME (when the policy enables them)'
             'scrot: screenshots on other X11 desktops')
 makedepends=('git')
-source=("git+ssh://git@github.com/shani8dev/shani-insights.git#commit=a0f34a636dbdfc0aa9e7c2cbf9c5c975b994ead0")
+source=("git+ssh://git@github.com/shani8dev/shani-insights.git#commit=ba02770fed75b6a4dd5c5a8d9f95e7d89b94ea28")
 sha256sums=('SKIP')
 
 package() {

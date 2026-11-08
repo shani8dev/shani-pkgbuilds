@@ -1,7 +1,7 @@
 # Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
 pkgname=os-installer
 pkgver=0.5.1
-pkgrel=3
+pkgrel=4
 pkgdesc='Operating system installer by the GNOME project'
 url='https://gitlab.gnome.org/p3732/os-installer'
 # Pinned to the commit tag 0.5.1 actually points at (resolved via
@@ -9,7 +9,7 @@ url='https://gitlab.gnome.org/p3732/os-installer'
 # commit), not the tag itself: a tag can be force-moved upstream without
 # this PKGBUILD ever changing. check-skip-checksums.sh now correctly
 # flags a bare `#tag=` git+ source with SKIP as unverified — see AGENTS.md.
-_commit='fc558178e79e4abd0408b296dc5e66b1ff3fdbdf'
+_commit='ba5b74d06899959f98022a03c4ec2abe5d90e186'
 source=("git+https://gitlab.gnome.org/p3732/$pkgname.git#commit=$_commit")
 sha256sums=("SKIP")
 arch=('x86_64')
