@@ -1,12 +1,17 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=11
+pkgrel=12
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals"
 depends=(
 	fprintd
+	# Face sign-in with an IR camera (Windows Hello style): daemon, PAM
+	# module and enrolment GUI. A biometric peripheral like fprintd, so it
+	# lives here; every desktop profile already includes this package, which
+	# is how all greeters get it without four copies in the desktop metas.
+	linux-hello
 	linuxconsole
 	lirc
 	gpsd
