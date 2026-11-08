@@ -1,0 +1,19 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-whisper-model: the default STT model (ggml base-q5_1) installed
+# where Shani Chronoa looks for it system-wide:
+#   /usr/share/whisper/models/ggml-base-q5_1.bin  (stt_provision._SYSTEM_DIR)
+# Adapted from AUR whisper.cpp-model-base-q5_1; the digest matches
+# stt_provision.py MODELS["base-q5_1"] exactly.
+pkgname=shani-whisper-model
+pkgver=1.0
+pkgrel=1
+pkgdesc="Whisper base-q5_1 speech model for ShaniOS (offline STT)"
+arch=('any')
+url="https://huggingface.co/ggerganov/whisper.cpp"
+license=('MIT')
+source=("ggml-base-q5_1.bin::https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base-q5_1.bin")
+sha256sums=('422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898')
+
+package() {
+  install -Dm644 "$srcdir"/ggml-base-q5_1.bin "$pkgdir"/usr/share/whisper/models/ggml-base-q5_1.bin
+}

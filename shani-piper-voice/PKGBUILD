@@ -1,0 +1,23 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice: ONE piper voice - en_US-lessac-medium, Shani Chronoa's
+# default ("Lessac - clear, American (the default)"). We deliberately do not
+# ship the full en_US set from AUR piper-voices-en-us; a wider choice is a
+# later decision, not a silent default.
+# Digest-verified against shani-chronoa voices.py:VOICES at the same pinned
+# piper-voices revision (c10ece1aade47bb51c153c893d14e5bf8e5b7117).
+pkgname=shani-piper-voice
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: en_US-lessac-medium (Chronoa's default)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("en_US-lessac-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
+        "en_US-lessac-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/en/en_US/lessac/medium/en_US-lessac-medium.onnx.json")
+sha256sums=('5efe09e69902187827af646e1a6e9d269dee769f9877d17b16b1b46eeaaf019f'
+            'efe19c417bed055f2d69908248c6ba650fa135bc868b0e6abb3da181dab690a0')
+
+package() {
+  install -Dm644 "$srcdir"/en_US-lessac-medium.onnx "$pkgdir"/usr/share/piper/voices/en_US-lessac-medium.onnx
+  install -Dm644 "$srcdir"/en_US-lessac-medium.onnx.json "$pkgdir"/usr/share/piper/voices/en_US-lessac-medium.onnx.json
+}
