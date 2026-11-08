@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-ne: ONE piper voice - ne_NP-google-medium (Nepali),
+# Shani Chronoa's Nepali voice (voices.VOICES). Packaged from the
+# same pinned piper-voices revision the provisioner uses; the digests
+# match its pins exactly.
+pkgname=shani-piper-voice-ne
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: ne_NP-google-medium (Nepali)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("ne_NP-google-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ne/ne_NP/google/medium/ne_NP-google-medium.onnx"
+        "ne_NP-google-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ne/ne_NP/google/medium/ne_NP-google-medium.onnx.json")
+sha256sums=('e3ff3cbf97a7c01ebf29263c7fa1899ebed15e27a2d819b93dcfb86e10d39eaa'
+            '8c3c364bd2ab369850ae0b5d97b9c7a37ea15fb2eb5b91f8fd10e7ffd85ae4eb')
+
+package() {
+  install -Dm644 "$srcdir"/ne_NP-google-medium.onnx "$pkgdir"/usr/share/piper/voices/ne_NP-google-medium.onnx
+  install -Dm644 "$srcdir"/ne_NP-google-medium.onnx.json "$pkgdir"/usr/share/piper/voices/ne_NP-google-medium.onnx.json
+}

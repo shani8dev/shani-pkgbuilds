@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-te: ONE piper voice - te_IN-padmavathi-medium (Telugu),
+# Shani Chronoa's Telugu voice (voices.VOICES). Packaged from the
+# same pinned piper-voices revision the provisioner uses; the digests
+# match its pins exactly.
+pkgname=shani-piper-voice-te
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: te_IN-padmavathi-medium (Telugu)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("te_IN-padmavathi-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/te/te_IN/padmavathi/medium/te_IN-padmavathi-medium.onnx"
+        "te_IN-padmavathi-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/te/te_IN/padmavathi/medium/te_IN-padmavathi-medium.onnx.json")
+sha256sums=('414aa5960d91ceb6e45bbdf8c27fdc71af09f205130d7be4e99470f3c2cfa57d'
+            '6c86e4ee99d379815f78a75f23cdad62ccf50370062dd915c233d6e22de7109f')
+
+package() {
+  install -Dm644 "$srcdir"/te_IN-padmavathi-medium.onnx "$pkgdir"/usr/share/piper/voices/te_IN-padmavathi-medium.onnx
+  install -Dm644 "$srcdir"/te_IN-padmavathi-medium.onnx.json "$pkgdir"/usr/share/piper/voices/te_IN-padmavathi-medium.onnx.json
+}

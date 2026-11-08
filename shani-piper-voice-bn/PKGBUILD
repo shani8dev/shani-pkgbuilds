@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-bn: ONE piper voice - bn_BD-google-medium (Bengali),
+# Shani Chronoa's Bengali voice (voices.VOICES). Packaged from the
+# same pinned piper-voices revision the provisioner uses; the digests
+# match its pins exactly.
+pkgname=shani-piper-voice-bn
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: bn_BD-google-medium (Bengali)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("bn_BD-google-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/bn/bn_BD/google/medium/bn_BD-google-medium.onnx"
+        "bn_BD-google-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/bn/bn_BD/google/medium/bn_BD-google-medium.onnx.json")
+sha256sums=('f2e7518ed5534a755024a48c71b80bf617efaf12570bbdf3ce255a9526a8afd3'
+            'bc7e5e39e2a874bdad186620576ce18089b5a06c5645e258bcea3d56fdb11c0a')
+
+package() {
+  install -Dm644 "$srcdir"/bn_BD-google-medium.onnx "$pkgdir"/usr/share/piper/voices/bn_BD-google-medium.onnx
+  install -Dm644 "$srcdir"/bn_BD-google-medium.onnx.json "$pkgdir"/usr/share/piper/voices/bn_BD-google-medium.onnx.json
+}

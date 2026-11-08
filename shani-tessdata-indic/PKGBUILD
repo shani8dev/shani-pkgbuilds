@@ -1,0 +1,48 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-tessdata-indic: tesseract OCR data for the remaining Indian
+# languages (tessdata_fast light, pinned commit): Bengali, Telugu,
+# Malayalam, Urdu, Tamil, Gujarati, Kannada, Punjabi, Nepali, Odia.
+# Hindi and Marathi ship separately (shani-tessdata-hin/mar) because
+# they arrived first. Every digest matches shani-chronoa
+# languages.LANGUAGES' tess_sha256; OCR finds them under
+# /usr/share/tessdata, the system directory tesseract itself reads.
+pkgname=shani-tessdata-indic
+pkgver=1.0
+pkgrel=1
+pkgdesc="Tesseract OCR data for ShaniOS: bn te ml ur ta gu kn pa ne or (light tessdata)"
+arch=('any')
+url="https://github.com/tesseract-ocr/tessdata_fast"
+license=('Apache-2.0')
+source=("ben.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ben.traineddata"
+        "tel.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/tel.traineddata"
+        "mal.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/mal.traineddata"
+        "urd.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/urd.traineddata"
+        "tam.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/tam.traineddata"
+        "guj.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/guj.traineddata"
+        "kan.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/kan.traineddata"
+        "pan.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/pan.traineddata"
+        "nep.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/nep.traineddata"
+        "ori.traineddata::https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/ori.traineddata")
+sha256sums=('31163084c279aaebd376216f0c3d5c17ad4b5fee8db49dae79c20000b5de5964'
+            'd10691fddd5b67802e1c12800ebb321d3b8bcd8d24a2ac3ff206f93188c04ab5'
+            'bd05cbf1b197e7810d2903419aedb06f9ef77bfedf50b358673c1d18d707cdb4'
+            '62e8250ce2a994106e313a82e26a516a39e2cf159d0ce3c5b5008387fd0d555f'
+            'd02fbec24be4b07e32e80d0ccfc3b6b67a3c5d61c9d0a7c8532677990912c6ec'
+            'fa69658614b4946a9afae8853d67e0689838803dfa3d12c2e35ec53ee6f8df34'
+            'bd31e6b6ae93271e3bcf5383d306d8eefbb91542937cd6d735a5930c970e61d8'
+            '1ec0907fc3534065ea9ae190c6bb7ec9e5c74fd9d2fa996aaec7407f11ad8131'
+            '280ba9450b4f21afbf5985e0de87857b75a972577c50ef0603c141ddde4f1cb8'
+            '36f3135e61d501a3acfad41f5fe60b8e791274fff4c5375c969fdcca980cdbac')
+
+package() {
+  install -Dm644 "$srcdir"/ben.traineddata "$pkgdir"/usr/share/tessdata/ben.traineddata
+  install -Dm644 "$srcdir"/tel.traineddata "$pkgdir"/usr/share/tessdata/tel.traineddata
+  install -Dm644 "$srcdir"/mal.traineddata "$pkgdir"/usr/share/tessdata/mal.traineddata
+  install -Dm644 "$srcdir"/urd.traineddata "$pkgdir"/usr/share/tessdata/urd.traineddata
+  install -Dm644 "$srcdir"/tam.traineddata "$pkgdir"/usr/share/tessdata/tam.traineddata
+  install -Dm644 "$srcdir"/guj.traineddata "$pkgdir"/usr/share/tessdata/guj.traineddata
+  install -Dm644 "$srcdir"/kan.traineddata "$pkgdir"/usr/share/tessdata/kan.traineddata
+  install -Dm644 "$srcdir"/pan.traineddata "$pkgdir"/usr/share/tessdata/pan.traineddata
+  install -Dm644 "$srcdir"/nep.traineddata "$pkgdir"/usr/share/tessdata/nep.traineddata
+  install -Dm644 "$srcdir"/ori.traineddata "$pkgdir"/usr/share/tessdata/ori.traineddata
+}

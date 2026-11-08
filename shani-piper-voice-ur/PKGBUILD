@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-ur: ONE piper voice - ur_PK-aegis_female-medium (Urdu),
+# Shani Chronoa's Urdu voice (voices.VOICES). Packaged from the
+# same pinned piper-voices revision the provisioner uses; the digests
+# match its pins exactly.
+pkgname=shani-piper-voice-ur
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: ur_PK-aegis_female-medium (Urdu)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("ur_PK-aegis_female-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ur/ur_PK/aegis_female/medium/ur_PK-aegis_female-medium.onnx"
+        "ur_PK-aegis_female-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ur/ur_PK/aegis_female/medium/ur_PK-aegis_female-medium.onnx.json")
+sha256sums=('3ec306035cfd0bbc22342fee5890450708a16dd231809522731678aa583c961f'
+            'a8385c217a7e276acf5234bf01dbd0adb007a57c32ffbcc57d2db7eac3979bb6')
+
+package() {
+  install -Dm644 "$srcdir"/ur_PK-aegis_female-medium.onnx "$pkgdir"/usr/share/piper/voices/ur_PK-aegis_female-medium.onnx
+  install -Dm644 "$srcdir"/ur_PK-aegis_female-medium.onnx.json "$pkgdir"/usr/share/piper/voices/ur_PK-aegis_female-medium.onnx.json
+}

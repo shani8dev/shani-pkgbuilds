@@ -1,0 +1,21 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-piper-voice-ml: ONE piper voice - ml_IN-meera-medium (Malayalam),
+# Shani Chronoa's Malayalam voice (voices.VOICES). Packaged from the
+# same pinned piper-voices revision the provisioner uses; the digests
+# match its pins exactly.
+pkgname=shani-piper-voice-ml
+pkgver=1.0
+pkgrel=1
+pkgdesc="One Piper voice for ShaniOS: ml_IN-meera-medium (Malayalam)"
+arch=('any')
+url="https://huggingface.co/rhasspy/piper-voices"
+license=('MIT')
+source=("ml_IN-meera-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx"
+        "ml_IN-meera-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx.json")
+sha256sums=('0c3e730f8294286694cac5d33f4c94d050ed8ea74c5fd6d0d492d38cb57b5102'
+            'ad51935143f548d139a84c6ad1702b757cbceb52701167c0c1c98bebda7203e6')
+
+package() {
+  install -Dm644 "$srcdir"/ml_IN-meera-medium.onnx "$pkgdir"/usr/share/piper/voices/ml_IN-meera-medium.onnx
+  install -Dm644 "$srcdir"/ml_IN-meera-medium.onnx.json "$pkgdir"/usr/share/piper/voices/ml_IN-meera-medium.onnx.json
+}
