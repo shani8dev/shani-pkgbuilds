@@ -9,7 +9,7 @@
 # Devices, Radio, NFC, Remote and the Background switches.
 pkgname=shani-link
 pkgver=0.1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="Shani Link - the phone line, phone and watch for ShaniOS desktops"
 arch=('any')
 url="https://github.com/shani8dev/shani-link"
@@ -39,7 +39,7 @@ optdepends=(
     'gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)'
 )
 install=shani-link.install
-source=("git+https://github.com/shani8dev/shani-link.git#commit=369ac54c51550c9ef049539bfb7c56b516a8988a")
+source=("git+https://github.com/shani8dev/shani-link.git#commit=0b3bb6b17da7223dfb9561604d649803557e4d17")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources
 sha256sums=('SKIP')
 
