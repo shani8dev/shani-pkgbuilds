@@ -1,15 +1,21 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=18
+pkgrel=19
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-network"
 depends=(
-	# Trimmed (full-coverage review): diagnostics/transfer tools no skill
-	# or sense invokes (Chronoa audit) - iftop, bandwhich, traceroute,
-	# arpwatch, aria2, socat, ngrep, rclone, cloudflared, caddy,
-	# wireshark-cli, gobuster. zsync stays (shani-deploy needs it).
+	# Restored after the audit was rechecked: rclone (skills/cloud_files.py
+	# runs it), wireshark-cli (tshark for skills/dissect_traffic.py) and
+	# caddy/cloudflared (Cassini tabs invoke them) are all really used.
+	# The rest of the trim stands: iftop, bandwhich, traceroute, arpwatch,
+	# aria2, socat, ngrep, gobuster - invoked nowhere in Chronoa, Cassini,
+	# the shell or shani-link. zsync stays (shani-deploy needs it).
+	rclone
+	wireshark-cli
+	caddy
+	cloudflared
 	ethtool
 	net-tools
 	nmap
