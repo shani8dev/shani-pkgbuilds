@@ -9,15 +9,17 @@
 # Qwen3.5-2B over Qwen3-1.7B: beats it on every language benchmark measured
 # (MMLU-Pro 66.5 vs 56.5, IFEval 78.6 vs 72.5, LongBench 38.7 vs 26.5) and
 # carries measured function-calling (BFCL-V4 43.6, TAU2-Bench 48.8). It is
-# also multimodal (mmproj-F16, 668 MB) but the projector is NOT shipped -
-# vision stays a separate download for those who want it.
+# also multimodal: the mmproj-F16 projector (668 MB) ships too, to
+# /usr/share/shani-chronoa/vision, so vision works at first boot without
+# another download. local_vision finds the language file via the shared
+# lookup in _model_path either way.
 #
 # Pinned by byte size and sha256 (the Hugging Face LFS oid), fetched from
 # unsloth's Qwen3.5-2B-GGUF repo at the revision below.
 pkgname=shani-llm-model
 pkgver=1.0
-pkgrel=1
-pkgdesc="ShaniOS preinstalled brain: Qwen3.5-2B Q4_K_M (1.28 GB)"
+pkgrel=2
+pkgdesc="ShaniOS preinstalled brain: Qwen3.5-2B Q4_K_M + vision projector (1.95 GB)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-llm-model"
 license=('Apache-2.0')
@@ -25,10 +27,15 @@ depends=('shani-chronoa')
 options=()
 _filename="Qwen3.5-2B-Q4_K_M.gguf"
 _repo="https://huggingface.co/unsloth/Qwen3.5-2B-GGUF/resolve/f6d5376be1edb4d416d56da11e5397a961aca8ae"
-source=("$_filename::$_repo/$_filename")
-sha256sums=('aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223')
+_mmproj="mmproj-F16.gguf"
+source=("$_filename::$_repo/$_filename"
+        "$_mmproj::$_repo/$_mmproj")
+sha256sums=('aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223'
+            '7035e9cb8d7c6a9681d07eef9a364783e86ea4cd73faab2eabb4f43a101830c7')
 
 package() {
     install -Dm644 "$srcdir/$_filename" "$pkgdir/usr/share/shani-chronoa/llm/$_filename"
+    install -Dm644 "$srcdir/$_mmproj" "$pkgdir/usr/share/shani-chronoa/vision/$_mmproj"
     install -Dm644 "$srcdir/$_filename" "$pkgdir/usr/share/licenses/$pkgname/$_filename"
+    install -Dm644 "$srcdir/$_mmproj" "$pkgdir/usr/share/licenses/$pkgname/$_mmproj"
 }
