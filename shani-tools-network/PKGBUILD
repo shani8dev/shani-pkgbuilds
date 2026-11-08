@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-tools-network
 pkgver=1.2
-pkgrel=20
+pkgrel=21
 pkgdesc="Networking tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-tools-network"
@@ -18,6 +18,16 @@ depends=(
 	cloudflared
 	aria2
 	socat
+	# restored with the skills that use them: bandwhich/iftop (network
+	# activity sources), traceroute (trace_route fallback), arpwatch
+	# (network_watch), ngrep (capture_packets engine), gobuster
+	# (content_discovery, gated like scan_network).
+	bandwhich
+	iftop
+	traceroute
+	arpwatch
+	ngrep
+	gobuster
 	ethtool
 	net-tools
 	nmap
