@@ -1,0 +1,39 @@
+# Maintainer: Shrinivas Kumbhar <shrinivasvkumbhar@gmail.com>
+# shani-sherpa-onnx: sherpa-onnx's prebuilt shared libraries and programs
+# (the Kokoro TTS runtime Chronoa shells out to), installed where
+# shani_chronoa.sherpa.binary() looks for a system copy:
+#   /usr/share/sherpa-onnx/bin/sherpa-onnx-*   (programs)
+#   /usr/lib/sherpa-onnx/                      (libraries)
+# Adapted from AUR sherpa-onnx-bin, pinned to the release
+# shani-chronoa.sherpa.RELEASE pins (v1.13.8); the tarball digest matches
+# it exactly, so the packaged bytes are the bytes Chronoa would verify to.
+pkgname=shani-sherpa-onnx
+pkgver=1.13.8
+pkgrel=1
+pkgdesc="sherpa-onnx prebuilt runtime for ShaniOS (Kokoro TTS engine)"
+arch=('x86_64')
+url="https://github.com/k2-fsa/sherpa-onnx"
+license=('Apache-2.0')
+depends=('glibc' 'alsa-lib')
+makedepends=('patchelf')
+provides=('sherpa-onnx')
+conflicts=('sherpa-onnx-bin' 'sherpa-onnx')
+source=("sherpa-onnx-v1.13.8-linux-x64-shared.tar.bz2::https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.8/sherpa-onnx-v1.13.8-linux-x64-shared.tar.bz2")
+sha256sums=('c0bdb7907d3a74bba1d55d22bf4d9fa75586cf1530614ebe88a27b9118e015c4')
+
+package() {
+  local src="${srcdir}/sherpa-onnx-v1.13.8-linux-x64-shared"
+  local libdir="/usr/lib/sherpa-onnx"
+  # Bundled onnxruntime stays out of /usr/lib: extra/onnxruntime ships the
+  # same soname. Only the sherpa libraries stay private.
+  install -Dm755 "${src}"/lib/libsherpa-onnx-c-api.so "${src}"/lib/libsherpa-onnx-cxx-api.so -t "${pkgdir}${libdir}"
+  install -Dm755 "${src}"/bin/sherpa-onnx-* -t "${pkgdir}/usr/share/sherpa-onnx/bin"
+  # Upstream RPATH is relative to the tarball tree; point the programs at
+  # the private libdir (same failure AUR's package guards against).
+  local f
+  for f in "${pkgdir}/usr/share/sherpa-onnx/bin"/*; do
+    if [[ $(head -c4 "$f") == $'\x7fELF' ]]; then
+      patchelf --set-rpath "${libdir}" "$f"
+    fi
+  done
+}
