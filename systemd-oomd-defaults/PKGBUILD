@@ -1,9 +1,9 @@
 # Maintainer: MoetaYuko <loli at yuko.moe>
 
 pkgname=systemd-oomd-defaults
-_commit='21df2af848358e77c55269ffbb923fce750c416f'
+_commit='2b41ebfbb653d0747755d4c9c539b9d80cb05f46'
 pkgver=253.5
-pkgrel=2
+pkgrel=3
 pkgdesc="Configuration files for systemd-oomd"
 url="https://src.fedoraproject.org/rpms/systemd"
 arch=('any')
