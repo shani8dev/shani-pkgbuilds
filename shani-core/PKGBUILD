@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-core
 pkgver=1.2
-pkgrel=22
+pkgrel=23
 pkgdesc="Core of Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-core"
@@ -74,17 +74,34 @@ depends=(
     podman-docker
     podman-compose
 
+    # Apptainer — HPC/scientific container runtime
+    apptainer
+
     # systemd-nspawn (@machines subvolume — systemd already in base)
 
-    # LXC (@lxc subvolume)
+    # LXC (@lxc and @lxd subvolume)
     lxc
     lxcfs
+    lxd
     cdrtools
-    # Dropped from the container/VM fleet (full-coverage review): lxd,
-    # apptainer, libvirt, qemu-base, swtpm, edk2-ovmf, virtiofsd and the
-    # scx schedulers. Podman above is the container runtime; the rest were
-    # ~600 MB of capability the image never used. Re-add as optdepends or a
-    # separate metapackage if a profile wants VMs.
+
+    # Virtualization (@libvirt + @qemu subvolumes). Cassini's Virtualization
+    # page promises the full stack (libvirt, LXC, LXD, systemd-nspawn), so
+    # these stay: a cut here would make the manager's own page lie.
+    libvirt
+    qemu-base
+    # TPM 2.0 emulator for VMs (swtpm), UEFI firmware (edk2-ovmf) and the
+    # virtio-fs daemon (virtiofsd) were missing even though libvirt/qemu are
+    # shipped — a VM with TPM/UEFI/virtio-fs support could not actually be
+    # created out of the box. All three are in Arch [extra].
+    swtpm
+    edk2-ovmf
+    virtiofsd
+    #virt-manager
+
+    # CPU scheduling (sched_ext) dropped (size review): scx-scheds is
+    # 161 MB of schedulers nobody enables by default. Not part of the
+    # container/VM stack Cassini promises.
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"
