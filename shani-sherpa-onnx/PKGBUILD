@@ -8,7 +8,7 @@
 # shani-chronoa.sherpa.RELEASE pins (v1.13.8); the tarball digest matches
 # it exactly, so the packaged bytes are the bytes Chronoa would verify to.
 pkgname=shani-sherpa-onnx
-pkgver=1.13.8
+pkgver=2.0.1
 pkgrel=1
 pkgdesc="sherpa-onnx prebuilt runtime for ShaniOS (Kokoro TTS engine)"
 arch=('x86_64')
@@ -18,11 +18,11 @@ depends=('glibc' 'alsa-lib')
 makedepends=('patchelf')
 provides=('sherpa-onnx')
 conflicts=('sherpa-onnx-bin' 'sherpa-onnx')
-source=("sherpa-onnx-v1.13.8-linux-x64-shared.tar.bz2::https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.8/sherpa-onnx-v1.13.8-linux-x64-shared.tar.bz2")
-sha256sums=('c0bdb7907d3a74bba1d55d22bf4d9fa75586cf1530614ebe88a27b9118e015c4')
+source=("sherpa-onnx-v2.0.1-linux-x64-shared.tar.bz2::https://github.com/k2-fsa/sherpa-onnx/releases/download/v2.0.1/sherpa-onnx-v2.0.1-linux-x64-shared.tar.bz2")
+sha256sums=('2e823376987c3b6960d50726b6560155e2ad92da0b8b3886325773225ec6bdec')
 
 package() {
-  local src="${srcdir}/sherpa-onnx-v1.13.8-linux-x64-shared"
+  local src="${srcdir}/sherpa-onnx-v2.0.1-linux-x64-shared"
   local libdir="/usr/lib/sherpa-onnx"
   # Bundled onnxruntime stays out of /usr/lib: extra/onnxruntime ships the
   # same soname. Only the sherpa libraries stay private.
