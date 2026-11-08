@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=10
+pkgrel=11
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -16,7 +16,6 @@ depends=(
 	# the shell's "what to do with a file": convert pictures, fit a form's
 	# size limit (jpeg:extent), shrink a PDF; without them those actions hide
 	imagemagick
-	ghostscript
 	# --- login: greetd runs a bare niri hosting shani-shell's Quickshell greeter ---
 	greetd
 	# --- portals: niri-portals.conf asks for gnome first, gtk as fallback ---
@@ -28,12 +27,9 @@ depends=(
 	# Terminal=true apps and "open in a terminal" from any app: the freedesktop way,
 	# with foot as niri's default (etc/xdg/niri-xdg-terminals.list)
 	xdg-terminal-exec
-	wireplumber
-	brightnessctl
 	xdg-user-dirs
 	xdg-utils
 	# --- clipboard: history (spawned by the niri config) and persistence ---
-	wl-clipboard
 	cliphist
 	wl-clip-persist
 	# --- input methods: fcitx5, the one IBus alternative that speaks niri's
@@ -63,18 +59,13 @@ depends=(
 	gnome-software
 	gnome-firmware
 	# the shell's "Advanced connection settings", printers, GPU switching
-	nm-connection-editor
 	system-config-printer
-	switcheroo-control
 	xdg-user-dirs-gtk
 	# calendars Chronoa reads (eds_calendar), spelling, high-contrast themes
 	evolution-data-server
 	hunspell-en_us
 	gnome-themes-extra
 	# --- the shell's tiles and Lens; optional in shani-shell, standard here ---
-	networkmanager
-	bluez
-	bluez-utils
 	# user pictures the login screen can read (Settings > Your account sets them)
 	accountsservice
 	sound-theme-freedesktop
@@ -88,11 +79,6 @@ depends=(
 	# the camera: libcamera's cam/qcam for stills and the viewfinder, PipeWire
 	# (its libcamera plugin + GStreamer's pipewiresrc) for video
 	libcamera-tools
-	pipewire-libcamera
-	gst-plugin-pipewire
-	gst-plugins-good
-	gst-plugins-base
-	upower
 	power-profiles-daemon
 	polkit
 	gsettings-desktop-schemas
@@ -112,13 +98,10 @@ depends=(
 	unicode-emoji
 	wl-mirror
 	# launcher: fast file and content search, PDF previews
-	fd
-	ripgrep
 	poppler
 	# annotate a screenshot from its notification
 	satty
 	# accessibility: the screen reader
-	orca
 )
 install="$pkgname.install"
 source=()

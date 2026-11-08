@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-plasma
 pkgver=1.0
-pkgrel=40
+pkgrel=41
 pkgdesc="PLASMA desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-plasma"
@@ -56,7 +56,6 @@ depends=(
     kinfocenter
     kde-inotify-survey
     power-profiles-daemon
-    switcheroo-control
     konsole
     yakuake
     sweeper
