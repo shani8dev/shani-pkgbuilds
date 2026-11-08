@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=72
+pkgrel=73
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -45,6 +45,14 @@ depends=(
     'tesseract'
     'tesseract-data-eng'
     'whisper-cpp' # whisper-cpp: voice input (speech recognition)
+    # The minimal voice stack, declared rather than left to the image
+    # manifest: piper-tts is what speaks, the English voice is what it speaks
+    # with at first boot (other languages are downloaded by setup), and the
+    # Whisper model is what listens. Without them the package installs but
+    # cannot talk or hear.
+    'shani-piper-tts'
+    'shani-piper-voice'
+    'shani-whisper-model'
     # The on-machine language model (local_llm.py): llama.cpp's llama-server.
     # ggml-vulkan lets it use any GPU with a Vulkan driver (Intel, AMD, NVIDIA)
     # and costs nothing on a CPU-only machine, where ggml runs on the processor.
