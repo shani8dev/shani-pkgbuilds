@@ -117,6 +117,7 @@ package() {
     install -Dm755 bridge/osk-layout.py "$pkgdir/usr/lib/$pkgname/osk-layout.py"
     # voice typing: transcribe one recording with Chronoa's speech engine
     install -Dm755 bridge/dictate.py "$pkgdir/usr/lib/$pkgname/dictate.py"
+    install -Dm755 bridge/kundali.py "$pkgdir/usr/lib/$pkgname/kundali.py"
     # apps' own search results in the launcher (GNOME SearchProvider2)
     install -Dm755 bridge/search-providers.py "$pkgdir/usr/lib/$pkgname/search-providers.py"
     install -Dm755 bridge/face.py "$pkgdir/usr/lib/$pkgname/face.py"
