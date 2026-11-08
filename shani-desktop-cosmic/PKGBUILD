@@ -1,12 +1,16 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-cosmic
 pkgver=1.0
-pkgrel=8
+pkgrel=9
 pkgdesc="Cosmic desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-cosmic"
 license=('GPL-3.0-only')
 depends=(
+	# Face sign-in (Windows Hello style): daemon, PAM module and
+	# enrolment GUI. Works with any PAM greeter, so every desktop
+	# profile gets it through here rather than its package list.
+	linux-hello
 	cosmic-icon-theme
 	cosmic-app-library
 	cosmic-applets

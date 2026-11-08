@@ -1,12 +1,16 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=10
+pkgrel=11
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
 license=('GPL-3.0-only')
 depends=(
+	# Face sign-in (Windows Hello style): daemon, PAM module and
+	# enrolment GUI. Works with any PAM greeter, so every desktop
+	# profile gets it through here rather than its package list.
+	linux-hello
 	# --- compositor + shell ---
 	niri
 	# bar, launcher, notifications, Chronoa panel and the greetd greeter;
