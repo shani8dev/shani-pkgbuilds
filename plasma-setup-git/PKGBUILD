@@ -2,13 +2,13 @@
 pkgname=plasma-setup-git
 _pkgname=plasma-setup
 pkgver=0.1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Initial setup wizard for KDE Plasma (git version, pinned commit)"
 arch=('x86_64')
 url="https://invent.kde.org/plasma/plasma-setup"
 license=('BSD-2-Clause')
 
-_commit=18c00272d25b3f5d937ec56a1e67bb70eb8b469b  # <-- replace with desired commit
+_commit=21cc2f9407d7be34fa20efdb0f8254ada2b99515  # <-- replace with desired commit
 
 depends=(
   'gcc-libs'
