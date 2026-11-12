@@ -1,3 +1,6 @@
 # the terminal xdg-terminal-exec opens in a niri session (freedesktop default-terminal spec);
-# a person's own ~/.config/niri-xdg-terminals.list comes first
+# a person's own ~/.config/niri-xdg-terminals.list comes first (Settings > Default apps writes it)
+# footclient: a window of the foot server (foot-server.socket, on for every user) - a window
+# in about 90 ms and 7 MB, against 330 ms and 12 MB for a foot process of its own
+footclient.desktop
 foot.desktop

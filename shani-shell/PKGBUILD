@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=24
+pkgrel=27
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -27,6 +27,11 @@ depends=(
     'xkeyboard-config'
     # voice typing records with pw-record
     'pipewire'
+    # the Media Player (QtMultimedia's MediaPlayer and VideoOutput, FFmpeg backend)
+    'qt6-multimedia'
+    'qt6-multimedia-ffmpeg'
+    # Archives reads and extracts with bsdtar
+    'libarchive'
 )
 optdepends=(
     # the Island and the conversation panel are clients of dev.shani.chronoa.Agent
@@ -38,6 +43,7 @@ optdepends=(
     'upower: battery in the bar and on the lock screen'
     'power-profiles-daemon: the power mode tile'
     'brightnessctl: the brightness slider and the flashlight tile'
+    'matugen: the adaptive palette and Aether (colours from the wallpaper)'
     'geoclue: location services (auto-fill weather and night-light coordinates)'
     'gpsd: a GPS receiver as the location source, ahead of GeoClue'
     'wf-recorder: the screen record tile'
@@ -73,14 +79,13 @@ optdepends=(
     'scrcpy: an Android phone screen in a window (control centre > Phone, launcher)'
     'imagemagick: what to do with a file - convert pictures and fit a form size limit'
     'ghostscript: shrink a PDF to fit a size limit'
-    'libarchive: make or unpack a zip from a dropped file (bsdtar)'
     'switcheroo-control: start an app on the other graphics card'
     'xdg-terminal-exec: open terminal apps in the terminal you chose'
     'malcontent: parental controls - the launcher and dock leave out apps a standard account may not run'
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=19fd8feb1341a626e61255c5de09b037815b382d")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=b0c24c4cc41dc7dcad2521fe69e37893a5552449")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
@@ -110,49 +115,17 @@ package() {
     install -Dm644 assets/shani-night.jpg "$pkgdir/usr/share/backgrounds/shani/shani-night.jpg"
     install -Dm644 assets/shani-light.jpg "$pkgdir/usr/share/backgrounds/shani/shani-light.jpg"
 
-    # The bridge imports its modules from its own directory.
-    install -Dm644 -t "$pkgdir/usr/lib/$pkgname" \
-        bridge/chronoa-bridge.py bridge/agent_contract.py bridge/turn_filter.py bridge/logind.py
-    # the screen keyboard's layouts, generated from xkb on demand
-    install -Dm755 bridge/osk-layout.py "$pkgdir/usr/lib/$pkgname/osk-layout.py"
-    # voice typing: transcribe one recording with Chronoa's speech engine
-    install -Dm755 bridge/dictate.py "$pkgdir/usr/lib/$pkgname/dictate.py"
-    install -Dm755 bridge/kundali.py "$pkgdir/usr/lib/$pkgname/kundali.py"
-    # apps' own search results in the launcher (GNOME SearchProvider2)
-    install -Dm755 bridge/search-providers.py "$pkgdir/usr/lib/$pkgname/search-providers.py"
-    install -Dm755 bridge/face.py "$pkgdir/usr/lib/$pkgname/face.py"
-    install -Dm755 bridge/handwriting.py "$pkgdir/usr/lib/$pkgname/handwriting.py"
-    # devices plugged in, controllers, gaming mice, security keys, tablets
-    install -Dm755 bridge/plugwatch.py "$pkgdir/usr/lib/$pkgname/plugwatch.py"
-    install -Dm755 bridge/gamepad.py "$pkgdir/usr/lib/$pkgname/gamepad.py"
-    install -Dm755 bridge/ratbag.py "$pkgdir/usr/lib/$pkgname/ratbag.py"
-    install -Dm755 bridge/u2f.py "$pkgdir/usr/lib/$pkgname/u2f.py"
-    install -Dm755 bridge/input-kinds.py "$pkgdir/usr/lib/$pkgname/input-kinds.py"
-    install -Dm755 bridge/tablet-mode.py "$pkgdir/usr/lib/$pkgname/tablet-mode.py"
-    install -Dm755 bridge/mounts.py "$pkgdir/usr/lib/$pkgname/mounts.py"
-    # the default Bluetooth pairing agent (niri has none of its own)
-    install -Dm755 bridge/bt-agent.py "$pkgdir/usr/lib/$pkgname/bt-agent.py"
-    # files received over Bluetooth (obexd's agent)
-    install -Dm755 bridge/obex-agent.py "$pkgdir/usr/lib/$pkgname/obex-agent.py"
-    # the coming week from Evolution Data Server, for the sidebar's agenda
-    install -Dm755 bridge/agenda.py "$pkgdir/usr/lib/$pkgname/agenda.py"
-    # the SIM modem: PIN, texts, calls (ModemManager)
-    install -Dm755 bridge/modem.py "$pkgdir/usr/lib/$pkgname/modem.py"
-    install -Dm755 bridge/devwatch.py "$pkgdir/usr/lib/$pkgname/devwatch.py"
-    install -Dm755 bridge/translate.py "$pkgdir/usr/lib/$pkgname/translate.py"
-    # apps' own counts and progress on the dock (LauncherEntry, session bus)
-    install -Dm755 bridge/launcher-entry.py "$pkgdir/usr/lib/$pkgname/launcher-entry.py"
-    # every app start: desktop-file launch with the GPU, environment and terminal it asks for
-    install -Dm755 bridge/launch-app.py "$pkgdir/usr/lib/$pkgname/launch-app.py"
-    # parental controls: the apps malcontent's app filter blocks for this person
-    install -Dm755 bridge/appfilter.py "$pkgdir/usr/lib/$pkgname/appfilter.py"
-    # location: GeoClue's where-am-i, for weather and night light (opt-in)
-    install -Dm755 bridge/location.py "$pkgdir/usr/lib/$pkgname/location.py"
-    # first-boot setup's one privileged step (pkexec; polkit rule in shani-desktop-niri)
-    install -Dm755 bridge/first-account.py "$pkgdir/usr/lib/$pkgname/first-account.py"
-    # Settings > Users and > Power: accounts, automatic login, lid/power button
-    # (pkexec; polkit rule 50-shani-admin.rules in shani-desktop-niri)
-    install -Dm755 bridge/shani-admin.py "$pkgdir/usr/lib/$pkgname/shani-admin.py"
+    # Everything in bridge/, by glob and not by name. The list used to be kept
+    # by hand and drifted: chronoa-bridge.py imports screensaver.py from its
+    # own directory, which was never listed, so the packaged bridge died at
+    # import (no Island, no lock on suspend); characters.py was missing too,
+    # leaving the Characters surface empty. What each one is for is in its
+    # own docstring. The privileged ones (first-account.py, shani-admin.py)
+    # run through pkexec under shani-desktop-niri's polkit rules.
+    install -d "$pkgdir/usr/lib/$pkgname"
+    install -m755 -t "$pkgdir/usr/lib/$pkgname" bridge/*.py
+    # "What's new" after an update: the notification's "See everything"
+    install -Dm644 data/whats-new.md "$pkgdir/usr/share/shani/whats-new.md"
     # patch the service file to use the renamed launcher (avoids a file
     # conflict with shani-chronoa, which also ships /usr/bin/shani-chronoa-bridge)
     sed -i 's/shani-chronoa-bridge/shani-shell-chronoa-bridge/g' \
@@ -167,6 +140,10 @@ SH
     install -Dm755 bin/shani-doctor.py "$pkgdir/usr/bin/shani-doctor"
     # the agent command center (`shani`): one CLI over the shell IPC
     install -Dm755 bin/shani "$pkgdir/usr/bin/shani"
+    # the shell's own apps (Text Editor, Files, Calculator, …) as desktop
+    # entries, written from the same table `shani app` starts them from: the
+    # launcher's app list, dock pins, "Open with" and default apps read these
+    python3 bin/shani app --write-desktop "$pkgdir/usr/share/applications"
 
     install -Dm644 -t "$pkgdir/usr/lib/systemd/user" \
         data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service

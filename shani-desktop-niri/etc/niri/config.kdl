@@ -137,6 +137,13 @@ window-rule {
     default-window-height { fixed 760; }
 }
 
+// the shell's small apps (Common/AppWindow): floating at their own size, like
+// the utilities they are; the big ones (Files, Text Editor, the viewers) tile
+window-rule {
+    match app-id="^org\\.quickshell$" title="^(Calculator|Characters|Fonts|Voice Recorder|Camera|Document Scanner|Password Generator|Kundali|Video Trimmer|Logs|System Monitor|Clocks|Archive Manager|Weather|Tasks|Translate|Authenticator|Nearby Share|Converter)$"
+    open-floating true
+}
+
 // Picture-in-Picture (Firefox, Chromium/Vivaldi): a small floating video in the
 // bottom-right corner, above the tiled windows — not a column of its own
 window-rule {
@@ -152,6 +159,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     Mod+Space hotkey-overlay-title="Launcher" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
+    Mod+E hotkey-overlay-title="Files" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "filesHome"; }
     Mod+A hotkey-overlay-title="Chronoa" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleChronoa"; }
     Mod+S hotkey-overlay-title="Lens: read or ask about part of the screen" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lens"; }
     // emoji, as Win+. and Ctrl+Cmd+Space do: the launcher's ":" search
@@ -178,7 +186,9 @@ binds {
     Mod+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
     Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "terminal"; }
     Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
-    Mod+Return hotkey-overlay-title="Terminal" { spawn "foot"; }
+    // the terminal chosen in Settings > Default apps (xdg-terminal-exec reads
+    // ~/.config/niri-xdg-terminals.list, which the shell writes, then the system one)
+    Mod+Return hotkey-overlay-title="Terminal" { spawn "xdg-terminal-exec"; }
 
     // through the shell: its step and limit (Settings > Sound), and its OSD
     XF86AudioRaiseVolume allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "volumeUp"; }
@@ -283,3 +293,8 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P { power-off-monitors; }
 }
+
+// written by shani-shell (Settings > Windows > Look and motion): how windows
+// open and close, the shadow, the corners, the blur. Included last, so it wins
+// over what is above; niri reloads it on change
+include optional=true "~/.config/niri/shani-look.kdl"

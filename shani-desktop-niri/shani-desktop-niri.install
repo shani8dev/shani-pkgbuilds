@@ -18,9 +18,15 @@ post_upgrade() {
     if [[ -f /usr/share/shani-desktop-niri/foot.ini ]]; then
         install -Dm644 /usr/share/shani-desktop-niri/foot.ini /etc/xdg/foot/foot.ini
     fi
+    # the foot server for every user: footclient windows open in about 90 ms
+    # (a foot process of its own: 330 ms) and cost 7 MB each, not 12. Socket
+    # activated, so nothing runs until the first terminal; part of the
+    # graphical session, so it stops with it
+    systemctl --global enable foot-server.socket
 }
 
 pre_remove() {
     # `|| true`: it may already be disabled, or replaced by another desktop's DM
     systemctl disable greetd.service || true
+    systemctl --global disable foot-server.socket || true
 }

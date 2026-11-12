@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=11
+pkgrel=12
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -71,6 +71,9 @@ depends=(
 	sound-theme-freedesktop
 	noise-suppression-for-voice
 	swh-plugins                 # SC4: the sound chain's compressor (night mode)
+	# Settings > Look > Adaptive palette and the Aether surface: the shell
+	# says "ShaniOS ships it", and without it both only show that sentence
+	matugen
 	# the look: GTK 3 apps like GTK 4 ones, Papirus icons, the fonts
 	adw-gtk-theme
 	papirus-icon-theme

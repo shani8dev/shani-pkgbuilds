@@ -1,37 +1,38 @@
-# Default apps for every new account (copied from /etc/skel, as on
-# shani-desktop-gnome): the same choices as GNOME's list, for the apps this
-# image ships - Loupe, Showtime, Decibels (Gapless offered under "Open with"),
-# Papers, Text Editor, OnlyOffice, File Roller, Vivaldi, Calendar, Fragments;
-# folders in Files.
+# Default apps for every new account (copied from /etc/skel). The shell's own
+# apps come first where they handle the type - Text Editor, Media Player, Image
+# Viewer, Document Viewer, Archives (dev.shani.*, written by `shani app --write-desktop`) -
+# with the Flatpak after it, so it is the fallback and is under "Open with":
+# Loupe, Showtime, Decibels, Papers, File Roller. OnlyOffice, Vivaldi, Calendar
+# and Fragments keep their types; folders open in Files (Nautilus).
 [Default Applications]
 inode/directory=org.gnome.Nautilus.desktop;
 # ---------------------------------------------------------------------
-# Text Files (Default: Gnome Text Editor)
+# Text Files (Default: the shell's own Text Editor - dev.shani.TextEditor)
 # ---------------------------------------------------------------------
-text/plain=org.gnome.TextEditor.desktop;
-text/markdown=org.gnome.TextEditor.desktop;
-text/vnd.trolltech.linguist=org.gnome.TextEditor.desktop;
-text/xml=org.gnome.TextEditor.desktop;
-application/xml=org.gnome.TextEditor.desktop;
-application/json=org.gnome.TextEditor.desktop;
-application/x-shellscript=org.gnome.TextEditor.desktop;
-text/x-shellscript=org.gnome.TextEditor.desktop;
-text/x-python=org.gnome.TextEditor.desktop;
-text/x-csrc=org.gnome.TextEditor.desktop;
-text/x-chdr=org.gnome.TextEditor.desktop;
-text/x-c++=org.gnome.TextEditor.desktop;
-text/x-java=org.gnome.TextEditor.desktop;
-text/x-ruby=org.gnome.TextEditor.desktop;
-text/x-perl=org.gnome.TextEditor.desktop;
-text/x-makefile=org.gnome.TextEditor.desktop;
-text/x-patch=org.gnome.TextEditor.desktop;
-text/x-diff=org.gnome.TextEditor.desktop;
+text/plain=dev.shani.TextEditor.desktop;
+text/markdown=dev.shani.TextEditor.desktop;
+text/vnd.trolltech.linguist=dev.shani.TextEditor.desktop;
+text/xml=dev.shani.TextEditor.desktop;
+application/xml=dev.shani.TextEditor.desktop;
+application/json=dev.shani.TextEditor.desktop;
+application/x-shellscript=dev.shani.TextEditor.desktop;
+text/x-shellscript=dev.shani.TextEditor.desktop;
+text/x-python=dev.shani.TextEditor.desktop;
+text/x-csrc=dev.shani.TextEditor.desktop;
+text/x-chdr=dev.shani.TextEditor.desktop;
+text/x-c++=dev.shani.TextEditor.desktop;
+text/x-java=dev.shani.TextEditor.desktop;
+text/x-ruby=dev.shani.TextEditor.desktop;
+text/x-perl=dev.shani.TextEditor.desktop;
+text/x-makefile=dev.shani.TextEditor.desktop;
+text/x-patch=dev.shani.TextEditor.desktop;
+text/x-diff=dev.shani.TextEditor.desktop;
 
 # --- LaTeX, TeX & Scientific Documents ---
-application/x-latex=org.gnome.TextEditor.desktop;
-application/x-tex=org.gnome.TextEditor.desktop;
-application/x-bibtex=org.gnome.TextEditor.desktop;
-application/x-texinfo=org.gnome.TextEditor.desktop;
+application/x-latex=dev.shani.TextEditor.desktop;
+application/x-tex=dev.shani.TextEditor.desktop;
+application/x-bibtex=dev.shani.TextEditor.desktop;
+application/x-texinfo=dev.shani.TextEditor.desktop;
 
 
 # ---------------------------------------------------------------------
@@ -91,7 +92,7 @@ x-scheme-handler/dht=de.haeckerfelix.Fragments.desktop;
 # ---------------------------------------------------------------------
 # Documents & eBooks (Default: Papers)
 # ---------------------------------------------------------------------
-application/pdf=org.gnome.Papers.desktop;
+application/pdf=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
 application/epub+zip=org.gnome.Papers.desktop;
 application/x-pdf=org.gnome.Papers.desktop;
 application/x-mobipocket-ebook=org.gnome.Papers.desktop;
@@ -106,30 +107,30 @@ application/x-dvi=org.gnome.Papers.desktop;
 # ---------------------------------------------------------------------
 # Archives & Compression (Default: File Roller)
 # ---------------------------------------------------------------------
-application/zip=org.gnome.FileRoller.desktop;
+application/zip=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-zip=org.gnome.FileRoller.desktop;
 application/x-zip-compressed=org.gnome.FileRoller.desktop;
-application/x-tar=org.gnome.FileRoller.desktop;
+application/x-tar=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-gtar=org.gnome.FileRoller.desktop;
-application/gzip=org.gnome.FileRoller.desktop;
+application/gzip=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-gzip=org.gnome.FileRoller.desktop;
 application/x-bzip2=org.gnome.FileRoller.desktop;
 application/x-xz=org.gnome.FileRoller.desktop;
 application/x-lzma=org.gnome.FileRoller.desktop;
 application/x-lzip=org.gnome.FileRoller.desktop;
-application/x-7z-compressed=org.gnome.FileRoller.desktop;
+application/x-7z-compressed=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-rar=org.gnome.FileRoller.desktop;
 application/x-rar-compressed=org.gnome.FileRoller.desktop;
-application/x-compressed-tar=org.gnome.FileRoller.desktop;
-application/x-bzip-compressed-tar=org.gnome.FileRoller.desktop;
-application/x-xz-compressed-tar=org.gnome.FileRoller.desktop;
+application/x-compressed-tar=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
+application/x-bzip-compressed-tar=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
+application/x-xz-compressed-tar=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-lzma-compressed-tar=org.gnome.FileRoller.desktop;
 application/x-tzo=org.gnome.FileRoller.desktop;
 application/x-lzip-compressed-tar=org.gnome.FileRoller.desktop;
 application/zstd=org.gnome.FileRoller.desktop;
 application/x-zstd=org.gnome.FileRoller.desktop;
-application/x-zstd-compressed-tar=org.gnome.FileRoller.desktop;
-application/x-cpio=org.gnome.FileRoller.desktop;
+application/x-zstd-compressed-tar=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
+application/x-cpio=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-cpio-compressed=org.gnome.FileRoller.desktop;
 application/x-cabinet=org.gnome.FileRoller.desktop;
 application/vnd.ms-cab-compressed=org.gnome.FileRoller.desktop;
@@ -137,8 +138,8 @@ application/x-stuffit=org.gnome.FileRoller.desktop;
 application/x-arj=org.gnome.FileRoller.desktop;
 application/x-lha=org.gnome.FileRoller.desktop;
 application/x-lzh-compressed=org.gnome.FileRoller.desktop;
-application/x-iso9660-image=org.gnome.FileRoller.desktop;
-application/x-cd-image=org.gnome.FileRoller.desktop;
+application/x-iso9660-image=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
+application/x-cd-image=dev.shani.Archives.desktop;org.gnome.FileRoller.desktop;
 application/x-deb=org.gnome.FileRoller.desktop;
 application/x-ar=org.gnome.FileRoller.desktop;
 
@@ -148,18 +149,18 @@ application/x-ar=org.gnome.FileRoller.desktop;
 # ---------------------------------------------------------------------
 
 # --- Common Formats ---
-audio/aac=org.gnome.Decibels.desktop;
+audio/aac=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/amr=org.gnome.Decibels.desktop;
-audio/mpeg=org.gnome.Decibels.desktop;
+audio/mpeg=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/mp3=org.gnome.Decibels.desktop;
-audio/mp4=org.gnome.Decibels.desktop;
-audio/ogg=org.gnome.Decibels.desktop;
-audio/flac=org.gnome.Decibels.desktop;
+audio/mp4=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
+audio/ogg=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
+audio/flac=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/midi=org.gnome.Decibels.desktop;
 audio/vorbis=org.gnome.Decibels.desktop;
-audio/opus=org.gnome.Decibels.desktop;
-audio/wav=org.gnome.Decibels.desktop;
-audio/webm=org.gnome.Decibels.desktop;
+audio/opus=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
+audio/wav=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
+audio/webm=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 
 # --- MPEG Variants ---
 audio/x-mp1=org.gnome.Decibels.desktop;
@@ -174,7 +175,7 @@ audio/x-m4b=org.gnome.Decibels.desktop;
 audio/x-aac=org.gnome.Decibels.desktop;
 
 # --- Matroska Audio ---
-audio/x-matroska=org.gnome.Decibels.desktop;
+audio/x-matroska=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 
 # --- Playlist Formats ---
 audio/x-mpegurl=org.gnome.Decibels.desktop;
@@ -183,11 +184,11 @@ application/vnd.apple.mpegurl=org.gnome.Decibels.desktop;
 application/xspf+xml=org.gnome.Decibels.desktop;
 
 # --- AIFF, AU, WAV Formats ---
-audio/x-aiff=org.gnome.Decibels.desktop;
+audio/x-aiff=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/x-pn-aiff=org.gnome.Decibels.desktop;
 audio/x-pn-au=org.gnome.Decibels.desktop;
 audio/x-pn-wav=org.gnome.Decibels.desktop;
-audio/x-wav=org.gnome.Decibels.desktop;
+audio/x-wav=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/basic=org.gnome.Decibels.desktop;
 
 # --- Lossless & Compressed Formats ---
@@ -197,13 +198,13 @@ audio/x-wavpack=org.gnome.Decibels.desktop;
 audio/x-shorten=org.gnome.Decibels.desktop;
 
 # --- Ogg & Vorbis Variants ---
-audio/x-opus+ogg=org.gnome.Decibels.desktop;
-audio/x-vorbis+ogg=org.gnome.Decibels.desktop;
+audio/x-opus+ogg=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
+audio/x-vorbis+ogg=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 audio/x-vorbis=org.gnome.Decibels.desktop;
 audio/x-speex=org.gnome.Decibels.desktop;
 
 # --- Microsoft & Windows Formats ---
-audio/x-ms-wma=org.gnome.Decibels.desktop;
+audio/x-ms-wma=dev.shani.MediaPlayer.desktop;org.gnome.Decibels.desktop;
 
 # --- Tracker Module Formats (MOD, IT, S3M, XM) ---
 audio/x-it=org.gnome.Decibels.desktop;
@@ -244,7 +245,7 @@ audio/x-voc=org.gnome.Decibels.desktop;
 
 # --- Ogg-Based Video ---
 video/x-ogm+ogg=org.gnome.Showtime.desktop;
-video/ogg=org.gnome.Showtime.desktop;
+video/ogg=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/x-theora+ogg=org.gnome.Showtime.desktop;
 video/x-theora=org.gnome.Showtime.desktop;
 
@@ -253,7 +254,7 @@ video/x-ms-asf=org.gnome.Showtime.desktop;
 video/x-ms-asf-plugin=org.gnome.Showtime.desktop;
 video/x-ms-asx=org.gnome.Showtime.desktop;
 video/x-ms-wm=org.gnome.Showtime.desktop;
-video/x-ms-wmv=org.gnome.Showtime.desktop;
+video/x-ms-wmv=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/x-ms-wmx=org.gnome.Showtime.desktop;
 video/x-ms-wvx=org.gnome.Showtime.desktop;
 video/x-ms-wmp=org.gnome.Showtime.desktop;
@@ -262,37 +263,37 @@ video/x-ms-dvr=org.gnome.Showtime.desktop;
 video/x-ms-vob=org.gnome.Showtime.desktop;
 
 # --- AVI-Based Formats ---
-video/x-msvideo=org.gnome.Showtime.desktop;
+video/x-msvideo=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/msvideo=org.gnome.Showtime.desktop;
 video/x-mjpeg=org.gnome.Showtime.desktop;
 video/x-motion-jpeg=org.gnome.Showtime.desktop;
 
 # --- MPEG-Based Formats ---
-video/mp2t=org.gnome.Showtime.desktop;
-video/mpeg=org.gnome.Showtime.desktop;
+video/mp2t=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
+video/mpeg=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/mpeg-system=org.gnome.Showtime.desktop;
 video/mp1s=org.gnome.Showtime.desktop;
 video/mp2p=org.gnome.Showtime.desktop;
 video/mpeg4=org.gnome.Showtime.desktop;
 video/x-mpeg=org.gnome.Showtime.desktop;
 video/x-mpeg2=org.gnome.Showtime.desktop;
-video/mp4=org.gnome.Showtime.desktop;
+video/mp4=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/mp4v-es=org.gnome.Showtime.desktop;
-video/x-m4v=org.gnome.Showtime.desktop;
+video/x-m4v=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 
 # --- QuickTime & Apple Formats ---
-video/quicktime=org.gnome.Showtime.desktop;
+video/quicktime=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/x-quicktime=org.gnome.Showtime.desktop;
 
 # --- Matroska / WebM Formats ---
-video/x-matroska=org.gnome.Showtime.desktop;
+video/x-matroska=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/x-matroska-3d=org.gnome.Showtime.desktop;
 video/x-mkv=org.gnome.Showtime.desktop;
-video/webm=org.gnome.Showtime.desktop;
+video/webm=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 
 # --- Mobile Formats ---
 video/3gp=org.gnome.Showtime.desktop;
-video/3gpp=org.gnome.Showtime.desktop;
+video/3gpp=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 video/3gpp2=org.gnome.Showtime.desktop;
 
 # --- Streaming & Broadcast Formats ---
@@ -307,7 +308,7 @@ video/x-dv=org.gnome.Showtime.desktop;
 
 # --- Flash-Based Formats ---
 video/flv=org.gnome.Showtime.desktop;
-video/x-flv=org.gnome.Showtime.desktop;
+video/x-flv=dev.shani.MediaPlayer.desktop;org.gnome.Showtime.desktop;
 
 # --- FLI/FLC Animation Formats ---
 video/fli=org.gnome.Showtime.desktop;
@@ -354,24 +355,24 @@ video/x-annodex=org.gnome.Showtime.desktop;
 # ---------------------------------------------------------------------
 # Image Formats (Default: Loupe)
 # ---------------------------------------------------------------------
-image/jpeg=org.gnome.Loupe.desktop;
+image/jpeg=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/jpg=org.gnome.Loupe.desktop;
 image/pjpeg=org.gnome.Loupe.desktop;
-image/png=org.gnome.Loupe.desktop;
+image/png=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/x-png=org.gnome.Loupe.desktop;
 image/apng=org.gnome.Loupe.desktop;
-image/webp=org.gnome.Loupe.desktop;
-image/avif=org.gnome.Loupe.desktop;
+image/webp=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
+image/avif=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/jxl=org.gnome.Loupe.desktop;
 image/heic=org.gnome.Loupe.desktop;
 image/heif=org.gnome.Loupe.desktop;
-image/bmp=org.gnome.Loupe.desktop;
+image/bmp=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/x-bmp=org.gnome.Loupe.desktop;
 image/x-ms-bmp=org.gnome.Loupe.desktop;
-image/tiff=org.gnome.Loupe.desktop;
+image/tiff=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/x-tiff=org.gnome.Loupe.desktop;
-image/gif=org.gnome.Loupe.desktop;
-image/svg+xml=org.gnome.Loupe.desktop;
+image/gif=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
+image/svg+xml=dev.shani.ImageViewer.desktop;org.gnome.Loupe.desktop;
 image/svg+xml-compressed=org.gnome.Loupe.desktop;
 image/x-icon=org.gnome.Loupe.desktop;
 image/x-ico=org.gnome.Loupe.desktop;
