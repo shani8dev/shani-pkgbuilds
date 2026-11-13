@@ -1,6 +1,6 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
-pkgver=0.6.4
+pkgver=0.6.5
 pkgrel=1
 pkgdesc='ShaniOS operating system installer (GTK4/libadwaita), git snapshot'
 url='https://github.com/shani8dev/os-installer'
@@ -8,7 +8,7 @@ url='https://github.com/shani8dev/os-installer'
 # package is reproducible and check-skip-checksums.sh can accept the SKIP:
 # bump _commit (and pkgrel) to pick up new commits. All ShaniOS fixes are
 # commits in that repo — this PKGBUILD applies no patches.
-_commit='eef287829193b74fd14547f1e7ebeed8cdef8b80'
+_commit='7be3a62e4670f0a2cf6de2fe4700baf5480e6b3f'
 source=("git+${url}.git#commit=$_commit")
 sha256sums=('SKIP')
 arch=('x86_64')

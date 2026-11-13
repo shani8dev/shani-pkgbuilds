@@ -1,16 +1,16 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer
-pkgver=0.6.4
+pkgver=0.6.5
 pkgrel=1
 pkgdesc='ShaniOS operating system installer (GTK4/libadwaita)'
 url='https://github.com/shani8dev/os-installer'
 # First-party fork; the ShaniOS fixes that used to live in *.patch files here
-# are ordinary commits in that repo. Pinned to the commit tag v0.6.4 points
+# are ordinary commits in that repo. Pinned to the commit tag v0.6.5 points
 # at (resolved via `git ls-remote --tags`): an annotated tag object can be
 # force-moved upstream without this PKGBUILD ever changing, and
 # check-skip-checksums.sh correctly treats a bare `#tag=` git+ source with
 # SKIP as unverified.
-_commit='eef287829193b74fd14547f1e7ebeed8cdef8b80'
+_commit='7be3a62e4670f0a2cf6de2fe4700baf5480e6b3f'
 source=("git+${url}.git#commit=$_commit")
 sha256sums=('SKIP')
 arch=('x86_64')
