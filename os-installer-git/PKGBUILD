@@ -1,53 +1,32 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer-git
-pkgver=0.5.1
-pkgrel=17
-pkgdesc='Operating system installer by the GNOME project'
-url='https://gitlab.gnome.org/p3732/os-installer'
-_commit='ba5b74d06899959f98022a03c4ec2abe5d90e186'  # Replace with the specific commit hash
-source=("git+https://gitlab.gnome.org/p3732/os-installer.git#commit=$_commit"
-        "fix-execution.patch"
-        "add-root-password.patch"
-        "improve-summary-page.patch"
-        "fix-username-generation.patch"
-        "fix-language-provider-race.patch"
-        "fix-keyboard-language-tuple.patch"
-        "fix-efi-partition-path.patch")   # <-- Add patch here
-sha256sums=('SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP'
-            'SKIP')               # <-- Add patch checksum if you want
+pkgver=0.6.1
+pkgrel=1
+pkgdesc='ShaniOS operating system installer (GTK4/libadwaita), git snapshot'
+url='https://github.com/shani8dev/os-installer'
+# Tracks the fork's main. Pinned to a commit rather than a branch so the
+# package is reproducible and check-skip-checksums.sh can accept the SKIP:
+# bump _commit (and pkgrel) to pick up new commits. All ShaniOS fixes are
+# commits in that repo — this PKGBUILD applies no patches.
+_commit='58ac02d57b27d861be868ee9504e7451d27fc5e9'
+source=("git+${url}.git#commit=$_commit")
+sha256sums=('SKIP')
 arch=('x86_64')
 license=('GPL-3.0-or-later')
+provides=('os-installer')
+conflicts=('os-installer')
 makedepends=('git' 'meson' 'appstream-glib' 'blueprint-compiler')
 depends=('gnome-desktop-4' 'gtk4' 'libadwaita' 'libgweather-4' 'python-yaml' 'udisks2' 'vte4' 'python-gobject')
 optdepends=('epiphany: online assistance'
             'gnome-disk-utility: manual disk partitioning'
             'gnome-control-center: Wi-Fi setup')
 
-prepare () {
-    cd "$srcdir/os-installer"
-
-    # Apply the patch
-    patch -p1 < "$srcdir/fix-execution.patch"
-    patch -p1 < "$srcdir/add-root-password.patch"
-    patch -p1 < "$srcdir/improve-summary-page.patch"
-    patch -p1 < "$srcdir/fix-username-generation.patch"
-    patch -p1 < "$srcdir/fix-language-provider-race.patch"
-    patch -p1 < "$srcdir/fix-keyboard-language-tuple.patch"
-    patch -p1 < "$srcdir/fix-efi-partition-path.patch"
-}
-
 build () {
-    cd "$srcdir/os-installer"
-    meson setup --prefix=/usr build
+	cd "$srcdir/os-installer"
+	meson setup --prefix=/usr build
 }
 
 package() {
-    cd "$srcdir/os-installer"
-    meson install -C build --destdir "$pkgdir"
+	cd "$srcdir/os-installer"
+	meson install -C build --destdir "$pkgdir"
 }
