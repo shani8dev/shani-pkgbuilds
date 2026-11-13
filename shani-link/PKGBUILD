@@ -41,7 +41,7 @@ optdepends=(
     'gjs: ring or ping a phone paired through GSConnect'
 )
 install=shani-link.install
-source=("git+https://github.com/shani8dev/shani-link.git#commit=8fff367e552403f698ff46df8441ed2a48d6f31b")
+source=("git+https://github.com/shani8dev/shani-link.git#commit=1f388ed2b9ab4c64f371084fb227b5a60415b1bc")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources
 sha256sums=('SKIP')
 
