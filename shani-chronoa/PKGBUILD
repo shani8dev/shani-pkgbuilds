@@ -3,7 +3,7 @@
 
 pkgname=shani-chronoa
 pkgver=0.1.0
-pkgrel=78
+pkgrel=79
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -276,9 +276,24 @@ optdepends=(
       'avahi: discover_hosts - devices that announce themselves by name (avahi-browse)'
       'iproute2: check_internet and neighbour_table - the route and the ARP cache (ip neigh)'
       'fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)'
+      # Found by tools/check-deps.py (2026-11-13): programs the skills run that
+      # no package offered. Each skill degrades without its tool, as above.
+      'rhvoice: RHVoice voices for read aloud (RHVoice-test)'
+      'fontconfig: list_fonts (fc-list)'
+      'gstreamer: screen grabs through the portal stream (gst-launch-1.0)'
+      'fuse3: user_driver - user-space drivers mounted without root (fusermount3)'
+      'dkms: driver_dev - build and load an out-of-tree driver'
+      'make: driver_dev - build a driver from its source'
+      'qemu-system-x86: vm - start a virtual machine'
+      'yt-dlp: recordings - fetch a talk or video to transcribe'
+      # check-deps: unlisted aplay arecord - ALSA fallbacks of pw-play/pw-record (pipewire-audio, on every image)
+      # check-deps: unlisted balooctl6 kcmshell6 systemsettings - Plasma's own tools, used only on the Plasma image
+      # check-deps: unlisted fusermount - the FUSE 2 fallback of fusermount3
+      # check-deps: unlisted ufw - read when a machine uses ufw; Shanios ships firewalld
+      # check-deps: unlisted wmctrl xclip xdotool xinput xprop xsel xset xwd xwininfo - X11 fallbacks of the Wayland paths
   )
 makedepends=('git')
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=3030ba9fdafd801b5a49f901d7969f81bc7d6e01")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=c8c05b45088788683be9fc147e110d0dd3ea5d82")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources, so
 # the pin is the anchor (what check-skip-checksums.sh checks).
 sha256sums=('SKIP')

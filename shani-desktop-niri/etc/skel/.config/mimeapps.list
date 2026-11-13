@@ -93,13 +93,17 @@ x-scheme-handler/dht=de.haeckerfelix.Fragments.desktop;
 # Documents & eBooks (Default: Papers)
 # ---------------------------------------------------------------------
 application/pdf=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
-application/epub+zip=org.gnome.Papers.desktop;
+application/epub+zip=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+application/vnd.comicbook+zip=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+application/vnd.comicbook-rar=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+application/x-cbz=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+application/x-cbr=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+image/vnd.djvu=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+image/vnd.djvu+multipage=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
+application/oxps=dev.shani.DocumentViewer.desktop;org.gnome.Papers.desktop;
 application/x-pdf=org.gnome.Papers.desktop;
 application/x-mobipocket-ebook=org.gnome.Papers.desktop;
 application/vnd.amazon.ebook=org.gnome.Papers.desktop;
-image/vnd.djvu=org.gnome.Papers.desktop;
-application/x-cbz=org.gnome.Papers.desktop;
-application/x-cbr=org.gnome.Papers.desktop;
 application/postscript=org.gnome.Papers.desktop;
 application/x-dvi=org.gnome.Papers.desktop;
 

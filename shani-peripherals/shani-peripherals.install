@@ -37,6 +37,9 @@ post_upgrade() {
 	systemctl enable geoclue
 	systemctl enable upower
 	systemctl enable usbmuxd
+	# InputPlumber: started at boot so a handheld's built-in pad is one virtual
+	# controller from the first frame (it is D-Bus activated too, for the shell)
+	systemctl enable inputplumber.service
 	# NUT's stack is enabled by shani-settings' install hook, not here: it
 	# has to generate the monitor credential and insert the MONITOR line at the
 	# same time, which a bare `systemctl enable` cannot do. apcupsd stays

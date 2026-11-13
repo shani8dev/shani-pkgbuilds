@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=12
+pkgrel=13
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals"
@@ -73,6 +73,20 @@ depends=(
 	# sudoers entry. Nothing in the .install enables a service, and there is
 	# none - rtl_fm opens the device on demand.
 	rtl-sdr
+
+	# Game controllers and handhelds' built-in pads: InputPlumber (extra,
+	# 0.84.0, GPL-3.0+, from ChimeraOS's stack - the one shani-desktop-gamescope's
+	# session already follows). It merges a handheld's pad, gyro and back buttons
+	# into one virtual controller of the kind a game expects (Xbox, DualSense,
+	# Steam Deck), and its "intercept" mode routes a controller to D-Bus while an
+	# overlay is open, so the desktop's Quick Settings take the presses and the
+	# game behind them does not. shani-shell drives it over
+	# org.shadowblip.InputPlumber (Settings > Game controllers, the controller
+	# navigation). Chosen over Handheld Daemon (hhd): hhd is AUR-only and its own
+	# README advises against that build; InputPlumber is official Arch. It
+	# manages handhelds' built-in pads only unless "manage all controllers" is
+	# switched on, so a plain USB or Bluetooth pad on a desktop is left alone.
+	inputplumber
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"

@@ -165,6 +165,19 @@ PKGBUILD uses, and confirm it fails; then confirm the real, untampered
 file passes. A checksum that's merely present but never actually
 computed correctly gives false confidence.
 
+## Declared dependencies vs the programs a package runs (tools/check-deps.py)
+
+`tools/check-deps.py REPO [--report]` runs a package's own `package()` over the
+sibling checkout, reads every program the packaged files start, and looks each
+up in `tools/program-packages.tsv` (program -> Arch package, from pacman's file
+database). It fails on a program whose package is not in depends/optdepends, not
+in any shani-* image package, and not marked in the PKGBUILD with
+`# check-deps: unlisted PROG... - reason`. shani-shell, shani-cassini, shani-link
+and shani-chronoa each run it as `tests/test_declared_deps.py`; its own tests are
+`tests/test_check_deps.py`. "NOT IN MAP": rebuild the map in an Arch container,
+`tools/check-deps.py --refresh ../shani-shell ../shani-cassini ../shani-link
+../shani-chronoa` (rows pacman cannot resolve keep their hand-written packages).
+
 ## Things that have bitten this repo specifically
 
 - **`git+` sources are not automatically "pinned" — FIXED in the checker,

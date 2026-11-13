@@ -9,7 +9,7 @@
 # Devices, Radio, NFC, Remote and the Background switches.
 pkgname=shani-link
 pkgver=0.1.0
-pkgrel=9
+pkgrel=10
 pkgdesc="Shani Link - the phone line, phone and watch for ShaniOS desktops"
 arch=('any')
 url="https://github.com/shani8dev/shani-link"
@@ -37,9 +37,11 @@ optdepends=(
     'kdeconnect: the phone link through KDE Connect (built in otherwise)'
     'bluez-obex: receiving files a phone shares over Bluetooth'
     'gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)'
+    'libpulse: Bluetooth calls - routing the call audio (pactl)'
+    'gjs: ring or ping a phone paired through GSConnect'
 )
 install=shani-link.install
-source=("git+https://github.com/shani8dev/shani-link.git#commit=e1110296b4fd97d43e85bf690445ecb9d6ab2706")
+source=("git+https://github.com/shani8dev/shani-link.git#commit=9a392b24bc4dfaf442f9ee78b108b4948f113fbc")
 # git+ pinned to a commit: makepkg ignores checksums for VCS sources
 sha256sums=('SKIP')
 

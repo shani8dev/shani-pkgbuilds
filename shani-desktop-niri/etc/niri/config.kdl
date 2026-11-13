@@ -217,7 +217,7 @@ binds {
     XF86Search         { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
     XF86ScreenSaver    allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     XF86Mail           { spawn "xdg-open" "mailto:"; }
-    XF86WWW            { spawn "sh" "-c" "gtk-launch \"$(xdg-settings get default-web-browser)\""; }
+    XF86WWW            { spawn "sh" "-c" "\"${SHANI_LAUNCH_TOOL:-/usr/lib/shani-shell/launch-app.py}\" \"$(xdg-settings get default-web-browser)\""; }
     XF86Explorer       { spawn "xdg-open" "."; }
 
     Mod+O repeat=false { toggle-overview; }
@@ -282,6 +282,8 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+C { center-column; }
     Mod+Shift+V hotkey-overlay-title="Float or tile the window" { toggle-window-floating; }
+    // select text in any app, then: proofread, rewrite, shorter, translate... (Chronoa writes it)
+    Mod+Shift+W hotkey-overlay-title="Writing tools" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "writingTools"; }
     Mod+W { toggle-column-tabbed-display; }
 
     Print { screenshot; }

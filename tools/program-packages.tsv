@@ -1,0 +1,330 @@
+# program	Arch packages providing it (empty: no package has it - a name the scan
+# mistook for a program, or something the project ships itself). tools/check-deps.py --refresh
+# rebuilds it from pacman -F; a row it cannot resolve keeps the packages written by hand
+# ([shani] repo packages are not in the Arch file database).
+-l	
+-m	
+7z	7zip
+RHVoice-test	rhvoice
+adb	android-tools
+aplay	alsa-utils
+arecord	alsa-utils
+aria2c	aria2
+arpwatch	arpwatch
+auditctl	audit
+avahi-browse	avahi
+awk	gawk
+balooctl6	baloo
+bands	
+bandwhich	bandwhich
+basename	coreutils
+bc	bc
+bluetoothctl	bluez-utils
+boltctl	bolt
+bootctl	systemd
+brightnessctl	brightnessctl
+bsdtar	libarchive
+btrfs	btrfs-progs
+busctl	systemd
+bwrap	bubblewrap
+cancel	cups
+cat	coreutils
+checkupdates	pacman-contrib
+chfn	util-linux
+chmod	coreutils
+chpasswd	shadow
+chunk	
+cliphist	cliphist
+compsize	compsize
+convert	imagemagick
+coredumpctl	systemd
+cp	coreutils
+cpupower	cpupower
+crontab	cronie
+curl	curl
+cut	coreutils
+date	coreutils
+ddcutil	ddcutil
+ddjvu	djvulibre
+decode	
+delv	bind
+df	coreutils
+diff	diffutils
+distrobox	distrobox
+djvulibre	
+dkms	dkms
+dmesg	util-linux
+dotool	
+du	coreutils
+espeak-ng	espeak-ng
+ethtool	ethtool
+fc-cache	fontconfig
+fc-list	fontconfig
+fcitx5	fcitx5
+fcitx5-configtool	fcitx5
+fcitx5-remote	fcitx5
+fd	fd
+ffmpeg	ffmpeg
+ffplay	ffmpeg
+ffprobe	ffmpeg
+fields	
+find	findutils
+findmnt	util-linux
+firewall-cmd	firewalld
+flatpak	flatpak
+fprintd-enroll	fprintd
+fprintd-list	fprintd
+fuser	psmisc
+fusermount	fuse2
+fusermount3	fuse3
+fwupdmgr	fwupd
+gapplication	glib2
+gatttool	
+gdbus	glib2
+getcap	libcap
+getent	glibc
+gif	
+gio	glib2
+git	git
+gjs	gjs
+glxinfo	mesa-utils
+gnome-control-center	gnome-control-center
+gnome-screenshot	gnome-screenshot
+gobuster	gobuster
+gpasswd	shadow
+gpg	gnupg
+gpspipe	gpsd
+grep	grep
+grim	grim
+gsettings	glib2
+gst-launch	
+gst-launch-1.0	gstreamer
+head	coreutils
+host	bind
+hostnamectl	systemd
+i+1	
+i2cdetect	i2c-tools
+i2cget	i2c-tools
+i2cset	i2c-tools
+id	coreutils
+identify	imagemagick
+iftop	iftop
+import	imagemagick
+iostat	sysstat
+ip	iproute2
+iperf3	iperf3
+iptables	iptables,iptables-legacy
+ir-ctl	v4l-utils
+irsend	lirc
+journalctl	systemd
+kcmshell6	kcmutils
+kdeconnect-cli	kdeconnect
+kscreen-doctor	libkscreen
+kwriteconfig6	kconfig
+last	util-linux
+linux-hello	
+linux-hellod	
+liquidctl	liquidctl
+llama-imatrix	llama-cpp
+llama-perplexity	llama-cpp
+llama-quantize	llama-cpp
+llama-server	llama-cpp
+locale	glibc
+localectl	systemd
+localsearch	localsearch
+log	
+loginctl	systemd
+logrotate	logrotate
+lp	cups
+lpinfo	cups
+lpoptions	cups
+lpstat	cups
+lrzcat	lrzip
+ls	coreutils
+lsblk	util-linux
+lscpu	util-linux
+lsmod	kmod
+lsof	lsof
+lspci	pciutils
+lsusb	usbutils
+lynx	lynx
+lzop	lzop
+machinectl	systemd
+magick	imagemagick
+main	
+make	make
+malcontent-control	malcontent
+matugen	matugen
+md5sum	coreutils
+mkdir	coreutils
+mktemp	coreutils
+mode2	lirc
+mokutil	mokutil
+monitor-sensor	iio-sensor-proxy
+mpstat	sysstat
+mtr	mtr,mtr-gtk
+mv	coreutils
+n+1	
+net	smbclient
+nethogs	nethogs
+nfc-emulate-forum-tag4	libnfc
+nfc-jewel	libnfc
+nfc-list	libnfc
+nfc-mfultralight	libnfc
+nfc-scan-device	libnfc
+nft	nftables
+ngrep	ngrep
+niri	niri
+nm-connection-editor	nm-connection-editor
+nmap	nmap
+nmcli	networkmanager
+nologin	util-linux
+notify-send	libnotify
+nproc	coreutils
+nvidia-smi	nvidia-utils
+ollama	ollama
+openssl	openssl
+orca	orca
+org.bluez	
+org.freedesktop.DBus.Properties.GetAll	
+org.freedesktop.Notifications	
+pacman	pacman
+pactl	libpulse
+paplay	libpulse
+parakeet-cli	whisper-cpp
+passwd	shadow
+patch	patch
+pdffonts	poppler
+pdfimages	poppler
+pdfinfo	poppler
+pdftoppm	poppler
+pdftotext	poppler
+pdfunite	poppler
+pidstat	sysstat
+ping	iputils
+piper-tts	shani-piper-tts
+pipewire	pipewire
+pkexec	polkit
+pkill	procps-ng
+plocate	plocate
+png	
+podman	podman
+powerprofilesctl	power-profiles-daemon
+print	
+ps	procps-ng
+push	
+pw-cat	pipewire-audio
+pw-dump	pipewire
+pw-metadata	pipewire
+pw-play	pipewire-audio
+pw-record	pipewire-audio
+python3	python
+qemu-system-x86_64	qemu-system-x86
+qrencode	qrencode
+qs	quickshell
+rclone	rclone
+readelf	binutils
+readlink	coreutils
+receive	
+restic	restic
+rfkill	util-linux
+rg	ripgrep
+rm	coreutils
+rocm-smi	
+rsync	rsync
+rtl_fm	rtl-sdr
+rubberband	rubberband
+run	
+sane-find-scanner	sane
+sar	sysstat
+satty	satty
+sbctl	sbctl
+scan	
+scanimage	sane
+sed	sed
+send	
+send-key	
+shani-cassini	
+shani-chronoa	
+shani-chronoa-screen-stream	
+shani-deploy	
+shani-doctor	
+shani-link-app	
+shutdown	systemd-sysvcompat
+sleep	coreutils
+slurp	slurp
+smartctl	smartmontools
+socat	socat
+sort	coreutils
+soundstretch	soundtouch
+sox	sox
+spd-say	speech-dispatcher
+stat	coreutils
+stop	
+swappy	swappy
+switcherooctl	switcheroo-control
+swtpm	swtpm
+system-config-printer	system-config-printer
+systemctl	systemd
+systemd-analyze	systemd
+systemd-inhibit	systemd
+systemd-run	systemd
+systemd-vmspawn	systemd
+systemsettings	systemsettings
+tail	coreutils
+tailscale	tailscale
+tesseract	tesseract
+timedatectl	systemd
+timeout	coreutils
+tldr	tealdeer,tldr
+top	procps-ng
+touch	coreutils
+tr	coreutils
+traceroute	traceroute
+tune	
+udevadm	systemd
+udisksctl	udisks2
+ufw	ufw
+uname	coreutils
+upower	upower
+uptime	procps-ng
+usb-devices	usbutils
+usbmuxd	usbmuxd
+useradd	shadow
+userdel	shadow
+v4l2-ctl	v4l-utils
+via	
+virsh	libvirt
+vnstat	vnstat
+volume	
+vulkaninfo	vulkan-tools
+wc	coreutils
+webp	
+wget	wget
+whisper-cli	whisper-cpp
+whisper-server	whisper-cpp
+who	coreutils
+wl-copy	wl-clipboard
+wl-mirror	wl-mirror
+wl-paste	wl-clipboard
+wmctrl	wmctrl
+wpctl	wireplumber
+write	util-linux
+wtype	wtype
+xclip	xclip
+xdg-email	xdg-utils
+xdg-mime	xdg-utils
+xdg-open	xdg-utils
+xdg-settings	xdg-utils
+xdg-terminal-exec	xdg-terminal-exec
+xdotool	xdotool
+xinput	xorg-xinput
+xprop	xorg-xprop
+xsel	xsel
+xset	xorg-xset
+xwd	xorg-xwd
+xwininfo	xorg-xwininfo
+ydotool	ydotool
+ykman	yubikey-manager
+yt-dlp	yt-dlp
+zbarimg	zbar

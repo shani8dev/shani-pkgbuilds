@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=27
+pkgrel=28
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -25,13 +25,19 @@ depends=(
     'wtype'
     'libxkbcommon'
     'xkeyboard-config'
-    # voice typing records with pw-record
-    'pipewire'
+    # voice typing and the voice recorder record with pw-record, which is in
+    # pipewire-audio, not pipewire (tools/check-deps.py found it)
+    'pipewire-audio'
+    # Fonts lists and refreshes the installed fonts (fc-list, fc-cache)
+    'fontconfig'
     # the Media Player (QtMultimedia's MediaPlayer and VideoOutput, FFmpeg backend)
     'qt6-multimedia'
     'qt6-multimedia-ffmpeg'
     # Archives reads and extracts with bsdtar
     'libarchive'
+    # Document Viewer: e-books, comics and XPS made PDFs, and PDF forms filled
+    # in - all by PyMuPDF (bridge/pdfform.py), which carries MuPDF itself
+    'python-pymupdf'
 )
 optdepends=(
     # the Island and the conversation panel are clients of dev.shani.chronoa.Agent
@@ -82,10 +88,15 @@ optdepends=(
     'switcheroo-control: start an app on the other graphics card'
     'xdg-terminal-exec: open terminal apps in the terminal you chose'
     'malcontent: parental controls - the launcher and dock leave out apps a standard account may not run'
+    'djvulibre: DjVu documents in the Document Viewer (ddjvu)'
+    'at-spi2-core: the menus of each app (File, Edit ...) in the window menu, read from its accessibility tree'
+    'swappy: mark up a screenshot before saving it'
+    'zenity: the snippet and compress tiles ask with a dialog'
+    'smbclient: Settings > Sharing lists the folders shared on the network (net usershare)'
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=b0c24c4cc41dc7dcad2521fe69e37893a5552449")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=9f2679338e8a08778c589f1382ddfeb5ad52ecb3")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
