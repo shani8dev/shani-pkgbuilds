@@ -122,6 +122,26 @@ window-rule {
     }
 }
 
+// Never on the phone's screen: a screencast (the portal's monitor capture) is
+// what the phone shows, and niri replaces these windows with black in it.
+window-rule {
+    match app-id=r#"^(org\.keepassxc\.KeePassXC|org\.gnome\.World\.Secrets|com\.bitwarden\.desktop)$"#
+    block-out-from "screencast"
+}
+
+// A window the phone is showing is marked, so the person can see what is cast
+// without looking at the phone.
+window-rule {
+    match is-window-cast-target=true
+    focus-ring {
+        active-color "#f38ba8"
+        inactive-color "#7d2d3d"
+    }
+    border {
+        inactive-color "#7d2d3d"
+    }
+}
+
 // the wallpaper stays behind the overview's workspaces (zooming out keeps it,
 // as GNOME's does) instead of a flat grey backdrop
 layer-rule {
