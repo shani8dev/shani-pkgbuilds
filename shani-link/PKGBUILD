@@ -58,6 +58,12 @@ package() {
     install -Dm644 data/applications/dev.shani.Link.Dial.desktop \
         "$pkgdir/usr/share/applications/dev.shani.Link.Dial.desktop"
     install -Dm644 data/systemd/shani-link.service "$pkgdir/usr/lib/systemd/user/shani-link.service"
+    # the phone's microphone is a virtual ALSA loopback card: snd-aloop is in the
+    # kernel (no DKMS), and a high index keeps it from taking over the default
+    # card. The link finds whichever index is loaded.
+    install -dm755 "$pkgdir/usr/lib/modules-load.d" "$pkgdir/usr/lib/modprobe.d"
+    printf 'snd-aloop\n' > "$pkgdir/usr/lib/modules-load.d/snd-aloop.conf"
+    printf 'options snd-aloop index=7\n' > "$pkgdir/usr/lib/modprobe.d/snd-aloop.conf"
     install -Dm644 data/dbus/dev.shani.Link.service "$pkgdir/usr/share/dbus-1/services/dev.shani.Link.service"
     install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
