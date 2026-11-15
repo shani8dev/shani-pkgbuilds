@@ -297,8 +297,8 @@ class UpdatesWindow(Adw.Window):
 
     The read-only half (``--status --check --json``) needs no privileges, so
     the page is populated before anything is installed. The installing half is
-    the deploy script itself, run through the console user's narrow sudoers
-    grant, with its own output streamed into the log view.
+    the deploy script itself, through polkit (AUTH_SELF: the console user's own
+    password), with its output streamed into the log view.
     """
 
     def __init__(self, parent):
@@ -508,9 +508,11 @@ class ResetWindow(Adw.Window):
     ``shani-reset`` wipes the persistent state under /data (accounts, host
     settings, service state) and leaves the OS slots, the boot entries and
     /home alone. The dialog says so, offers a dry run first, and requires the
-    word RESET before the destructive button unlocks — the passwordless sudo
-    grant behind it is deliberately narrow, so this typed confirmation is the
-    human gate.
+    word RESET before the destructive button unlocks.
+
+    Both halves go through polkit, where shani-reset is AUTH_ADMIN (wheel plus
+    an administrator credential) — the platform's own gate for an
+    irreversible operation, not a sudo grant this console invented.
     """
 
     def __init__(self, parent):

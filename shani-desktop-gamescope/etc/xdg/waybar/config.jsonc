@@ -29,6 +29,6 @@
   "custom/session": {
     "format": "󰒉 Game mode",
     "tooltip": false,
-    "on-click": "foot -e sudo gamescope-session-select steam"
+    "on-click": "pkexec gamescope-session-select steam"
   }
 }
