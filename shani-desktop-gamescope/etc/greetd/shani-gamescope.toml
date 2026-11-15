@@ -14,5 +14,5 @@ vt = 1
 service = "login"
 
 [initial_session]
-command = "gamescope-session-plus steam"
+command = "gamescope-session-initial"
 user = "gamescope"

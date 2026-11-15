@@ -7,7 +7,7 @@
 # ~/.config/environment.d) and drops the SteamOS-specific bits.
 pkgname=gamescope-session-plus
 pkgver=1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Portable gamescope session framework (ShaniOS flavour)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/gamescope-session-plus"
@@ -40,6 +40,16 @@ package() {
     # "Switch to Desktop". Default to the maintenance desktop.
     install -Dm 755 "$startdir/usr/bin/gamescope-session" \
         "$pkgdir/usr/bin/gamescope-session"
+
+    # greetd initial_session wrapper: reads /etc/gamescope-session and execs
+    # either the Steam or the maintenance desktop session.
+    install -Dm 755 "$startdir/usr/bin/gamescope-session-initial" \
+        "$pkgdir/usr/bin/gamescope-session-initial"
+
+    # Persist the selected session and restart greetd. Run as root:
+    #   sudo gamescope-session-select desktop
+    install -Dm 755 "$startdir/usr/bin/gamescope-session-select" \
+        "$pkgdir/usr/bin/gamescope-session-select"
 
     install -Dm 644 "$startdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

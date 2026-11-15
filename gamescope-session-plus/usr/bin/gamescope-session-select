@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Usage: gamescope-session-select [steam|desktop]
+# Persist the greetd initial session and restart greetd. Run as root
+# (sudo gamescope-session-select desktop) from the maintenance desktop or TTY.
+set -euo pipefail
+session="${1:-steam}"
+case "$session" in
+  steam|gamescope) session=steam ;;
+  desktop|sway) session=desktop ;;
+  *) echo "usage: $0 [steam|desktop]" >&2; exit 1 ;;
+esac
+echo "$session" > /etc/gamescope-session
+systemctl restart greetd

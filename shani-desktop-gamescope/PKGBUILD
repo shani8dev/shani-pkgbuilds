@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Gamescope gaming desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"

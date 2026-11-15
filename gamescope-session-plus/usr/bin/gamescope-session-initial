@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# greetd initial_session wrapper: read the selected session and exec it.
+# The state file is written by gamescope-session-select; default steam.
+session="$(cat /etc/gamescope-session 2>/dev/null || echo steam)"
+case "$session" in
+  desktop|sway) exec gamescope-session-plus desktop ;;
+  steam|gamescope|"") exec gamescope-session-plus steam ;;
+  *) echo "gamescope-session-initial: unknown session '$session'" >&2; exit 1 ;;
+esac
