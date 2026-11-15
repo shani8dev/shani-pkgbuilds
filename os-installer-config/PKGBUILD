@@ -2,8 +2,8 @@
 
 pkgname=os-installer-config
 pkgver=0.0.1
-pkgrel=102
-_commit='5d8ec1902fda9d110b546b29c52b60d076fa18bd'   # lockdown=confidentiality
+pkgrel=103
+_commit='c44f428f186b1b5267108a7bce974e4ac7493ddf'   # install: split BTRFS_SUBVOLUMES on whitespace
 pkgdesc="Default Shani OS configuration files for the os-installer"
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
 arch=('any')
