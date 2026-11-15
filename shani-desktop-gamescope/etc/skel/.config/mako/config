@@ -1,17 +1,18 @@
-[global]
+# Mako has no [global] section: the keys at the top of the file ARE the
+# defaults, and a [section] header starts a per-app criteria block. Writing
+# "[global]" here is a parse error ("Invalid boolean criteria field 'global'")
+# and mako exits - which silently costs the whole notification system.
+#
+# Every option here is one that mako 1.x still knows. "position" was renamed
+# to "anchor" (top-right is the default anyway) and border-radius takes a
+# DIRECTION, not pixels; an option this version does not know is a parse
+# error that kills mako outright, so the version-dependent ones are left out.
+#
 # Translucent, so the blurred wallpaper (shani-sway-blur) reads through the
 # popup. Mako takes its colours as #RRGGBB or #RRGGBBAA.
-#
-# border-radius takes a DIRECTION in mako (all, top-right, ...), not a pixel
-# count - "border-radius=14" is a parse error and mako exits, which silently
-# costs the whole notification system. The pixel radius for the icon is
-# icon-border-radius.
 background-color=#1a1b26cc
 text-color=#c0caf5
 border-color=#7aa2f780
 border-size=2
-border-radius=all
-icon-border-radius=14
 default-timeout=5000
 max-visible=5
-position=top-right
