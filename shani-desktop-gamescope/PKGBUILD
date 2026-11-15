@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Gamescope gaming desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
@@ -27,11 +27,10 @@ depends=(
 	xdg-user-dirs
 	xdg-utils
 	gsettings-desktop-schemas
-	# --- Controller / RGB / peripheral support ---
-	antimicrox
-	openrgb
-	piper
-	goverlay
+	# --- Controller / RGB / peripheral support: Flatpaks (see the gamescope
+	#     flatpak-packages.txt: io.github.antimicrox.antimicrox,
+	#     org.openrgb.OpenRGB, org.freedesktop.Piper,
+	#     io.github.benjamimgois.goverlay) ---
 	# --- Filesystem helpers for game libraries ---
 	gvfs
 	gvfs-gphoto2
