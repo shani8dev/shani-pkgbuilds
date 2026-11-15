@@ -1,0 +1,3 @@
+# Maintenance desktop (sway) inside gamescope. Use the Steam client's
+# "Switch to Desktop", or run `gamescope-session-plus desktop` from a TTY.
+CLIENTCMD="sway"

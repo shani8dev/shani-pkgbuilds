@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Valve's gamescope-session entry point. ShaniOS uses gamescope-session-plus.
+# The Steam client's "Switch to Desktop" calls this with no arguments, so the
+# default is the maintenance desktop (sway), not the Steam session.
+exec gamescope-session-plus "${1:-desktop}"

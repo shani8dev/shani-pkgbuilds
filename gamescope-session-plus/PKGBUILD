@@ -7,12 +7,12 @@
 # ~/.config/environment.d) and drops the SteamOS-specific bits.
 pkgname=gamescope-session-plus
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Portable gamescope session framework (ShaniOS flavour)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/gamescope-session-plus"
 license=('MIT')
-depends=('gamescope' 'bash')
+depends=('gamescope' 'bash' 'sway')
 source=()
 md5sums=()
 
@@ -30,6 +30,16 @@ package() {
     # Users override CLIENTCMD via ~/.config/environment.d/gamescope-session-plus.conf.
     install -Dm 644 "$startdir/usr/share/gamescope-session-plus/sessions.d/steam" \
         "$pkgdir/usr/share/gamescope-session-plus/sessions.d/steam"
+
+    # Maintenance desktop (sway) used by the Steam client's "Switch to
+    # Desktop" and by `gamescope-session-plus desktop` from a TTY.
+    install -Dm 644 "$startdir/usr/share/gamescope-session-plus/sessions.d/desktop" \
+        "$pkgdir/usr/share/gamescope-session-plus/sessions.d/desktop"
+
+    # Valve's gamescope-session entry point: the Steam client calls this for
+    # "Switch to Desktop". Default to the maintenance desktop.
+    install -Dm 755 "$startdir/usr/bin/gamescope-session" \
+        "$pkgdir/usr/bin/gamescope-session"
 
     install -Dm 644 "$startdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
