@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Gamescope gaming desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
@@ -16,6 +16,9 @@ depends=(
 	gamescope-session-plus
 	# --- Vulkan overlay (from Arch [extra]) ---
 	mangohud
+	# --- Performance profile (TDP) and hybrid GPU switching ---
+	power-profiles-daemon
+	switcheroo-control
 	# --- Audio/video stack for gaming ---
 	pipewire
 	pipewire-alsa

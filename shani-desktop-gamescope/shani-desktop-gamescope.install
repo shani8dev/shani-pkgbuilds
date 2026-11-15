@@ -28,6 +28,10 @@ post_upgrade() {
     # /etc/greetd/shani-gamescope.toml and a drop-in that makes greetd launch
     # the gamescope session directly (initial_session, no greeter).
     systemctl enable greetd.service
+    # Gamer-relevant system services: the performance profile (TDP) and
+    # hybrid GPU switching (shared with the niri desktop's package).
+    systemctl enable power-profiles-daemon.service
+    systemctl enable switcheroo-control.service
     echo "Performing misc postinstall operations..."
     update_fonts
     update_gtk

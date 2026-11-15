@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Lutris
+Comment=Open gaming platform (Windows/Linux games)
+Exec=flatpak-spawn --host flatpak run net.lutris.Lutris
+Icon=net.lutris.Lutris
+Terminal=false
+Categories=Game;
+Keywords=game;lutris;windows;wine;
