@@ -1,6 +1,6 @@
 pkgbase = lsb-release
 	pkgdesc = LSB version query program
-	pkgver = 2.0.r53.a86f885
+	pkgver = 2.0.r55.a25a4fc
 	pkgrel = 3
 	url = https://refspecs.linuxfoundation.org/lsb.shtml
 	arch = any
