@@ -7,8 +7,8 @@ update_fonts() {
         [[ -d "$dir" ]] || continue
         mkfontscale "$dir" 2>/dev/null
         mkfontdir   "$dir" 2>/dev/null
+        fc-cache -s 2>/dev/null
     done
-    fc-cache -s 2>/dev/null
 }
 
 update_gtk() {
@@ -17,6 +17,7 @@ update_gtk() {
     command -v dconf                  &>/dev/null && dconf update 2>/dev/null
     command -v update-desktop-database &>/dev/null && update-desktop-database --quiet 2>/dev/null
     command -v update-mime-database    &>/dev/null && update-mime-database /usr/share/mime 2>/dev/null
+    return 0
 }
 
 post_install() {
@@ -24,17 +25,39 @@ post_install() {
 }
 
 post_upgrade() {
+    # Every enable below is `|| true` on purpose. alpm runs this hook right
+    # after unpacking THIS package, and a unit belonging to a dependency that
+    # has not been unpacked yet is simply not there yet — that is a warning in
+    # the build log, not a broken package, and the unit is enabled again by
+    # that dependency's own hook.
+    #
     # greetd aliases itself to display-manager.service; the package ships
     # /etc/greetd/shani-gamescope.toml and a drop-in that makes greetd launch
     # the gamescope session directly (initial_session, no greeter).
-    systemctl enable greetd.service
+    systemctl enable greetd.service || true
+    # The console's session units: they create the `gamescope` user and seed
+    # its home from /etc/skel before the session starts. They are early-boot
+    # units (DefaultDependencies=no, Before=sysinit.target), so they are
+    # enabled into sysinit.target rather than by a normal Wants=.
+    systemctl enable gamescope-session-user.service || true
+    systemctl enable gamescope-session-config.service || true
     # Gamer-relevant system services: the performance profile (TDP) and
     # hybrid GPU switching (shared with the niri desktop's package).
-    systemctl enable power-profiles-daemon.service
-    systemctl enable switcheroo-control.service
+    systemctl enable power-profiles-daemon.service || true
+    systemctl enable switcheroo-control.service || true
+    # thermald: CPU boost/thermal tuning. Harmless on CPUs it does not
+    # support (it exits and logs), so it is enabled unconditionally.
+    systemctl enable thermald.service || true
+    # visudo rejects a sudoers file that is group- or world-writable, and
+    # 0440 is the mode every other drop-in uses.
+    if [[ -f /etc/sudoers.d/10-gamescope-console ]]; then
+        chown root:root /etc/sudoers.d/10-gamescope-console
+        chmod 0440 /etc/sudoers.d/10-gamescope-console
+    fi
     echo "Performing misc postinstall operations..."
     update_fonts
     update_gtk
+    exit 0
 }
 
 pre_remove() {

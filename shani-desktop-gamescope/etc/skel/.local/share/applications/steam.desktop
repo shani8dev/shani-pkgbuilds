@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Steam
+Comment=Game library and Big Picture mode
+Exec=flatpak run com.valvesoftware.Steam -gamepadui -steamos3 -steampal -steamdeck -no-cef-sandbox
+Icon=com.valvesoftware.Steam
+Terminal=false
+Categories=Game;
+Keywords=steam;games;bigpicture;

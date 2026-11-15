@@ -2,7 +2,7 @@
 Type=Application
 Name=Heroic Games Launcher
 Comment=Epic/GOG/Amazon games launcher
-Exec=flatpak-spawn --host flatpak run com.heroicgameslauncher.hgl
+Exec=flatpak run com.heroicgameslauncher.hgl
 Icon=com.heroicgameslauncher.hgl
 Terminal=false
 Categories=Game;

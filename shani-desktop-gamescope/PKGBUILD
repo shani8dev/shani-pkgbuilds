@@ -1,8 +1,8 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=5
-pkgdesc="Gamescope gaming desktop environment for Shani OS"
+pkgrel=7
+pkgdesc="ShaniOS gaming console: gamescope + Steam Big Picture, with a sway maintenance desktop and the Shani Control Center"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
 license=('GPL-3.0-only')
@@ -30,10 +30,78 @@ depends=(
 	xdg-user-dirs
 	xdg-utils
 	gsettings-desktop-schemas
-	# --- Controller / RGB / peripheral support: Flatpaks (see the gamescope
-	#     flatpak-packages.txt: io.github.antimicrox.antimicrox,
-	#     org.openrgb.OpenRGB, org.freedesktop.Piper,
-	#     io.github.benjamimgois.goverlay) ---
+	# --- The maintenance desktop (sway + Waybar + Fuzzel + Mako). This is the
+	#     console's "desktop mode": the same one the packages below configure
+	#     through /etc/sway/config.d/90-shani-gamescope.conf ---
+	sway
+	swaybg
+	swaylock
+	swayidle
+	foot
+	grim
+	slurp
+	wl-clipboard
+	brightnessctl
+	waybar
+	fuzzel
+	mako
+	playerctl
+	pavucontrol
+	thunar
+	blueman
+	wdisplays
+	# --- The Shani Control Center (GTK4/libadwaita) and everything it calls ---
+	gtk4
+	libadwaita
+	python-gobject
+	python-evdev
+	networkmanager
+	sudo
+	# --- Everyday tools the console's maintenance desktop offers ---
+	btop
+	fastfetch
+	yazi
+	helix
+	gnome-disk-utility
+	qalculate-gtk
+	cliphist
+	libnotify
+	wf-recorder
+	syncthing
+	squeekboard
+	swappy
+	kanshi
+	# --- Look and feel ---
+	shani-fonts
+	papirus-icon-theme
+	adw-gtk-theme
+	ttf-jetbrains-mono-nerd
+	# --- Tuning, monitoring and diagnostics: the layer a gamer actually
+	#     reaches for when a game runs hot, a fan is noisy or a GPU is not
+	#     hitting the expected frame rate ---
+	#     lm_sensors  - `sensors` (temps, RPM) and `fancontrol` (pwm curves)
+	#     thermald    - CPU boost/thermal tuning daemon
+	#     nvtop       - live GPU utilisation, VRAM, clocks, encoder use
+	#     mesa-utils  - glxinfo/eglinfo for the GL/EGL stack
+	#     vulkan-tools- vulkaninfo for the Vulkan stack
+	#     vkmark      - Vulkan (GPU) benchmark
+	#     glmark2     - OpenGL benchmark
+	#     stress-ng   - CPU/RAM/IO stress test
+	#     smartmontools/nvme-cli - drive health (SMART) for the game drive
+	#     usbutils    - lsusb, for enumerating pads and dongles
+	#     evtest      - raw controller button/axis test
+	lm_sensors
+	thermald
+	nvtop
+	mesa-utils
+	vulkan-tools
+	vkmark
+	glmark2
+	stress-ng
+	smartmontools
+	nvme-cli
+	usbutils
+	evtest
 	# --- Filesystem helpers for game libraries ---
 	gvfs
 	gvfs-gphoto2
@@ -52,9 +120,12 @@ package() {
     # Ensure necessary directories exist
     install -d "$pkgdir/etc/"
     install -d "$pkgdir/usr/"
-    # Copy local etc and usr directories. The greetd initial_session config
-    # and its systemd drop-in ship here; the session .desktop and the
-    # gamescope user/home units live in the gamescope image profile overlay.
+    # Everything the console is made of ships here: the greetd initial_session
+    # config and its systemd drop-in, the two session units that create the
+    # console user and seed its home from /etc/skel, the sway/waybar/mako/
+    # fuzzel/swaylock configuration, the Control Center and the screenshot
+    # helper, the console's sudoers grant, and the desktop entry and the
+    # Wayland session file that name them.
     cp -r "$startdir/etc" "$pkgdir/" 2>/dev/null || true
     cp -r "$startdir/usr" "$pkgdir/" 2>/dev/null || true
 }

@@ -2,7 +2,7 @@
 Type=Application
 Name=Bottles
 Comment=Run Windows software and games
-Exec=flatpak-spawn --host flatpak run com.usebottles.bottles
+Exec=flatpak run com.usebottles.bottles
 Icon=com.usebottles.bottles
 Terminal=false
 Categories=Game;

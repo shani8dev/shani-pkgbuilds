@@ -2,7 +2,7 @@
 Type=Application
 Name=RetroArch
 Comment=Libretro frontend (emulators, game engines, media)
-Exec=flatpak-spawn --host flatpak run org.libretro.RetroArch
+Exec=flatpak run org.libretro.RetroArch
 Icon=org.libretro.RetroArch
 Terminal=false
 Categories=Game;Emulator;

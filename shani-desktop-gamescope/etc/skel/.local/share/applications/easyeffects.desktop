@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Audio Effects
+Comment=EasyEffects - headset surround, compressor and equalizer
+Exec=flatpak run com.github.wwmm.easyeffects
+Icon=audio-headphones
+Terminal=false
+Categories=AudioVideo;Audio;Mixer;
+Keywords=audio;effects;equalizer;headset;pipewire;

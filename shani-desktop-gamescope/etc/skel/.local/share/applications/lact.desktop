@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=GPU Control (LACT)
+Comment=GPU fans, clocks and overclocking (AMD/Intel/NVIDIA)
+Exec=flatpak run io.github.ilya_zlobintsev.LACT
+Icon=applications-graphics
+Terminal=false
+Categories=System;Settings;
+Keywords=gpu;fan;overclock;lact;amd;nvidia;intel;

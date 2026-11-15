@@ -2,7 +2,7 @@
 Type=Application
 Name=Kodi
 Comment=Media center (movies, TV, music, add-ons)
-Exec=flatpak-spawn --host flatpak run tv.kodi.Kodi
+Exec=flatpak run tv.kodi.Kodi
 Icon=tv.kodi.Kodi
 Terminal=false
 Categories=AudioVideo;Video;Player;TV;
