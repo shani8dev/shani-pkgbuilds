@@ -1,0 +1,17 @@
+[global]
+# Translucent, so the blurred wallpaper (shani-sway-blur) reads through the
+# popup. Mako takes its colours as #RRGGBB or #RRGGBBAA.
+#
+# border-radius takes a DIRECTION in mako (all, top-right, ...), not a pixel
+# count - "border-radius=14" is a parse error and mako exits, which silently
+# costs the whole notification system. The pixel radius for the icon is
+# icon-border-radius.
+background-color=#1a1b26cc
+text-color=#c0caf5
+border-color=#7aa2f780
+border-size=2
+border-radius=all
+icon-border-radius=14
+default-timeout=5000
+max-visible=5
+position=top-right
