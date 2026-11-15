@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+"""shani-sway-blur — the console's glass: blur the wallpaper behind windows.
+
+sway has no compositor-level blur. The two ways to get one are both out of
+reach here: swayfx (the sway fork that renders blur) is AUR-only, and niri's
+blur belongs to niri. So this does what swayblur does — watch sway's IPC for
+windows and swap the wallpaper for a blurred copy while one is open — in a
+few dozen lines, and without any of swayblur's dependencies (python-i3ipc,
+ImageMagick, swww):
+
+  * the sharp and blurred wallpapers are rendered at build time and shipped
+    with the package, so nothing is rendered at runtime and the console needs
+    no image library at all;
+  * sway's IPC is a JSON protocol over a unix socket, so it is spoken
+    directly rather than through a Python wrapper.
+
+The background is set with sway's own `output ... bg` command, which is why
+the sway config does NOT start swaybg as well: two things setting the
+background would fight, and the layer-shell surface swaybg draws would cover
+the image sway sets.
+"""
+import json
+import os
+import socket
+import struct
+import subprocess
+import sys
+
+SHARP = "/usr/share/backgrounds/shani/shani.jpg"
+BLURRED = "/usr/share/backgrounds/shani/shani-blur.jpg"
+MAGIC = b"i3-ipc"
+
+
+def send(sock, payload):
+    data = json.dumps(payload).encode("utf-8")
+    sock.sendall(MAGIC + struct.pack("=I", len(data)) + data)
+
+
+def receive(sock):
+    """One IPC message, or None when the socket closed."""
+    header = b""
+    while len(header) < len(MAGIC) + 4:
+        chunk = sock.recv(len(MAGIC) + 4 - len(header))
+        if not chunk:
+            return None
+        header += chunk
+    length = struct.unpack("=I", header[len(MAGIC):])[0]
+    body = b""
+    while len(body) < length:
+        chunk = sock.recv(length - len(body))
+        if not chunk:
+            return None
+        body += chunk
+    try:
+        return json.loads(body)
+    except json.JSONDecodeError:
+        return None
+
+
+def count_windows(tree):
+    """How many windows are on screen.
+
+    A window is a leaf of the tree that carries window_properties. Windows on
+    other workspaces are not in the tree of the active workspace, so they are
+    not counted — which is what we want: the wallpaper behind an empty
+    workspace stays sharp.
+    """
+    count = 0
+    stack = [tree]
+    while stack:
+        node = stack.pop()
+        if not isinstance(node, dict):
+            continue
+        if node.get("window_properties") is not None and not node.get("hidden"):
+            count += 1
+        stack.extend(node.get("nodes") or [])
+    return count
+
+
+def set_background(path):
+    try:
+        subprocess.run(
+            ["swaymsg", "output", "*", "bg", path, "fill"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except OSError:
+        pass
+
+
+def run_swaybg():
+    """The fallback owner of the wallpaper.
+
+    swaybg is a layer-shell client: it draws the background in the background
+    layer, which sits ON TOP of the image sway itself sets. So there must
+    never be two owners. When this script cannot do the job, it becomes the
+    only owner by running swaybg itself instead of leaving both running.
+    """
+    args = ["swaybg"]
+    if os.path.exists(SHARP):
+        args += ["-i", SHARP, "-m", "fill"]
+    else:
+        args += ["-c", "#0e1116"]
+    try:
+        subprocess.run(args, check=False)
+    except OSError:
+        pass
+
+
+def main():
+    sock_path = os.environ.get("SWAYSOCK")
+    if not sock_path:
+        print("shani-sway-blur: SWAYSOCK is not set; drawing the wallpaper", file=sys.stderr)
+        run_swaybg()
+        return 0
+    if not (os.path.exists(SHARP) and os.path.exists(BLURRED)):
+        print("shani-sway-blur: no wallpaper pair; drawing the wallpaper", file=sys.stderr)
+        run_swaybg()
+        return 0
+
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    try:
+        sock.connect(sock_path)
+    except OSError as exc:
+        print(f"shani-sway-blur: cannot talk to sway ({exc})", file=sys.stderr)
+        return 1
+
+    # The sharp copy until a window says otherwise.
+    set_background(SHARP)
+    blurred = False
+
+    try:
+        send(sock, ["i3ipc", 1, "subscribe", ["window"]])
+        while True:
+            message = receive(sock)
+            if message is None:
+                break
+            if len(message) < 4:
+                continue
+            payload = message[3]
+            if not isinstance(payload, dict) or "change" not in payload:
+                continue
+            # A window event. Ask for the tree and count what is on screen.
+            send(sock, ["i3ipc", 1, "GET_TREE"])
+            reply = receive(sock)
+            if not reply or len(reply) < 4 or not isinstance(reply[3], dict):
+                continue
+            want = count_windows(reply[3]) > 0
+            if want != blurred:
+                blurred = want
+                set_background(BLURRED if want else SHARP)
+    except (OSError, KeyboardInterrupt):
+        pass
+    finally:
+        sock.close()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

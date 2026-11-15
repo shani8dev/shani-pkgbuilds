@@ -48,12 +48,6 @@ post_upgrade() {
     # thermald: CPU boost/thermal tuning. Harmless on CPUs it does not
     # support (it exits and logs), so it is enabled unconditionally.
     systemctl enable thermald.service || true
-    # visudo rejects a sudoers file that is group- or world-writable, and
-    # 0440 is the mode every other drop-in uses.
-    if [[ -f /etc/sudoers.d/10-gamescope-console ]]; then
-        chown root:root /etc/sudoers.d/10-gamescope-console
-        chmod 0440 /etc/sudoers.d/10-gamescope-console
-    fi
     echo "Performing misc postinstall operations..."
     update_fonts
     update_gtk

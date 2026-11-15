@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=7
+pkgrel=8
 pkgdesc="ShaniOS gaming console: gamescope + Steam Big Picture, with a sway maintenance desktop and the Shani Control Center"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
@@ -56,7 +56,10 @@ depends=(
 	python-gobject
 	python-evdev
 	networkmanager
-	sudo
+	# --- The polkit agent: without one, pkexec has nowhere to show its
+	#     password prompt, and the console's update and factory-reset flows
+	#     would fail with "authorization cancelled" instead of asking ---
+	polkit-gnome
 	# --- Everyday tools the console's maintenance desktop offers ---
 	btop
 	fastfetch

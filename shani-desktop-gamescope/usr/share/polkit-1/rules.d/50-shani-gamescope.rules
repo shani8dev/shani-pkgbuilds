@@ -1,0 +1,34 @@
+// ShaniOS gamescope console — polkit rules for the console's own actions.
+//
+// The console's privileged operations go through polkit, exactly like every
+// other ShaniOS desktop. shani-settings' 99-shani.rules owns the platform-wide
+// policy and already grants what the console needs:
+//
+//   * pkexec /usr/local/bin/shani-deploy  -> AUTH_SELF (the user's own password)
+//   * pkexec /usr/local/bin/shani-reset   -> AUTH_ADMIN (wheel + admin credential)
+//   * login1 suspend / hibernate / poweroff / reboot -> YES for an active local
+//     session, which is why the Control Center's power row needs no password.
+//
+// This file adds the one thing that is the console's own and nothing else:
+// switching the session back to Steam.
+//
+// There is deliberately NO .policy action annotating this program with
+// org.freedesktop.policykit.exec.path. An exec.path annotation makes pkexec
+// resolve authorization to the ANNOTATED action instead, so the action.id
+// test below would never match and every caller would silently get that
+// action's defaults rather than this rule. Naming the program here is what
+// actually narrows the grant.
+
+// ── Session switch: "Return to game mode" ───────────────────────────────────
+// gamescope-session-select writes the persistent session choice and restarts
+// greetd, so it needs root. It is not an administrative action — it is the
+// console's own "switch screens" button, and the person pressing it is
+// holding the controller of the appliance. Same trust level as the Tier-1
+// power rules above it in 99-shani.rules.
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        action.lookup("program") == "/usr/bin/gamescope-session-select" &&
+        subject.active == true && subject.local == true) {
+        return polkit.Result.YES;
+    }
+});

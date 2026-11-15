@@ -20,7 +20,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from gi.repository import Adw, GLib, Gtk  # noqa: E402
+from gi.repository import Adw, Gdk, GLib, Gtk  # noqa: E402
 
 try:
     import evdev
@@ -31,11 +31,37 @@ except Exception:
     HAVE_EVDEV = False
 
 
-# Absolute paths, so the sudoers grant that backs them is a path grant and not
-# a PATH lookup (which sudo refuses for security reasons anyway).
+# Absolute paths, so the polkit grant that backs them is a path grant and not
+# a PATH lookup (polkit matches the program as it was invoked).
 DEPLOY = "/usr/local/bin/shani-deploy"
 RESET = "/usr/local/bin/shani-reset"
+SESSION_SELECT = "/usr/bin/gamescope-session-select"
 POWERPROFILESCTL = "/usr/bin/powerprofilesctl"
+
+# The privileged operations go through polkit (pkexec) — the same path Shani
+# Cassini uses, and the one shani-settings' 99-shani.rules governs:
+# shani-deploy is AUTH_SELF (the user's own password), shani-reset is
+# AUTH_ADMIN (wheel + an administrator credential), and the session switch is
+# YES for an active local session (the console's own rule,
+# 50-shani-gamescope.rules).
+#
+# pkexec's exit codes: 126 = the authentication dialog was dismissed, 127 =
+# the caller is not authorized.
+PKEXEC_CANCELLED = 126
+PKEXEC_DENIED = 127
+
+
+def pkexec_message(rc, out):
+    """A message for a failed privileged call, or None when it succeeded."""
+    if rc == 0:
+        return None
+    if rc == PKEXEC_CANCELLED:
+        return "Authorization was cancelled"
+    if rc == PKEXEC_DENIED:
+        return ("Not authorized. The console user needs a password for this — "
+                "set one with 'passwd' in a terminal, then try again.")
+    detail = (out or "").strip().splitlines()
+    return detail[-1] if detail else f"Failed (exit {rc})"
 
 
 if HAVE_EVDEV:
@@ -174,6 +200,36 @@ def section_label(text):
     return label
 
 
+def install_glass_css():
+    """Make the windows translucent, so the blurred wallpaper reads through.
+
+    sway has no compositor-level blur, so the frosted look is made the way it
+    can be made on vanilla sway: the wallpaper behind the windows is blurred
+    (shani-sway-blur), and the windows themselves are translucent. Adwaita's
+    own colours are named colours, so alpha() over them keeps the window
+    following the light/dark scheme instead of hard-coding a tone.
+    """
+    css = b"""
+    window.shani-glass {
+      background-color: alpha(@window_bg_color, 0.86);
+    }
+    button.card {
+      background-color: alpha(@card_bg_color, 0.55);
+      border: 1px solid alpha(@borders, 0.28);
+    }
+    """
+    provider = Gtk.CssProvider()
+    try:
+        provider.load_from_data(css)
+    except GLib.Error:
+        return
+    display = Gdk.Display.get_default()
+    if display is not None:
+        Gtk.StyleContext.add_provider_for_display(
+            display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+
 class UpdatesWindow(Adw.Window):
     """Updates: read the deploy state, install an update, roll back.
 
@@ -187,6 +243,7 @@ class UpdatesWindow(Adw.Window):
         super().__init__(transient_for=parent, modal=True)
         self.set_title("Updates")
         self.set_default_size(640, 620)
+        self.add_css_class("shani-glass")
         self.busy = False
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -343,17 +400,18 @@ class UpdatesWindow(Adw.Window):
         self.set_busy(True)
         self.append("── installing the update ──")
         run_async(
-            ["sudo", DEPLOY],
+            ["pkexec", DEPLOY],
             self._update_done,
             on_line=self.append,
         )
 
     def _update_done(self, rc, out):
         self.set_busy(False)
-        if rc == 0:
+        problem = pkexec_message(rc, out)
+        if problem is None:
             self.append("── update finished. Restart to start the new system. ──")
         else:
-            self.append(f"── update failed (exit {rc}) ──")
+            self.append(f"── {problem} ──")
         self.refresh()
 
     def confirm_rollback(self):
@@ -374,7 +432,7 @@ class UpdatesWindow(Adw.Window):
                 return
             self.set_busy(True)
             self.append("── rolling back ──")
-            run_async(["sudo", DEPLOY, "--rollback"], self._update_done, on_line=self.append)
+            run_async(["pkexec", DEPLOY, "--rollback"], self._update_done, on_line=self.append)
 
         dialog.connect("response", responded)
         dialog.present(self)
@@ -395,6 +453,7 @@ class ResetWindow(Adw.Window):
         super().__init__(transient_for=parent, modal=True)
         self.set_title("Factory reset")
         self.set_default_size(640, 600)
+        self.add_css_class("shani-glass")
         self.busy = False
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -473,12 +532,13 @@ class ResetWindow(Adw.Window):
     def preview(self):
         self.set_busy(True)
         self.append("── preview ──")
-        run_async(["sudo", RESET, "--dry-run"], self._preview_done, on_line=self.append)
+        run_async(["pkexec", RESET, "--dry-run"], self._preview_done, on_line=self.append)
 
     def _preview_done(self, rc, out):
         self.set_busy(False)
-        if rc != 0:
-            self.append(f"── the preview failed (exit {rc}) ──")
+        problem = pkexec_message(rc, out)
+        if problem is not None:
+            self.append(f"── {problem} ──")
 
     def confirm_reset(self):
         dialog = Adw.AlertDialog(
@@ -498,17 +558,18 @@ class ResetWindow(Adw.Window):
                 return
             self.set_busy(True)
             self.append("── factory reset ──")
-            run_async(["sudo", RESET, "--yes"], self._reset_done, on_line=self.append)
+            run_async(["pkexec", RESET, "--yes"], self._reset_done, on_line=self.append)
 
         dialog.connect("response", responded)
         dialog.present(self)
 
     def _reset_done(self, rc, out):
         self.set_busy(False)
-        if rc == 0:
+        problem = pkexec_message(rc, out)
+        if problem is None:
             self.append("── done, restarting ──")
         else:
-            self.append(f"── the reset failed (exit {rc}) ──")
+            self.append(f"── {problem} ──")
 
 
 class PerformanceWindow(Adw.Window):
@@ -529,6 +590,7 @@ class PerformanceWindow(Adw.Window):
         super().__init__(transient_for=parent, modal=True)
         self.set_title("Performance")
         self.set_default_size(520, 320)
+        self.add_css_class("shani-glass")
 
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         outer.append(Adw.HeaderBar())
@@ -595,6 +657,7 @@ class ControlWindow(Adw.ApplicationWindow):
         super().__init__(application=app, title="Shani Control Center")
         self.set_default_size(980, 680)
         Adw.StyleManager.get_default().set_color_scheme(Adw.ColorScheme.PREFER_DARK)
+        self.add_css_class("shani-glass")
         self.overlay = Adw.ToastOverlay()
         self.set_content(self.overlay)
         self.overlay.set_child(self._build())
@@ -773,15 +836,17 @@ class ControlWindow(Adw.ApplicationWindow):
 
         gamescope-session-select writes the persistent session choice and
         restarts greetd, so the screen goes away — the window this ran in does
-        not survive it, and there is nothing to report afterwards.
+        not survive it, and there is nothing to report afterwards. polkit lets
+        the active console session do it without a password
+        (50-shani-gamescope.rules).
         """
 
         def done(rc, out):
-            if rc != 0:
-                detail = (out or "").strip().splitlines()
-                self.toast(detail[-1] if detail else "Could not switch to game mode")
+            problem = pkexec_message(rc, out)
+            if problem is not None:
+                self.toast(problem)
 
-        run_async(["sudo", "/usr/bin/gamescope-session-select", "steam"], done)
+        run_async(["pkexec", SESSION_SELECT, "steam"], done)
 
     def probe_logind(self):
         """Ask logind what it can actually do.
@@ -812,6 +877,10 @@ class ControlWindow(Adw.ApplicationWindow):
 class ControlApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="dev.shani.gamescope-control")
+
+    def do_startup(self):
+        install_glass_css()
+        Adw.Application.do_startup(self)
 
     def do_activate(self):
         ControlWindow(self).present()
