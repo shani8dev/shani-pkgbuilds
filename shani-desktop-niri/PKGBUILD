@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=13
+pkgrel=14
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -104,7 +104,7 @@ depends=(
 	poppler
 	# annotate a screenshot from its notification
 	satty
-	# accessibility: the screen reader
+	# (the screen reader, orca, comes with shani-accessibility, as on every profile)
 )
 install="$pkgname.install"
 source=()

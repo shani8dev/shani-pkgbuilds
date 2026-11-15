@@ -28,4 +28,19 @@ post_upgrade() {
 	# user's to make per connection. NetworkManager keeps working unchanged if
 	# the proxy is stopped, broken or still fetching.
 	systemctl enable dnscrypt-proxy.service
+
+	# Firewall openings every Shani machine has: KDE Connect / GSConnect (the
+	# phone, Shani Link) on the public zone, and Waydroid's container network
+	# (DNS, DHCP, forwarding on waydroid0) in the trusted zone. These were
+	# os-installer-config's configure.sh, so they lived in the machine's /etc
+	# overlay - which a factory reset wipes, silently closing them. Set here,
+	# at image build, they are part of the image's own /etc. `|| true`: an
+	# already-present rule is a warning, not a failure, on every upgrade.
+	if command -v firewall-offline-cmd >/dev/null 2>&1; then
+		firewall-offline-cmd --zone=public --add-service=kdeconnect >/dev/null 2>&1 || true
+		firewall-offline-cmd --zone=trusted --add-port=53/udp >/dev/null 2>&1 || true
+		firewall-offline-cmd --zone=trusted --add-port=67/udp >/dev/null 2>&1 || true
+		firewall-offline-cmd --zone=trusted --add-forward >/dev/null 2>&1 || true
+		firewall-offline-cmd --zone=trusted --add-interface=waydroid0 >/dev/null 2>&1 || true
+	fi
 }

@@ -115,3 +115,9 @@ def test_only_what_package_installs_is_read(tmp_path, pmap, capsys):
     repo, pb = package(tmp_path, {"a.py": "x = 1\n", "tests/t.py": 'subprocess.run(["pactl"])\n'})
     pb.write_text(pb.read_text().replace('cp -r . "$pkgdir/usr/lib/demo/"', 'cp a.py "$pkgdir/usr/lib/demo/"'))
     assert run(capsys, repo, pb) == (0, "")
+
+
+def test_a_scripts_own_functions_are_not_programs():
+    words = cd.shell_words('seed_kwin() {\n  kwriteconfig6 x\n}\nseed_kwin a b\nfunction other { :; }\nother\nreal_tool --x\n')
+    assert "seed_kwin" not in words and "other" not in words
+    assert "kwriteconfig6" in words and "real_tool" in words

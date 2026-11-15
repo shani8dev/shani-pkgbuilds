@@ -85,7 +85,10 @@ def shell_words(text: str) -> set:
     text = re.sub(r"(?m)^\s*#.*$", "", text)
     # case patterns ("in a|b)" / ";; c|d)") are words, not commands
     text = re.sub(r"(?:\bin\b|;;)\s*\(?[^\s()|;&]+(?:\s*\|\s*[^\s()|;&]+)*\)", " ", text)
-    return {w for w in SH_WORD.findall(text) if w not in SHELL_WORDS}
+    # the script's own functions (`seed_kwin() {`, `function x`) are not programs
+    own = set(re.findall(r"(?m)^\s*(?:function\s+)?([a-z][a-z0-9_.+-]*)\s*\(\)", text))
+    own |= set(re.findall(r"(?m)^\s*function\s+([a-z][a-z0-9_.+-]*)", text))
+    return {w for w in SH_WORD.findall(text) if w not in SHELL_WORDS and w not in own}
 
 
 def scan(repo: Path) -> dict:
@@ -192,8 +195,12 @@ def stage(repo: Path, pkgbuild: Path, tmp: Path) -> Path:
     shutil.copytree(repo, src, symlinks=True, ignore=IGNORE)
     out = tmp / "pkg"
     out.mkdir()
-    run = subprocess.run(["bash", "-ec", 'source "$1"; srcdir="$2" pkgdir="$3"; package >/dev/null',
-                          "bash", str(pkgbuild), str(src.parent), str(out)], capture_output=True, text=True)
+    # startdir as makepkg sets it - the PKGBUILD's own directory. Unset, a
+    # package() that copies "$startdir/etc" (the desktop metapackages) copied
+    # the HOST's /etc.
+    run = subprocess.run(["bash", "-ec", 'startdir="$4"; source "$1"; srcdir="$2" pkgdir="$3"; package >/dev/null',
+                          "bash", str(pkgbuild), str(src.parent), str(out), str(pkgbuild.parent.resolve())],
+                         capture_output=True, text=True)
     if run.returncode:
         raise SystemExit(f"package() of {pkgbuild} failed:\n{run.stderr[-2000:]}")
     return out

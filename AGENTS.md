@@ -222,6 +222,18 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
+- **shani-desktop-niri 1.0-14 (2026-11-15): greetd never started on a fresh
+  install - FIXED, proven on a real installed slot.** greetd 0.10.3 runs the
+  greeter through `shani-greetd` too, with no sign-in but a `pam_setcred`,
+  which replays the auth stack: `pam_exec` answers IGNORE there and
+  `pam_deny` a credential error, so the fingerprint block's `default=2` jump
+  (and, without fprintd, the `pam_deny` stop) made it fail. greetd exited,
+  systemd gave up after 5 tries, and a new user saw only the Plymouth splash.
+  Now `ignore=ignore`, `module_unknown=ignore` on the fprintd line and
+  `pam_exec /usr/bin/false` as the stop; fingerprint, face, U2F and password
+  all kept. Any edit to a greetd PAM stack: run shani-testbed's slot-test
+  `first-boot` (`first-boot-greeter-pam`) - it failed `25` before this fix.
+
 - **`shani-core` let `makepkg` prompt for a virtual provider with no TTY in CI
   — FIXED (2026-10-06, pkgrel 19).** `podman` and `buildah` depend on the
   virtual `oci-runtime`, which has three providers in `[extra]` (`crun`,

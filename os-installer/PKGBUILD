@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=os-installer
 pkgver=0.6.15
-pkgrel=1
+pkgrel=2
 pkgdesc='ShaniOS operating system installer (GTK4/libadwaita)'
 url='https://github.com/shani8dev/os-installer'
 # First-party fork; the ShaniOS fixes that used to live in *.patch files here
@@ -10,7 +10,7 @@ url='https://github.com/shani8dev/os-installer'
 # force-moved upstream without this PKGBUILD ever changing, and
 # check-skip-checksums.sh correctly treats a bare `#tag=` git+ source with
 # SKIP as unverified.
-_commit='1cfa6ab35089e3b2c5cec1469de6177b15a7f85f'
+_commit='7d76911eaf46c94cdb0b48eb6c7c96eebde5fa77'
 source=("git+${url}.git#commit=$_commit")
 sha256sums=('SKIP')
 arch=('x86_64')

@@ -44,6 +44,7 @@ crontab	cronie
 curl	curl
 cut	coreutils
 date	coreutils
+dbus-monitor	dbus
 ddcutil	ddcutil
 ddjvu	djvulibre
 decode	
@@ -119,7 +120,9 @@ irsend	lirc
 journalctl	systemd
 kcmshell6	kcmutils
 kdeconnect-cli	kdeconnect
+kreadconfig6	kconfig
 kscreen-doctor	libkscreen
+kvantummanager	kvantum
 kwriteconfig6	kconfig
 last	util-linux
 linux-hello	
@@ -244,6 +247,7 @@ scanimage	sane
 sed	sed
 send	
 send-key	
+sha256sum	coreutils
 shani-cassini	
 shani-chronoa	
 shani-chronoa-screen-stream	

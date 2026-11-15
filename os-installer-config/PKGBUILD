@@ -2,8 +2,8 @@
 
 pkgname=os-installer-config
 pkgver=0.0.1
-pkgrel=103
-_commit='c44f428f186b1b5267108a7bce974e4ac7493ddf'   # install: split BTRFS_SUBVOLUMES on whitespace
+pkgrel=104
+_commit='067257a29e68c22ecbe05eef9adfd94a57848059'
 pkgdesc="Default Shani OS configuration files for the os-installer"
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/os-installer-config"
 arch=('any')
@@ -13,7 +13,22 @@ depends=('bash' 'python' 'python-yaml')
 # Using a specific commit from GitHub as the source
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 sha256sums=('SKIP')
-makedepends=('git')
+makedepends=('git' 'gettext')
+build() {
+  # the config's own text (the welcome page) in each language: os-installer
+  # reads po/<lang>/LC_MESSAGES/os-installer-config.mo, and nothing else
+  # compiled them - only a hand-run update_translations.sh did, so no
+  # translation of it ever shipped
+  cd "$srcdir/$pkgname"
+  local po lang
+  for po in po/*.po; do
+    lang=$(basename "$po" .po); lang=${lang%%_*}
+    [[ "$lang" == en ]] && continue
+    mkdir -p "po/$lang/LC_MESSAGES"
+    msgfmt -c -o "po/$lang/LC_MESSAGES/os-installer-config.mo" "$po"
+  done
+}
+
 package() {
   install -d "$pkgdir/etc/os-installer"
   cp -r "$srcdir/$pkgname"/* "$pkgdir/etc/os-installer"

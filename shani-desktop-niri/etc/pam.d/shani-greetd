@@ -8,16 +8,25 @@ auth       requisite    pam_nologin.so
 # an empty password): greetd runs one conversation, and fprintd holds it until a
 # finger or its timeout. The greeter leaves a flag; this takes it. It can only
 # choose this path - the finger is still checked - and a miss ends the attempt.
-auth       [success=ignore default=2]  pam_exec.so quiet /usr/lib/shani-desktop-niri/greeter-fingerprint
--auth      [success=done default=die]  pam_fprintd.so max-tries=3 timeout=20
-auth       requisite    pam_deny.so
+#
+# The greeter itself starts with no sign-in, but greetd still calls
+# pam_setcred for it, which replays this auth stack's credential step. There,
+# pam_exec never runs its program and answers IGNORE, and pam_deny answers a
+# credential error: a jump on IGNORE (default=2) or a pam_deny made setcred
+# fail, greetd exit and a new install show no setup screen at all (2026-11-15).
+# So IGNORE continues (ignore=ignore), a missing fprintd is skipped
+# (module_unknown=ignore), and the stop is pam_exec /usr/bin/false - it fails
+# a sign-in exactly as pam_deny did and is ignored by setcred.
+auth       [success=ignore ignore=ignore default=2]  pam_exec.so quiet /usr/lib/shani-desktop-niri/greeter-fingerprint
+-auth      [success=done module_unknown=ignore ignore=ignore default=die]  pam_fprintd.so max-tries=3 timeout=20
+auth       requisite    pam_exec.so quiet /usr/bin/false
 # Face (linux-hello, an IR camera), when installed and its daemon is up: a few
 # seconds, then the password. Skipped at once when it is not.
 -auth      sufficient   pam_linux_hello.so timeout=3000 quiet
 # A security key (pam-u2f), registered in Settings > Your account: touched, it signs
 # in. No key plugged in, or none registered (nouserok), falls through to the
 # password at once. After the fingerprint block, so its default=2 jump (over
-# pam_fprintd and pam_deny, onto pam_linux_hello) is unchanged.
+# pam_fprintd and the false stop, onto pam_linux_hello) is unchanged.
 -auth      sufficient   pam_u2f.so cue [cue_prompt=Touch your security key] nouserok
 auth       include      system-local-login
 auth       optional     pam_gnome_keyring.so
