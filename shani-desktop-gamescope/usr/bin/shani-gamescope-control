@@ -767,9 +767,12 @@ class ControlWindow(Adw.ApplicationWindow):
             ("audio-headphones", "Audio effects", "Headset surround and EQ", "easyeffects", None),
             ("applications-games", "Emulation", "RetroArch and its cores", "retroarch", None),
         )),
+        # Kodi is the media center AND the Jellyfin client: the optional *arr
+        # stack runs a Jellyfin server, and Kodi's add-on is how a console
+        # talks to it.
         ("Media", (
             ("video-x-generic", "Kodi", "Movies, TV and music", "kodi", None),
-            ("multimedia-player", "Jellyfin", "Your library, streamed", "jellyfin", None),
+            ("audio-x-generic", "Music", "Spotify", "spotify", None),
             ("folder-download", "Downloads", "Torrents and transfers", "qbittorrent", None),
         )),
         ("Maintain", (
@@ -795,7 +798,7 @@ class ControlWindow(Adw.ApplicationWindow):
         "easyeffects": "flatpak run com.github.wwmm.easyeffects",
         "retroarch": "flatpak run org.libretro.RetroArch",
         "kodi": "flatpak run tv.kodi.Kodi",
-        "jellyfin": "flatpak run com.github.iwalton3.jellyfin-media-player",
+        "spotify": "flatpak run com.spotify.Client",
         "qbittorrent": "flatpak run org.qbittorrent.qBittorrent",
     }
 
