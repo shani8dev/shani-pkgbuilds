@@ -11,8 +11,14 @@ ImageMagick, swww):
   * the sharp and blurred wallpapers are rendered at build time and shipped
     with the package, so nothing is rendered at runtime and the console needs
     no image library at all;
-  * sway's IPC is a JSON protocol over a unix socket, so it is spoken
-    directly rather than through a Python wrapper.
+  * sway's IPC is spoken directly, so there is no Python wrapper to depend
+    on either.
+
+Sway's IPC is NOT the i3ipc protocol that i3ipc's Python module speaks: the
+header is 14 bytes (the magic "i3-ipc", a 4-byte payload length and a 4-byte
+PAYLOAD TYPE, both native endian), a subscribe request is a plain array of
+event names, and every reply and event carries its own type. Getting that
+wrong is silent: sway simply never answers.
 
 The background is set with sway's own `output ... bg` command, which is why
 the sway config does NOT start swaybg as well: two things setting the
@@ -28,42 +34,55 @@ import sys
 
 SHARP = "/usr/share/backgrounds/shani/shani.jpg"
 BLURRED = "/usr/share/backgrounds/shani/shani-blur.jpg"
+
 MAGIC = b"i3-ipc"
+HEADER_SIZE = 14  # magic + length + type
+
+# sway's ipc_command_type (include/ipc.h)
+IPC_COMMAND = 0
+IPC_SUBSCRIBE = 2
+IPC_GET_TREE = 4
+IPC_EVENT_WINDOW = (1 << 31) | 3
+IPC_EVENT_WORKSPACE = (1 << 31) | 0
 
 
-def send(sock, payload):
+def send(sock, payload_type, payload):
     data = json.dumps(payload).encode("utf-8")
-    sock.sendall(MAGIC + struct.pack("=I", len(data)) + data)
+    sock.sendall(MAGIC + struct.pack("=II", len(data), payload_type) + data)
 
 
 def receive(sock):
-    """One IPC message, or None when the socket closed."""
+    """One (type, payload) message, or (None, None) when the socket closed."""
     header = b""
-    while len(header) < len(MAGIC) + 4:
-        chunk = sock.recv(len(MAGIC) + 4 - len(header))
+    while len(header) < HEADER_SIZE:
+        chunk = sock.recv(HEADER_SIZE - len(header))
         if not chunk:
-            return None
+            return None, None
         header += chunk
-    length = struct.unpack("=I", header[len(MAGIC):])[0]
+    length, payload_type = struct.unpack("=II", header[len(MAGIC):HEADER_SIZE])
     body = b""
     while len(body) < length:
         chunk = sock.recv(length - len(body))
         if not chunk:
-            return None
+            return None, None
         body += chunk
     try:
-        return json.loads(body)
+        return payload_type, json.loads(body)
     except json.JSONDecodeError:
-        return None
+        return payload_type, None
 
 
 def count_windows(tree):
-    """How many windows are on screen.
+    """How many windows are on screen right now.
 
-    A window is a leaf of the tree that carries window_properties. Windows on
-    other workspaces are not in the tree of the active workspace, so they are
-    not counted — which is what we want: the wallpaper behind an empty
-    workspace stays sharp.
+    A window in sway's tree is a leaf that carries a "pid" (every view has
+    one; containers do not). The "window_properties" key that i3's tree uses
+    is sway's XWayland-only extension, so a native Wayland window has no
+    such key at all.
+
+    Only visible windows are counted: sway's tree covers every workspace,
+    and a window on another workspace is not on screen, so the wallpaper
+    behind an empty workspace stays sharp.
     """
     count = 0
     stack = [tree]
@@ -71,7 +90,7 @@ def count_windows(tree):
         node = stack.pop()
         if not isinstance(node, dict):
             continue
-        if node.get("window_properties") is not None and not node.get("hidden"):
+        if node.get("pid") is not None and node.get("visible"):
             count += 1
         stack.extend(node.get("nodes") or [])
     return count
@@ -124,6 +143,7 @@ def main():
         sock.connect(sock_path)
     except OSError as exc:
         print(f"shani-sway-blur: cannot talk to sway ({exc})", file=sys.stderr)
+        run_swaybg()
         return 1
 
     # The sharp copy until a window says otherwise.
@@ -131,22 +151,32 @@ def main():
     blurred = False
 
     try:
-        send(sock, ["i3ipc", 1, "subscribe", ["window"]])
+        # Both: a window changes what is on screen, and so does a workspace
+        # change (the wallpaper behind an empty workspace is sharp again).
+        send(sock, IPC_SUBSCRIBE, ["window", "workspace"])
         while True:
-            message = receive(sock)
-            if message is None:
+            payload_type, payload = receive(sock)
+            if payload_type is None:
                 break
-            if len(message) < 4:
+            if payload_type not in (IPC_EVENT_WINDOW, IPC_EVENT_WORKSPACE):
                 continue
-            payload = message[3]
-            if not isinstance(payload, dict) or "change" not in payload:
+            if not isinstance(payload, dict):
                 continue
             # A window event. Ask for the tree and count what is on screen.
-            send(sock, ["i3ipc", 1, "GET_TREE"])
-            reply = receive(sock)
-            if not reply or len(reply) < 4 or not isinstance(reply[3], dict):
+            send(sock, IPC_GET_TREE, [])
+            tree = None
+            while tree is None:
+                reply_type, reply = receive(sock)
+                if reply_type is None:
+                    break
+                # The tree is the reply that carries "nodes"; a window event
+                # that arrives while the reply is on its way does not, so the
+                # events in between are read and dropped.
+                if reply_type == IPC_GET_TREE and isinstance(reply, dict):
+                    tree = reply
+            if tree is None:
                 continue
-            want = count_windows(reply[3]) > 0
+            want = count_windows(tree) > 0
             if want != blurred:
                 blurred = want
                 set_background(BLURRED if want else SHARP)

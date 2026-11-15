@@ -176,7 +176,11 @@ def run_async(argv, on_done, on_line=None):
 
 
 def output_view():
-    """A read-only monospace log view, returned as (scrolled_window, buffer)."""
+    """A read-only monospace log view, returned as (scrolled_window, view).
+
+    The view is returned, not just its buffer: scrolling to the end is the
+    view's job (scroll_to_iter), and the buffer has no such method.
+    """
     view = Gtk.TextView()
     view.set_editable(False)
     view.set_monospace(True)
@@ -190,7 +194,7 @@ def output_view():
     scroll.set_min_content_height(170)
     scroll.set_max_content_height(280)
     scroll.set_vexpand(True)
-    return scroll, view.get_buffer()
+    return scroll, view
 
 
 def section_label(text):
@@ -209,15 +213,73 @@ def install_glass_css():
     own colours are named colours, so alpha() over them keeps the window
     following the light/dark scheme instead of hard-coding a tone.
     """
-    css = b"""
+    css = """
     window.shani-glass {
-      background-color: alpha(@window_bg_color, 0.86);
+      background-color: alpha(@window_bg_color, 0.88);
     }
-    button.card {
-      background-color: alpha(@card_bg_color, 0.55);
-      border: 1px solid alpha(@borders, 0.28);
+
+    /* A tile: the icon sits in a round chip, and the tile itself is glass —
+       translucent, so the blurred wallpaper reads through it. */
+    button.shani-tile {
+      background-color: alpha(@card_bg_color, 0.45);
+      border: 1px solid alpha(@borders, 0.22);
+      border-radius: 18px;
+      padding: 14px;
+      transition: background-color 160ms ease;
     }
-    """
+    button.shani-tile:hover {
+      background-color: alpha(@accent_bg_color, 0.26);
+      border-color: alpha(@accent_color, 0.55);
+    }
+    button.shani-tile:active {
+      background-color: alpha(@accent_bg_color, 0.38);
+    }
+    button.shani-tile:focus {
+      border-color: alpha(@accent_color, 0.8);
+    }
+    button.shani-tile-primary {
+      background-color: alpha(@accent_bg_color, 0.22);
+      border-color: alpha(@accent_color, 0.45);
+    }
+    button.shani-tile-primary:hover {
+      background-color: alpha(@accent_bg_color, 0.32);
+    }
+    button.shani-tile-danger {
+      background-color: alpha(@error_bg_color, 0.16);
+      border-color: alpha(@error_color, 0.4);
+    }
+    button.shani-tile-danger:hover {
+      background-color: alpha(@error_bg_color, 0.26);
+    }
+
+    /* The icon chip is neutral on a normal tile, so the accent on the
+       primary tile is the only accent in the section. */
+    .shani-chip {
+      background-color: alpha(@window_fg_color, 0.09);
+      border-radius: 9999px;
+      padding: 9px;
+      min-width: 24px;
+      min-height: 24px;
+    }
+    button.shani-tile-primary .shani-chip {
+      background-color: alpha(@accent_bg_color, 0.35);
+    }
+    button.shani-tile-danger .shani-chip {
+      background-color: alpha(@error_bg_color, 0.3);
+    }
+    .shani-chip-label {
+      background-color: alpha(@window_fg_color, 0.1);
+      color: @window_fg_color;
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .shani-chip-alert {
+      background-color: alpha(@warning_bg_color, 0.3);
+      color: @warning_color;
+    }
+    """.encode("utf-8")
     provider = Gtk.CssProvider()
     try:
         provider.load_from_data(css)
@@ -312,7 +374,8 @@ class UpdatesWindow(Adw.Window):
         content.append(actions)
 
         content.append(section_label("Output"))
-        scroll, self.buffer = output_view()
+        scroll, self.text_view = output_view()
+        self.buffer = self.text_view.get_buffer()
         content.append(scroll)
 
         page = Gtk.ScrolledWindow()
@@ -386,7 +449,8 @@ class UpdatesWindow(Adw.Window):
         if not text:
             return
         self.buffer.insert(self.buffer.get_end_iter(), text.rstrip("\n") + "\n")
-        self.buffer.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)
+        # scroll_to_iter is the VIEW's method; the buffer only holds text.
+        self.text_view.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)
 
     def set_busy(self, busy):
         self.busy = busy
@@ -505,7 +569,8 @@ class ResetWindow(Adw.Window):
         content.append(gate)
 
         content.append(section_label("Output"))
-        scroll, self.buffer = output_view()
+        scroll, self.text_view = output_view()
+        self.buffer = self.text_view.get_buffer()
         content.append(scroll)
 
         page = Gtk.ScrolledWindow()
@@ -518,7 +583,8 @@ class ResetWindow(Adw.Window):
         if not text:
             return
         self.buffer.insert(self.buffer.get_end_iter(), text.rstrip("\n") + "\n")
-        self.buffer.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)
+        # scroll_to_iter is the VIEW's method; the buffer only holds text.
+        self.text_view.scroll_to_iter(self.buffer.get_end_iter(), 0.0, False, 0.0, 1.0)
 
     def _sync_buttons(self):
         armed = self.entry.get_text().strip() == "RESET"
@@ -653,149 +719,304 @@ class PerformanceWindow(Adw.Window):
 
 
 class ControlWindow(Adw.ApplicationWindow):
+    """The console's maintenance UI.
+
+    The design rules it follows, because a console is read from across a room
+    and driven with a gamepad:
+
+      * one primary action per view (here: back to the game), everything else
+        is a peer;
+      * a strict type scale — title-1 for the name, title-3 for a section,
+        heading for a tile's name, dim-label for its one-line description;
+      * an 8-pt spacing scale, so every gap is a multiple of the same unit;
+      * every tile has the same anatomy: icon chip, name, one line of
+        description. Nothing else;
+      * colour carries meaning, not decoration: the accent marks the primary
+        action, the warning colour marks the update state and the destructive
+        colour marks the reset. Nothing else is coloured;
+      * the columns follow the width, so the layout works on a phone-sized
+        window and on a television.
+    """
+
+    # (icon, name, one-line description, action, tone)
+    # tone: None (neutral), "primary" (the accent), "danger" (destructive)
+    SECTIONS = (
+        ("Play", (
+            ("input-gaming", "Return to game mode", "Switch to Steam Big Picture",
+             "switch_to_game_mode", "primary"),
+            ("software-update-available", "Updates", "Install the newest ShaniOS",
+             "updates", None),
+            ("system-software-install", "Store", "Flatpak app store",
+             "store", None),
+        )),
+        ("System", (
+            ("network-workgroup", "Network", "Wi-Fi and Ethernet", "network", None),
+            ("audio-volume-high", "Audio", "Volume and devices", "audio", None),
+            ("bluetooth-active", "Bluetooth", "Controllers and audio", "bluetooth", None),
+            ("video-display", "Display", "Resolution and scale", "display", None),
+            ("speedometer", "Performance", "Power profile for gaming", "performance", None),
+            ("utilities-system-monitor", "System", "CPU, memory, processes", "monitor", None),
+            ("system-file-manager", "Files", "Browse the system", "files", None),
+            ("drive-harddisk", "Storage", "Disks and partitions", "storage", None),
+            ("text-x-generic", "Logs", "Boot and system logs", "logs", None),
+            ("web-browser", "Browser", "Firefox", "browser", None),
+        )),
+        ("Gaming", (
+            ("input-gamepad", "Controllers", "Map a pad to keys and mouse", "antimicrox", None),
+            ("applications-graphics", "GPU control", "Fans, clocks, overclocking", "lact", None),
+            ("audio-headphones", "Audio effects", "Headset surround and EQ", "easyeffects", None),
+            ("applications-games", "Emulation", "RetroArch and its cores", "retroarch", None),
+        )),
+        ("Media", (
+            ("video-x-generic", "Kodi", "Movies, TV and music", "kodi", None),
+            ("multimedia-player", "Jellyfin", "Your library, streamed", "jellyfin", None),
+            ("folder-download", "Downloads", "Torrents and transfers", "qbittorrent", None),
+        )),
+        ("Maintain", (
+            ("edit-delete", "Factory reset", "Erase this machine", "reset", "danger"),
+        )),
+    )
+
+    # The action names above are resolved to a command here, so a tile's row
+    # reads as data and the plumbing lives in one place.
+    COMMANDS = {
+        "store": "flatpak run io.github.kolunmi.Bazaar",
+        "network": "nmtui",
+        "audio": "pavucontrol",
+        "bluetooth": "blueman",
+        "display": "wdisplays",
+        "monitor": "flatpak run io.missioncenter.MissionCenter",
+        "files": "thunar",
+        "storage": "gnome-disk-utility",
+        "logs": "journalctl -b",
+        "browser": "flatpak run org.mozilla.firefox",
+        "antimicrox": "flatpak run io.github.antimicrox.antimicrox",
+        "lact": "flatpak run io.github.ilya_zlobintsev.LACT",
+        "easyeffects": "flatpak run com.github.wwmm.easyeffects",
+        "retroarch": "flatpak run org.libretro.RetroArch",
+        "kodi": "flatpak run tv.kodi.Kodi",
+        "jellyfin": "flatpak run com.github.iwalton3.jellyfin-media-player",
+        "qbittorrent": "flatpak run org.qbittorrent.qBittorrent",
+    }
+
+    # A tile is never narrower than this, so the columns follow the width.
+    TILE_WIDTH = 260
+
     def __init__(self, app):
-        super().__init__(application=app, title="Shani Control Center")
-        self.set_default_size(980, 680)
+        super().__init__(application=app, title="Shani Console")
+        self.set_default_size(1160, 820)
         Adw.StyleManager.get_default().set_color_scheme(Adw.ColorScheme.PREFER_DARK)
         self.add_css_class("shani-glass")
         self.overlay = Adw.ToastOverlay()
         self.set_content(self.overlay)
-        self.overlay.set_child(self._build())
+        self.columns = 0
+        self.content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
+        self.content.set_margin_top(28)
+        self.content.set_margin_bottom(28)
+        self.content.set_margin_start(28)
+        self.content.set_margin_end(28)
+        self.page = Gtk.ScrolledWindow()
+        self.page.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.page.set_child(self.content)
+        self.overlay.set_child(self.page)
+        self.rebuild()
         self.nav = GamepadNav(self) if HAVE_EVDEV else None
         self.probe_logind()
+        self.refresh_status()
+        # GTK4 has no "size-allocate" signal, no size-allocate vfunc and no
+        # readable width property, so the layout's width is polled. It is one
+        # integer comparison twice a second, and the only thing a width change
+        # does is rebuild the grid.
+        self._width_poll = GLib.timeout_add(400, self._poll_width)
 
-    def toast(self, text):
-        self.overlay.add_toast(Adw.Toast.new(text))
+    # ------------------------------------------------------------- layout
 
-    def _build(self):
-        page = Gtk.ScrolledWindow()
-        page.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
-        box.set_margin_top(24)
-        box.set_margin_bottom(24)
-        box.set_margin_start(24)
-        box.set_margin_end(24)
+    def _poll_width(self):
+        """Follow the width: the columns are the content width over the
+        tile's minimum width, so the layout is the same on a phone-sized
+        window and on a television."""
+        width = self.content.get_width()
+        if width > 0:
+            columns = max(2, min(5, int(width // self.TILE_WIDTH)))
+            if columns != self.columns:
+                self.columns = columns
+                self.rebuild()
+        return True
 
-        title = Gtk.Label(label="Shani Control Center")
+    def rebuild(self):
+        for child in list(self.content.get_children()) if hasattr(self.content, "get_children") else []:
+            pass
+        while True:
+            child = self.content.get_first_child()
+            if child is None:
+                break
+            self.content.remove(child)
+
+        self.content.append(self._header())
+
+        for title, entries in self.SECTIONS:
+            self.content.append(self._section(title, entries))
+
+        self.content.append(self._power_bar())
+
+    def _header(self):
+        header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
+
+        titles = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        title = Gtk.Label(label="Shani Console")
         title.add_css_class("title-1")
         title.set_halign(Gtk.Align.START)
-        box.append(title)
+        subtitle = Gtk.Label(label="Maintenance desktop")
+        subtitle.add_css_class("dim-label")
+        subtitle.set_halign(Gtk.Align.START)
+        titles.append(title)
+        titles.append(subtitle)
+        header.append(titles)
 
-        actions = [
-            ("input-gaming", "Return to game mode", "Switch to Steam Big Picture",
-             self.switch_to_game_mode),
-            ("software-update-available", "Updates", "Install the newest ShaniOS",
-             self.open_updates),
-            ("system-file-manager", "Files", "Browse the system",
-             lambda: spawn("thunar")),
-            ("network-workgroup", "Network", "Wi-Fi and Ethernet",
-             lambda: spawn("nmtui", True)),
-            ("audio-volume-high", "Audio", "Volume and devices",
-             lambda: spawn("pavucontrol")),
-            ("bluetooth-active", "Bluetooth", "Controllers, audio, devices",
-             lambda: spawn("blueman")),
-            ("video-display", "Display", "Resolution and scale",
-             lambda: spawn("wdisplays")),
-            ("speedometer", "Performance", "Power profile for gaming",
-             self.open_performance),
-            ("utilities-system-monitor", "System", "CPU, memory, processes",
-             lambda: spawn("flatpak run io.missioncenter.MissionCenter")),
-            ("web-browser", "Browser", "Firefox",
-             lambda: spawn("flatpak run org.mozilla.firefox")),
-            ("system-software-install", "Store", "Flatpak app store",
-             lambda: spawn("flatpak run io.github.kolunmi.Bazaar")),
-            ("drive-harddisk", "Storage", "Disks and partitions",
-             lambda: spawn("gnome-disk-utility")),
-            ("text-x-generic", "Logs", "Boot and system logs",
-             lambda: spawn("journalctl -b", True)),
-            ("edit-delete", "Factory reset", "Erase this machine and start over",
-             self.open_reset),
-        ]
+        spacer = Gtk.Box()
+        spacer.set_hexpand(True)
+        header.append(spacer)
 
-        grid = Gtk.Grid(column_spacing=18, row_spacing=18)
+        self.status_chip = Gtk.Label(label="Checking for updates…")
+        self.status_chip.add_css_class("shani-chip-label")
+        self.status_chip.add_css_class("shani-chip-quiet")
+        header.append(self.status_chip)
+        return header
+
+    def _section(self, title, entries):
+        """A titled group of tiles.
+
+        Sections, not one long grid: the console's actions are not all equal,
+        and someone looking for "GPU control" should not have to scan past
+        file managers and logs to find it.
+        """
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+
+        label = Gtk.Label(label=title)
+        label.add_css_class("title-3")
+        label.set_halign(Gtk.Align.START)
+        box.append(label)
+
+        grid = Gtk.Grid(column_spacing=16, row_spacing=16)
         grid.set_row_homogeneous(True)
         grid.set_column_homogeneous(True)
-        for i, (icon, label, sub, cb) in enumerate(actions):
-            grid.attach(self._card(icon, label, sub, cb), i % 3, i // 3, 1, 1)
+        columns = self._columns_for(len(entries))
+        for i, entry in enumerate(entries):
+            grid.attach(self._tile(*entry), i % columns, i // columns, 1, 1)
         box.append(grid)
+        return box
 
-        # --- Gaming section: the tools a player reaches for between games ---
-        gaming_title = Gtk.Label(label="Gaming")
-        gaming_title.add_css_class("title-3")
-        gaming_title.set_halign(Gtk.Align.START)
-        box.append(gaming_title)
+    def _columns_for(self, count):
+        """How many columns a section of this many tiles gets.
 
-        gaming_actions = [
-            ("input-gamepad", "Controllers", "Map a pad to keyboard and mouse",
-             lambda: spawn("flatpak run io.github.antimicrox.antimicrox")),
-            ("applications-graphics", "GPU control", "Fans, clocks, overclocking",
-             lambda: spawn("flatpak run io.github.ilya_zlobintsev.LACT")),
-            ("audio-headphones", "Audio effects", "Headset surround and EQ",
-             lambda: spawn("flatpak run com.github.wwmm.easyeffects")),
-            ("applications-games", "Emulation", "RetroArch and its cores",
-             lambda: spawn("flatpak run org.libretro.RetroArch")),
-        ]
+        The window's own column count, never more than the section has tiles:
+        a three-tile section is three tiles wide, not three tiles and an
+        empty slot. The last row of a section may be short — that is how every
+        desktop grid behaves, and forcing an even split would make the tiles
+        twice as wide as they need to be.
+        """
+        limit = self.columns or 3
+        return max(1, min(limit, count))
 
-        gaming_grid = Gtk.Grid(column_spacing=18, row_spacing=18)
-        gaming_grid.set_row_homogeneous(True)
-        gaming_grid.set_column_homogeneous(True)
-        for i, (icon, label, sub, cb) in enumerate(gaming_actions):
-            gaming_grid.attach(self._card(icon, label, sub, cb), i % 3, i // 3, 1, 1)
-        box.append(gaming_grid)
+    def _tile(self, icon, name, sub, action, tone):
+        btn = Gtk.Button()
+        btn.add_css_class("shani-tile")
+        if tone == "primary":
+            btn.add_css_class("shani-tile-primary")
+        elif tone == "danger":
+            btn.add_css_class("shani-tile-danger")
+        btn.set_size_request(-1, 128)
 
-        # --- Power row: every power state a console owner expects ---
-        power = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        power.set_halign(Gtk.Align.CENTER)
+        column = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
 
-        self.hibernate_button = self._power_button(power, "Hibernate",
+        chip = Gtk.Box()
+        chip.add_css_class("shani-chip")
+        # A vertical box stretches its children across the cross axis, so the
+        # chip has to be told to keep its natural size and sit in the middle.
+        chip.set_halign(Gtk.Align.CENTER)
+        img = Gtk.Image.new_from_icon_name(icon)
+        img.set_pixel_size(26)
+        chip.append(img)
+        column.append(chip)
+
+        title = Gtk.Label(label=name)
+        title.add_css_class("heading")
+        title.set_justify(Gtk.Justification.CENTER)
+        column.append(title)
+
+        description = Gtk.Label(label=sub)
+        description.add_css_class("dim-label")
+        description.set_wrap(True)
+        description.set_justify(Gtk.Justification.CENTER)
+        column.append(description)
+
+        btn.set_child(column)
+        btn.connect("clicked", lambda _b, a=action: self._run(a))
+        return btn
+
+    def _run(self, action):
+        if action == "switch_to_game_mode":
+            self.switch_to_game_mode()
+        elif action == "updates":
+            self.open_updates()
+        elif action == "performance":
+            self.open_performance()
+        elif action == "reset":
+            self.open_reset()
+        else:
+            command = self.COMMANDS.get(action)
+            if command:
+                spawn(command, terminal=command in ("nmtui", "journalctl -b"))
+
+    # ------------------------------------------------------------ power bar
+
+    def _power_bar(self):
+        """Every power state a console owner expects, in one row.
+
+        Flat buttons, grouped: sleep and lock on the left, the two that end
+        the session in the middle, the ones that leave the desktop on the
+        right. The destructive pair is the only coloured thing in the row.
+        """
+        bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        bar.set_halign(Gtk.Align.CENTER)
+
+        self.hibernate_button = self._power_button(bar, "Hibernate",
                                                   "systemctl hibernate")
-        self.firmware_button = self._power_button(power, "UEFI setup",
+        self.firmware_button = self._power_button(bar, "UEFI setup",
                                                   "systemctl reboot --firmware-setup")
-        # Both stay insensitive until logind says it can do them.
+        # Both stay insensitive until logind says the machine can do them.
         self.hibernate_button.set_sensitive(False)
         self.firmware_button.set_sensitive(False)
-        self._power_button(power, "Sleep", "systemctl suspend")
-        self._power_button(power, "Lock", "swaylock")
-        self._power_button(power, "Power off", "systemctl poweroff")
-        self._power_button(power, "Reboot", "systemctl reboot")
+        self._power_button(bar, "Sleep", "systemctl suspend")
+        self._power_button(bar, "Lock", "swaylock")
+
+        bar.append(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL))
+        self._power_button(bar, "Power off", "systemctl poweroff")
+        self._power_button(bar, "Reboot", "systemctl reboot")
+        bar.append(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL))
 
         logout = Gtk.Button(label="Log out")
+        logout.add_css_class("flat")
         logout.connect("clicked", lambda _b: spawn("swaymsg exit"))
-        power.append(logout)
-        close = Gtk.Button(label="Close")
-        close.connect("clicked", lambda _b: self.close())
-        power.append(close)
-        box.append(power)
+        bar.append(logout)
 
-        page.set_child(box)
-        return page
+        close = Gtk.Button(label="Close")
+        close.add_css_class("flat")
+        close.connect("clicked", lambda _b: self.close())
+        bar.append(close)
+        return bar
 
     def _power_button(self, parent, label, cmd):
         btn = Gtk.Button(label=label)
+        btn.add_css_class("flat")
         if label in ("Power off", "Reboot"):
             btn.add_css_class("destructive-action")
         btn.connect("clicked", lambda _b, c=cmd: self.power_action(c))
         parent.append(btn)
         return btn
 
-    def _card(self, icon, label, sub, cb):
-        btn = Gtk.Button()
-        btn.set_size_request(-1, 150)
-        btn.add_css_class("card")
-        v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        img = Gtk.Image.new_from_icon_name(icon)
-        img.set_pixel_size(48)
-        v.append(img)
-        l = Gtk.Label(label=label)
-        l.add_css_class("heading")
-        v.append(l)
-        s = Gtk.Label(label=sub)
-        s.add_css_class("dim-label")
-        s.set_wrap(True)
-        v.append(s)
-        btn.set_child(v)
-        btn.connect("clicked", lambda _b, cb=cb: cb())
-        return btn
+    def toast(self, text):
+        self.overlay.add_toast(Adw.Toast.new(text))
 
     # --------------------------------------------------------------- actions
 
@@ -819,6 +1040,8 @@ class ControlWindow(Adw.ApplicationWindow):
         """
 
         def done(rc, out):
+            if cmd == "swaylock":
+                return
             if rc == 0:
                 self.toast(f"{cmd.split()[-1]}…")
             else:
@@ -856,7 +1079,8 @@ class ControlWindow(Adw.ApplicationWindow):
         to support it. logind knows both answers, and offering a button that
         cannot work is worse than not offering it — so the two buttons that
         depend on it are only enabled when logind says yes. This is the same
-        probe the ShaniOS desktop shell makes (shani-shell's Services/Power.qml).
+        probe the ShaniOS desktop shell makes (shani-shell's
+        Services/Power.qml).
         """
 
         def capability(method, apply_result):
@@ -872,6 +1096,36 @@ class ControlWindow(Adw.ApplicationWindow):
                    lambda ok: self.hibernate_button.set_sensitive(ok))
         capability("CanRebootToFirmwareSetup",
                    lambda ok: self.firmware_button.set_sensitive(ok))
+
+    def refresh_status(self):
+        """The chip in the header: what the release channel says.
+
+        This is the same read-only call the Updates window makes
+        (shani-deploy --status --check --json), so the header and the
+        updates page can never disagree.
+        """
+
+        def done(rc, out):
+            if rc != 0:
+                self.status_chip.set_text("Status unavailable")
+                return
+            try:
+                st = json.loads(out)
+            except json.JSONDecodeError:
+                self.status_chip.set_text("Status unavailable")
+                return
+            self.status_chip.remove_css_class("shani-chip-alert")
+            if st.get("update_available"):
+                latest = (st.get("remote") or {}).get("latest") or "a new image"
+                self.status_chip.set_text(f"Update available — {latest}")
+                self.status_chip.add_css_class("shani-chip-alert")
+            elif st.get("reboot_needed"):
+                self.status_chip.set_text("Restart pending")
+                self.status_chip.add_css_class("shani-chip-alert")
+            else:
+                self.status_chip.set_text("Up to date")
+
+        run_async([DEPLOY, "--status", "--check", "--json"], done)
 
 
 class ControlApp(Adw.Application):
