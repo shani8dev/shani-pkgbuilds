@@ -1,12 +1,14 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Gamescope gaming desktop environment for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
 license=('GPL-3.0-only')
 depends=(
+	# --- Login: greetd starts the gamescope session directly (no greeter) ---
+	greetd
 	# --- Gamescope compositor (from Arch [extra]) ---
 	gamescope
 	# --- Gamescope session framework (ShaniOS reimplementation of
@@ -48,10 +50,9 @@ package() {
     # Ensure necessary directories exist
     install -d "$pkgdir/etc/"
     install -d "$pkgdir/usr/"
-    # Copy local etc and usr directories (currently empty — this meta-package
-    # is pure dependency aggregation; the session .desktop, gdm autologin,
-    # and ephemeral-home systemd units live in the gamescope image profile
-    # overlay, not here).
+    # Copy local etc and usr directories. The greetd initial_session config
+    # and its systemd drop-in ship here; the session .desktop and the
+    # gamescope user/home units live in the gamescope image profile overlay.
     cp -r "$startdir/etc" "$pkgdir/" 2>/dev/null || true
     cp -r "$startdir/usr" "$pkgdir/" 2>/dev/null || true
 }

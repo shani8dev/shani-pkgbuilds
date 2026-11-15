@@ -1,0 +1,18 @@
+# greetd config for the gamescope edition. greetd's own
+# /etc/greetd/config.toml belongs to the greetd package, so this one is
+# selected by /usr/lib/systemd/system/greetd.service.d/10-shani-gamescope.conf.
+#
+# initial_session starts the gamescope session directly as the gamescope user:
+# no greeter, no password prompt, and no GNOME/Qt login stack. The user is
+# created at boot by the image profile's gamescope-session-user.service.
+[terminal]
+vt = 1
+
+[general]
+# The default PAM stack: system-local-login pulls in pam_systemd, which gives
+# the session a systemd user manager and D-Bus (needed by the Flatpak Steam).
+service = "login"
+
+[initial_session]
+command = "gamescope-session-plus steam"
+user = "gamescope"

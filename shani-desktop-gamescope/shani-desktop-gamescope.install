@@ -24,8 +24,16 @@ post_install() {
 }
 
 post_upgrade() {
-    systemctl enable gdm.service
+    # greetd aliases itself to display-manager.service; the package ships
+    # /etc/greetd/shani-gamescope.toml and a drop-in that makes greetd launch
+    # the gamescope session directly (initial_session, no greeter).
+    systemctl enable greetd.service
     echo "Performing misc postinstall operations..."
     update_fonts
     update_gtk
+}
+
+pre_remove() {
+    # `|| true`: it may already be disabled, or replaced by another desktop's DM.
+    systemctl disable greetd.service || true
 }

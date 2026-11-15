@@ -47,23 +47,80 @@ if [[ -d "$ENV_DIR" ]]; then
     done
 fi
 
-# Resolve render vs. output dimensions.
+# Unpack the pre-downloaded Steam client on first boot. SteamOS/Bazzite ship a
+# bootstrap archive in the image; without it the first launch downloads ~600 MB
+# before the login screen appears. The archive is built at image-build time by
+# image_profiles/gamescope/gamescope-customization.sh.
+bootstrap_steam() {
+    local archive="/usr/share/gamescope-session-plus/bootstrap_steam.tar.zst"
+    [[ -f "$archive" ]] || return 0
+
+    local steam_data="${XDG_DATA_HOME:-$HOME/.local/share}/Steam"
+    local prefix="$HOME/.var/app/com.valvesoftware.Steam"
+    if [[ -d "$prefix" || "$CLIENTCMD" == *"com.valvesoftware.Steam"* ]]; then
+        # The Steam Flatpak redirects XDG dirs to
+        # ~/.var/app/com.valvesoftware.Steam (FLATPAK_STEAM_XDG_DIRS_PREFIX).
+        steam_data="$prefix/.local/share/Steam"
+        mkdir -p "$prefix/.local/share"
+        ln -sfn .local/share/Steam "$prefix/.steam"
+    fi
+
+    if [[ ! -f "$steam_data/package/steam_client_steamrt64.installed" ]]; then
+        echo "gamescope-session-plus: unpacking the Steam bootstrap into $steam_data" >&2
+        mkdir -p "$steam_data"
+        tar --use-compress-program="zstd -d" -xf "$archive" -C "$steam_data" --strip-components=1
+    fi
+}
+bootstrap_steam
+
+# Gamescope is a Wayland compositor, but Steam's UI is X11; SteamOS and
+# ChimeraOS both run the session as an X11 session so the client's gamescope
+# integration works. Keep the environment consistent for the Flatpak Steam.
+export XDG_SESSION_TYPE=x11
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment --systemd $(env | grep '^XDG_' | cut -d = -f 1) 2>/dev/null || true
+fi
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user set-environment XDG_DESKTOP_PORTAL_DIR="" 2>/dev/null || true
+    systemctl --user unset-environment DISPLAY XAUTHORITY 2>/dev/null || true
+fi
+
+# Steam's "Automatically Set Resolution" option and gamescope's mode/EDID
+# caches live in the user's home, so they persist across boots.
+export GAMESCOPE_MODE_SAVE_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope/modes.cfg"
+export GAMESCOPE_PATCHED_EDID_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope/edid.bin"
+mkdir -p "$(dirname "$GAMESCOPE_MODE_SAVE_FILE")"
+touch "$GAMESCOPE_MODE_SAVE_FILE" "$GAMESCOPE_PATCHED_EDID_FILE"
+
+# Steam's gamescope WSI layer (HDR/VRR/fps limiter integration).
+export ENABLE_GAMESCOPE_WSI=1
+
+# Resolve output (display) vs. internal (render) dimensions.
 SCREEN_WIDTH="${SCREEN_WIDTH:-}"
 SCREEN_HEIGHT="${SCREEN_HEIGHT:-}"
 INTERNAL_WIDTH="${INTERNAL_WIDTH:-$SCREEN_WIDTH}"
 INTERNAL_HEIGHT="${INTERNAL_HEIGHT:-$SCREEN_HEIGHT}"
 
-GAMESCOPE_ARGS=(-e -f --no-xwayland-redirect)
-[[ -n "$INTERNAL_WIDTH" && -n "$INTERNAL_HEIGHT" ]] \
-    GAMESCOPE_ARGS+=(-W "$INTERNAL_WIDTH" -H "$INTERNAL_HEIGHT")
-[[ -n "$SCREEN_WIDTH" && -n "$SCREEN_HEIGHT" ]] \
-    GAMESCOPE_ARGS+=(-w "$SCREEN_WIDTH" -h "$SCREEN_HEIGHT")
-[[ "${ADAPTIVE_SYNC:-0}" == "1" ]] \
+# --steam is gamescope's Steam integration (short form -e); --xwayland-count 2
+# gives the Steam UI and a game separate XWayland servers, matching SteamOS.
+GAMESCOPE_ARGS=(--steam -f --xwayland-count 2)
+if [[ -n "$SCREEN_WIDTH" && -n "$SCREEN_HEIGHT" ]]; then
+    GAMESCOPE_ARGS+=(-W "$SCREEN_WIDTH" -H "$SCREEN_HEIGHT")
+fi
+if [[ -n "$INTERNAL_WIDTH" && -n "$INTERNAL_HEIGHT" ]]; then
+    GAMESCOPE_ARGS+=(-w "$INTERNAL_WIDTH" -h "$INTERNAL_HEIGHT")
+fi
+if [[ "${ADAPTIVE_SYNC:-0}" == "1" ]]; then
     GAMESCOPE_ARGS+=(--adaptive-sync)
-[[ -n "${DRM_MODE:-}" ]] \
-    GAMESCOPE_ARGS+=(--"$DRM_MODE")
-[[ "${ENABLE_GAMESCOPE_HDR:-0}" == "1" ]] \
-    GAMESCOPE_ARGS+=(--hdr-enabled --hdr-sdr-nits "${GAMESCOPE_HDR_NITS:-400}")
+fi
+if [[ -n "${DRM_MODE:-}" ]]; then
+    GAMESCOPE_ARGS+=(--generate-drm-mode "$DRM_MODE")
+fi
+if [[ "${ENABLE_GAMESCOPE_HDR:-0}" == "1" ]]; then
+    GAMESCOPE_ARGS+=(--hdr-enabled --hdr-itm-enabled \
+        --hdr-sdr-content-nits "${GAMESCOPE_HDR_NITS:-400}" \
+        --hdr-itm-sdr-nits "${GAMESCOPE_HDR_NITS:-400}")
+fi
 
 # If the caller gave an explicit gamescope command, use it verbatim.
 if [[ -n "${GAMESCOPECMD:-}" ]]; then
