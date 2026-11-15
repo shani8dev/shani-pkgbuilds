@@ -134,10 +134,20 @@ if HAVE_EVDEV:
 
 
 def spawn(cmd, terminal=False):
-    if terminal:
-        subprocess.Popen(["foot", "-e", "bash", "-lc", cmd])
-    else:
-        subprocess.Popen(["bash", "-lc", cmd])
+    """Start a command, or a terminal running it.
+
+    A missing binary is a warning, not a traceback: the console's own actions
+    all have their packages installed, but a user who removed one should see
+    "foot is not installed" in the journal rather than a Python exception in
+    the middle of a click handler.
+    """
+    try:
+        if terminal:
+            subprocess.Popen(["foot", "-e", "bash", "-lc", cmd])
+        else:
+            subprocess.Popen(["bash", "-lc", cmd])
+    except OSError as exc:
+        print(f"shani-gamescope-control: {cmd.split()[0]}: {exc}", file=sys.stderr)
 
 
 def run_async(argv, on_done, on_line=None):
@@ -720,6 +730,211 @@ class PerformanceWindow(Adw.Window):
         )
 
 
+class WifiWindow(Adw.Window):
+    """Wi-Fi: the console's network dialog.
+
+    Steam's Big Picture has no network settings - SteamOS ships its own for
+    exactly this reason - so this is how a console is brought online: pick a
+    network, type the password, done. Every row is focusable and A activates
+    it, so it works from the couch.
+
+    nmcli is the backend: NetworkManager's polkit policy already lets an
+    active local session control networking without a password
+    (shani-settings' 99-shani.rules), so connecting needs no prompt.
+    """
+
+    FIELDS = "ACTIVE,SSID,SIGNAL,SECURITY"
+    # nmcli reports an open network's security as one of these.
+    OPEN = ("", "--", "NONE")
+
+    def __init__(self, app=None, parent=None):
+        # The application matters: a window that is not attached to one does
+        # not count as a window of the app, so `--wifi` (which presents this
+        # window as the app's only one) would exit immediately.
+        super().__init__(application=app, transient_for=parent,
+                         modal=parent is not None)
+        self.set_title("Wi-Fi")
+        self.set_default_size(640, 560)
+        self.add_css_class("shani-glass")
+        self.busy = False
+        self.networks = Adw.PreferencesGroup(title="Networks")
+        # The rows this window added. Adw.PreferencesGroup is a GtkListBox, so
+        # get_first_child() returns its INTERNAL list box, not the rows:
+        # removing that is a critical warning and never terminates. Rows are
+        # tracked here and removed through the group's own API instead.
+        self.rows = []
+
+        outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        outer.append(Adw.HeaderBar())
+
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        content.set_margin_top(14)
+        content.set_margin_bottom(14)
+        content.set_margin_start(18)
+        content.set_margin_end(18)
+
+        self.status = Gtk.Label(label="Looking for networks…")
+        self.status.add_css_class("dim-label")
+        self.status.set_halign(Gtk.Align.START)
+        content.append(self.status)
+        content.append(self.networks)
+
+        actions = Adw.PreferencesGroup(title="Actions")
+        row = Adw.ActionRow(title="Rescan", subtitle="Look for networks again")
+        button = Gtk.Button(label="Rescan")
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", lambda _b: self.scan())
+        row.add_suffix(button)
+        actions.add(row)
+        row = Adw.ActionRow(title="Advanced",
+                            subtitle="nmtui - every NetworkManager setting")
+        button = Gtk.Button(label="Open")
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", lambda _b: spawn("nmtui", terminal=True))
+        row.add_suffix(button)
+        actions.add(row)
+        content.append(actions)
+
+        page = Gtk.ScrolledWindow()
+        page.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        page.set_child(content)
+        outer.append(page)
+        self.set_content(outer)
+        self.nav = GamepadNav(self) if HAVE_EVDEV else None
+        self.scan()
+
+    # ---------------------------------------------------------------- scan
+
+    def _clear(self):
+        for row in self.rows:
+            self.networks.remove(row)
+        self.rows = []
+
+    @staticmethod
+    def _split(line):
+        """Split one nmcli --terse line.
+
+        nmcli escapes a ':' inside a value as '\\:', so a plain split would
+        cut an SSID like "Coffee: downstairs" in half.
+        """
+        fields, current, escaped = [], "", False
+        for char in line:
+            if escaped:
+                current += char
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == ":":
+                fields.append(current)
+                current = ""
+            else:
+                current += char
+        fields.append(current)
+        return fields
+
+    def scan(self):
+        if self.busy:
+            return
+        self.busy = True
+        self.status.set_text("Looking for networks…")
+        self._clear()
+        run_async(["nmcli", "-t", "-f", self.FIELDS, "dev", "wifi", "list"],
+                  self._scanned)
+
+    def _scanned(self, rc, out):
+        self.busy = False
+        if rc != 0:
+            self.status.set_text("No Wi-Fi radio found")
+            return
+        # One row per SSID, strongest signal wins (a network is usually
+        # listed once per band).
+        seen = {}
+        for line in out.splitlines():
+            fields = self._split(line)
+            if len(fields) < 4:
+                continue
+            active, ssid, signal, security = fields[0], fields[1], fields[2], fields[3]
+            if not ssid:
+                continue
+            try:
+                strength = int(signal)
+            except ValueError:
+                strength = 0
+            current = seen.get(ssid)
+            if current is None or strength > current[1]:
+                seen[ssid] = (ssid, strength, security, active)
+        if not seen:
+            self.status.set_text("No networks in range")
+            return
+        self.status.set_text("Choose a network")
+        for ssid, strength, security, active in sorted(seen.values(),
+                                                       key=lambda n: -n[1]):
+            row = self._row(ssid, strength, security, active)
+            self.rows.append(row)
+            self.networks.add(row)
+
+    def _row(self, ssid, strength, security, active):
+        secured = security not in self.OPEN
+        bits = [f"{strength}% signal", "secured" if secured else "open"]
+        if active in ("yes", "true"):
+            bits.insert(0, "connected")
+        row = Adw.ActionRow(title=ssid, subtitle=" · ".join(bits))
+        if secured:
+            row.add_suffix(Gtk.Image.new_from_icon_name("dialog-password-symbolic"))
+        row.connect("activated", lambda _r, s=ssid, sec=security: self.connect_to(s, sec))
+        return row
+
+    # ------------------------------------------------------------- connect
+
+    def connect_to(self, ssid, security):
+        if self.busy:
+            return
+        if security in self.OPEN:
+            self._do(["nmcli", "dev", "wifi", "connect", ssid])
+            return
+        dialog = Adw.MessageDialog(transient_for=self,
+                                   heading=f"Connect to {ssid}",
+                                   body="Enter the network password.")
+        entry = Gtk.PasswordEntry()
+        entry.set_placeholder_text("Password")
+        entry.set_show_peek_icon(True)
+        dialog.set_extra_child(entry)
+        dialog.add_response("cancel", "Cancel")
+        dialog.add_response("connect", "Connect")
+        dialog.set_default_response("connect")
+        dialog.set_response_appearance("connect", Adw.ResponseAppearance.SUGGESTED)
+
+        def responded(_d, response):
+            if response != "connect":
+                return
+            password = entry.get_text()
+            if not password:
+                return
+            # The password is an argument to nmcli, so it is visible in the
+            # process table for the moment it takes to connect. The
+            # alternative is NetworkManager's D-Bus API, which is a lot of
+            # machinery for a dialog that runs on the owner's own console.
+            self._do(["nmcli", "dev", "wifi", "connect", ssid,
+                      "password", password])
+
+        dialog.connect("response", responded)
+        dialog.present(self)
+
+    def _do(self, argv):
+        self.busy = True
+        self.status.set_text("Connecting…")
+        run_async(argv, self._done)
+
+    def _done(self, rc, out):
+        self.busy = False
+        if rc == 0:
+            self.status.set_text("Connected")
+            self.scan()
+            return
+        detail = (out or "").strip().splitlines()
+        self.status.set_text(detail[-1] if detail else "Could not connect")
+
+
 class ControlWindow(Adw.ApplicationWindow):
     """The console's maintenance UI.
 
@@ -968,6 +1183,8 @@ class ControlWindow(Adw.ApplicationWindow):
             self.open_performance()
         elif action == "reset":
             self.open_reset()
+        elif action == "network":
+            self.open_wifi()
         else:
             command = self.COMMANDS.get(action)
             if command:
@@ -1033,6 +1250,9 @@ class ControlWindow(Adw.ApplicationWindow):
 
     def open_performance(self):
         PerformanceWindow(self).present()
+
+    def open_wifi(self):
+        WifiWindow(self.get_application(), parent=self).present()
 
     def power_action(self, cmd):
         """Run a power action and say what happened.
@@ -1136,12 +1356,24 @@ class ControlWindow(Adw.ApplicationWindow):
 class ControlApp(Adw.Application):
     def __init__(self):
         super().__init__(application_id="dev.shani.gamescope-control")
+        # Gtk.Application parses argv before do_activate runs and rejects
+        # anything it does not know, so --wifi has to be registered here -
+        # otherwise the process dies with "Unknown option --wifi" and no
+        # window at all.
+        self.add_main_option("wifi", 0, GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE,
+                             "Open the Wi-Fi dialog on its own", None)
 
     def do_startup(self):
         install_glass_css()
         Adw.Application.do_startup(self)
 
     def do_activate(self):
+        if "--wifi" in sys.argv:
+            # `shani-gamescope-control --wifi`: the dialog on its own, which
+            # is what the panel's network chip and the Network tile launch.
+            WifiWindow(self).present()
+            return
         ControlWindow(self).present()
 
 

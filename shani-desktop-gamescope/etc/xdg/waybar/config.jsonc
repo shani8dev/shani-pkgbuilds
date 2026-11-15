@@ -21,6 +21,13 @@
     "tooltip": false,
     "on-click": "shani-gamescope-control"
   },
+  "network": {
+    "format": "󰤨 {essid}",
+    "format-disconnected": "<span foreground='#f7768e'>󰤭 Offline</span>",
+    "format-linked": "󰤨 {ifname}",
+    "tooltip-format": "{ifname}\n{ipaddr}/{cidr}\n{signalStrength}% {essid}",
+    "on-click": "shani-gamescope-control --wifi"
+  },
   "clock": {
     "format": "{:%H:%M}",
     "format-alt": "{:%Y-%m-%d %H:%M:%S}",
