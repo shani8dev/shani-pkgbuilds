@@ -11,6 +11,7 @@ The update flow uses the exact contract Shani Cassini uses:
 disagree about what the machine thinks its state is.
 """
 import json
+import os
 import subprocess
 import sys
 import threading
@@ -20,15 +21,14 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from gi.repository import Adw, Gdk, GLib, Gtk  # noqa: E402
+from gi.repository import Adw, Gdk, Gio, GLib, Gtk  # noqa: E402
 
-try:
-    import evdev
-    from evdev import ecodes
-
-    HAVE_EVDEV = True
-except Exception:
-    HAVE_EVDEV = False
+# The native settings panels (Network, Bluetooth, Audio, Display) and the
+# controller support (gamepad.py: navigation, on-screen keyboard) live next to
+# the console's other private helpers.
+sys.path.insert(0, "/usr/lib/shani-desktop-gamescope")
+import gamepad  # noqa: E402
+import panels  # noqa: E402
 
 
 # Absolute paths, so the polkit grant that backs them is a path grant and not
@@ -37,6 +37,19 @@ DEPLOY = "/usr/local/bin/shani-deploy"
 RESET = "/usr/local/bin/shani-reset"
 SESSION_SELECT = "/usr/bin/gamescope-session-select"
 POWERPROFILESCTL = "/usr/bin/powerprofilesctl"
+CONSOLE_PASSWORD = "/usr/lib/shani-desktop-gamescope/console-password"
+
+# Opened from game mode (the "Control Center" entry in Steam's library, through
+# the console's launcher): Steam is still running behind this window, so the
+# primary action is to go back to it - closing - and desktop mode is one tile
+# away, since Steam's own "Switch to Desktop" has nothing it can call here.
+FROM_STEAM = os.environ.get("SHANI_FROM_STEAM") == "1"
+GAME_MODE_TILES = (
+    ("input-gaming-symbolic", "Back to the game", "Close the Control Center",
+     "close", "primary"),
+    ("computer-symbolic", "Desktop mode", "Apps, files and settings with a pointer",
+     "switch_to_desktop", None),
+)
 
 # The privileged operations go through polkit (pkexec) — the same path Shani
 # Cassini uses, and the one shani-settings' 99-shani.rules governs:
@@ -58,79 +71,10 @@ def pkexec_message(rc, out):
     if rc == PKEXEC_CANCELLED:
         return "Authorization was cancelled"
     if rc == PKEXEC_DENIED:
-        return ("Not authorized. The console user needs a password for this — "
-                "set one with 'passwd' in a terminal, then try again.")
+        return ("Not authorized. The console needs a password for this — "
+                "set one in Control Center → Password, then try again.")
     detail = (out or "").strip().splitlines()
     return detail[-1] if detail else f"Failed (exit {rc})"
-
-
-if HAVE_EVDEV:
-    import threading
-
-    class GamepadNav:
-        """Map a connected controller to GTK focus/activate/close.
-
-        D-pad / left stick -> move focus; A -> activate; B/Start/Select ->
-        close. Runs in a daemon thread and pushes actions to the GTK main
-        loop with GLib.idle_add.
-        """
-
-        def __init__(self, window):
-            self.window = window
-            self.dev = None
-            for path in evdev.list_devices():
-                try:
-                    d = evdev.InputDevice(path)
-                    keys = d.capabilities().get(ecodes.EV_KEY, [])
-                    if ecodes.BTN_A in keys or getattr(ecodes, "BTN_SOUTH", -1) in keys:
-                        self.dev = d
-                        break
-                except OSError:
-                    continue
-            self.thread = None
-            if self.dev:
-                self.thread = threading.Thread(target=self._run, daemon=True)
-                self.thread.start()
-
-        def _run(self):
-            try:
-                for ev in self.dev.read_loop():
-                    if ev.type == ecodes.EV_KEY and ev.value == 1:
-                        GLib.idle_add(self._key, ev.code)
-            except OSError:
-                pass
-
-        def _key(self, code):
-            if code in (ecodes.BTN_DPAD_UP, ecodes.KEY_UP):
-                self._focus(Gtk.DirectionType.TAB_BACKWARD)
-            elif code in (ecodes.BTN_DPAD_DOWN, ecodes.KEY_DOWN):
-                self._focus(Gtk.DirectionType.TAB_FORWARD)
-            elif code in (ecodes.BTN_DPAD_LEFT, ecodes.KEY_LEFT):
-                self._focus(Gtk.DirectionType.LEFT)
-            elif code in (ecodes.BTN_DPAD_RIGHT, ecodes.KEY_RIGHT):
-                self._focus(Gtk.DirectionType.RIGHT)
-            elif code in (ecodes.BTN_A, getattr(ecodes, "BTN_SOUTH", ecodes.BTN_A)):
-                self._activate()
-            elif code in (
-                ecodes.BTN_B,
-                getattr(ecodes, "BTN_EAST", ecodes.BTN_B),
-                ecodes.BTN_START,
-                ecodes.BTN_SELECT,
-            ):
-                self.window.close()
-            return False
-
-        def _focus(self, direction):
-            w = self.window.get_focus()
-            if w:
-                w.child_focus(direction)
-            return False
-
-        def _activate(self):
-            w = self.window.get_focus()
-            if w and hasattr(w, "activate"):
-                w.activate()
-            return False
 
 
 def spawn(cmd, terminal=False):
@@ -244,6 +188,10 @@ def install_glass_css():
     button.shani-tile:active {
       background-color: alpha(@accent_bg_color, 0.38);
     }
+    button.shani-tile:focus-visible {
+      outline: 3px solid alpha(@accent_color, 0.9);
+      outline-offset: 2px;
+    }
     button.shani-tile:focus {
       border-color: alpha(@accent_color, 0.8);
     }
@@ -285,10 +233,94 @@ def install_glass_css():
       font-size: 0.9em;
       font-weight: bold;
     }
+    button.shani-chip-label:hover {
+      background-color: alpha(@window_fg_color, 0.16);
+    }
+    .shani-banner {
+      background-color: alpha(@accent_bg_color, 0.16);
+      border: 1px solid alpha(@accent_color, 0.4);
+      border-radius: 18px;
+      padding: 14px 18px;
+    }
+    .shani-status-icon {
+      color: @accent_color;
+    }
     .shani-chip-alert {
       background-color: alpha(@warning_bg_color, 0.3);
       color: @warning_color;
     }
+
+    /* ---- the home: a console's ten-foot screen ----------------------------
+       Deep navy with a soft light from the top left, large cards that lift
+       and glow under the controller, the time at the top and the buttons'
+       meanings at the bottom. Read from a sofa: big type, high contrast. */
+    window.shani-home {
+      background-color: #0a1020;
+      background-image:
+        radial-gradient(ellipse at 15% -10%, alpha(#3d7be0, 0.38), transparent 60%),
+        radial-gradient(ellipse at 100% 110%, alpha(#7a4fd8, 0.18), transparent 55%),
+        linear-gradient(180deg, #111a2e 0%, #090d18 100%);
+      color: #eaf0fa;
+    }
+    .shani-topbar { padding: 22px 48px 14px 48px; }
+    .shani-wordmark { font-size: 24pt; font-weight: 900; letter-spacing: 3px; }
+    .shani-wordmark-sub { font-size: 15pt; font-weight: 300; opacity: 0.7; }
+    .shani-clock { font-size: 20pt; font-weight: 700; margin-left: 6px; }
+    .shani-topbar-item { font-size: 13pt; font-weight: 600; opacity: 0.85; }
+    .shani-shelf-title {
+      font-size: 15pt; font-weight: 800; letter-spacing: 0.5px;
+      margin: 16px 0 0 52px; opacity: 0.92;
+    }
+    /* room round each card for its lift and glow */
+    .shani-shelf-row { padding: 14px 48px 18px 48px; }
+    button.shani-card {
+      min-width: 210px; min-height: 150px; padding: 18px;
+      border-radius: 16px;
+      background-color: alpha(#ffffff, 0.055);
+      background-image: linear-gradient(180deg, alpha(#ffffff, 0.06), transparent);
+      border: 2px solid alpha(#ffffff, 0.05);
+      color: #eaf0fa;
+      box-shadow: 0 6px 18px alpha(#000000, 0.35);
+      transition: transform 140ms ease-out, background-color 140ms ease-out,
+                  box-shadow 140ms ease-out, border-color 140ms ease-out;
+    }
+    button.shani-card-big { min-width: 330px; min-height: 190px; }
+    button.shani-card:hover { background-color: alpha(#ffffff, 0.09); }
+    button.shani-card:focus, button.shani-card:focus-visible {
+      outline: none;
+      transform: scale(1.07);
+      background-color: alpha(#5aa9ff, 0.16);
+      border-color: #6cb4ff;
+      box-shadow: 0 0 0 3px alpha(#6cb4ff, 0.35), 0 14px 34px alpha(#2f7de0, 0.45);
+    }
+    button.shani-card:disabled { opacity: 0.4; }
+    button.shani-card-primary {
+      background-image: linear-gradient(135deg, alpha(#3d84ea, 0.75), alpha(#2a4f9e, 0.45));
+      border-color: alpha(#8cc4ff, 0.35);
+    }
+    button.shani-card-danger {
+      background-image: linear-gradient(135deg, alpha(#d9485f, 0.30), alpha(#7a2433, 0.20));
+    }
+    button.shani-card-danger:focus {
+      border-color: #ff8a9a;
+      box-shadow: 0 0 0 3px alpha(#ff8a9a, 0.3), 0 14px 34px alpha(#d9485f, 0.4);
+    }
+    .shani-card-icon { color: #ffffff; -gtk-icon-shadow: 0 2px 8px alpha(#000000, 0.4); }
+    .shani-card-title { font-size: 14pt; font-weight: 800; }
+    .shani-card-sub { font-size: 10.5pt; opacity: 0.7; }
+    .shani-hintbar {
+      padding: 12px 48px;
+      background-color: alpha(#000000, 0.32);
+      border-top: 1px solid alpha(#ffffff, 0.07);
+      font-size: 12pt; font-weight: 600;
+    }
+    .shani-hint-dim { opacity: 0.6; font-weight: 500; }
+    .shani-glyph {
+      min-width: 28px; min-height: 28px; border-radius: 9999px; padding: 0 8px;
+      background-color: alpha(#ffffff, 0.16); color: #ffffff;
+      font-weight: 900; font-size: 11pt;
+    }
+    window.shani-home .shani-chip-label { font-size: 11pt; }
     """.encode("utf-8")
     provider = Gtk.CssProvider()
     try:
@@ -307,12 +339,13 @@ class UpdatesWindow(Adw.Window):
 
     The read-only half (``--status --check --json``) needs no privileges, so
     the page is populated before anything is installed. The installing half is
-    the deploy script itself, through polkit (AUTH_SELF: the console user's own
-    password), with its output streamed into the log view.
+    the deploy script itself, run through pkexec (the console user's own
+    password), with its own output streamed into the log view.
     """
 
     def __init__(self, parent):
         super().__init__(transient_for=parent, modal=True)
+        gamepad.remote_keys(self)   # a TV remote: Back closes, OK on a field types
         self.set_title("Updates")
         self.set_default_size(640, 620)
         self.add_css_class("shani-glass")
@@ -512,21 +545,101 @@ class UpdatesWindow(Adw.Window):
         dialog.present(self)
 
 
+class PasswordWindow(Adw.Window):
+    """The console's first password.
+
+    The console account logs in without one (greetd's initial_session) and is
+    created with its password locked, so nothing running as the console user
+    can become root. Updates, factory reset and the lock screen need a
+    password. It is never typed in this window: the session can only ASK for
+    a prompt at the next boot, which runs as root before any user process
+    exists (gamescope-console-password.service), so code running as the
+    console user can neither read nor answer it. Once a password exists,
+    changing it is `passwd` in a terminal, which asks for the current one.
+    """
+
+    def __init__(self, parent):
+        super().__init__(transient_for=parent, modal=True)
+        gamepad.remote_keys(self)   # a TV remote: Back closes, OK on a field types
+        self.parent_window = parent
+        self.set_title("Password")
+        self.set_default_size(620, 560)
+        self.add_css_class("shani-glass")
+
+        has = parent.has_password
+        page = Adw.StatusPage(
+            icon_name="security-high-symbolic" if has else "dialog-password-symbolic",
+            title="This console is protected" if has else "Protect this console",
+            description=(
+                "Updates, factory reset and the lock screen ask for your "
+                "password. Steam still starts without it."
+                if has else
+                "Steam keeps starting without a password. Updates, factory "
+                "reset and the lock screen will ask for it.\n\n"
+                "The console restarts and asks for the password before "
+                "anything else runs, so no app can see it. Connect a "
+                "keyboard first."),
+        )
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_halign(Gtk.Align.CENTER)
+
+        if has:
+            button = Gtk.Button(label="Change password…")
+            button.connect("clicked", lambda _b: spawn("passwd", terminal=True))
+        else:
+            button = Gtk.Button(label="Restart and set password")
+            button.add_css_class("suggested-action")
+            button.connect("clicked", lambda _b: self.request())
+        button.add_css_class("pill")
+        self.button = button
+        box.append(button)
+
+        self.status = Gtk.Label(wrap=True, justify=Gtk.Justification.CENTER)
+        self.status.add_css_class("dim-label")
+        box.append(self.status)
+        page.set_child(box)
+
+        view = Adw.ToolbarView()
+        view.add_top_bar(Adw.HeaderBar())
+        view.set_content(page)
+        self.set_content(view)
+        button.grab_focus()
+
+    def request(self):
+        self.button.set_sensitive(False)
+
+        def done(rc, out):
+            problem = pkexec_message(rc, out)
+            if problem is not None:
+                self.status.set_text(problem)
+                self.button.set_sensitive(True)
+                return
+            self.status.set_text("Restarting…")
+            run_async(["systemctl", "reboot"], self._rebooted)
+
+        run_async(["pkexec", CONSOLE_PASSWORD, "--request"], done)
+
+    def _rebooted(self, rc, out):
+        if rc != 0:
+            detail = (out or "").strip().splitlines()
+            self.status.set_text("Restart the console to set the password. " +
+                                 (detail[-1] if detail else ""))
+            self.button.set_sensitive(True)
+
+
 class ResetWindow(Adw.Window):
     """Factory reset: show what would go, then do it.
 
     ``shani-reset`` wipes the persistent state under /data (accounts, host
     settings, service state) and leaves the OS slots, the boot entries and
     /home alone. The dialog says so, offers a dry run first, and requires the
-    word RESET before the destructive button unlocks.
-
-    Both halves go through polkit, where shani-reset is AUTH_ADMIN (wheel plus
-    an administrator credential) — the platform's own gate for an
-    irreversible operation, not a sudo grant this console invented.
+    word RESET before the destructive button unlocks, on top of the
+    administrator password pkexec asks for.
     """
 
     def __init__(self, parent):
         super().__init__(transient_for=parent, modal=True)
+        gamepad.remote_keys(self)   # a TV remote: Back closes, OK on a field types
         self.set_title("Factory reset")
         self.set_default_size(640, 600)
         self.add_css_class("shani-glass")
@@ -666,6 +779,7 @@ class PerformanceWindow(Adw.Window):
 
     def __init__(self, parent):
         super().__init__(transient_for=parent, modal=True)
+        gamepad.remote_keys(self)   # a TV remote: Back closes, OK on a field types
         self.set_title("Performance")
         self.set_default_size(520, 320)
         self.add_css_class("shani-glass")
@@ -730,245 +844,6 @@ class PerformanceWindow(Adw.Window):
         )
 
 
-class WifiWindow(Adw.Window):
-    """Wi-Fi: the console's network dialog.
-
-    Steam's Big Picture has no network settings - SteamOS ships its own for
-    exactly this reason - so this is how a console is brought online: pick a
-    network, type the password, done. Every row is a button, so it works from
-    the couch: D-pad moves, A activates.
-
-    nmcli is the backend. NetworkManager's polkit policy already lets an
-    active local session control networking without a password
-    (shani-settings' 99-shani.rules), so connecting needs no prompt.
-
-    The content is built from a scan result and rebuilt wholesale on every
-    refresh, rather than mutated row by row: the window's first content is
-    laid out before it is shown, and a rebuild re-lays-out the whole page, so
-    what the scan found is what is on screen.
-    """
-
-    FIELDS = "ACTIVE,SSID,SIGNAL,SECURITY"
-    # nmcli reports an open network's security as one of these.
-    OPEN = ("", "--", "NONE")
-
-    def __init__(self, app=None, parent=None):
-        # The application matters: a window that is not attached to one does
-        # not count as a window of the app, so `--wifi` (which presents this
-        # window as the app's only one) would exit immediately.
-        super().__init__(application=app, transient_for=parent,
-                         modal=parent is not None)
-        self.set_title("Wi-Fi")
-        self.set_default_size(640, 560)
-        self.add_css_class("shani-glass")
-        self.busy = False
-        self.networks = []
-        self.error = None
-        self.set_content(self._build())
-        self.nav = GamepadNav(self) if HAVE_EVDEV else None
-        self.refresh()
-
-    # ----------------------------------------------------------------- scan
-
-    @staticmethod
-    def _split(line):
-        """Split one nmcli --terse line.
-
-        nmcli escapes a ':' inside a value as '\\:', so a plain split would
-        cut an SSID like "Coffee: downstairs" in half.
-        """
-        fields, current, escaped = [], "", False
-        for char in line:
-            if escaped:
-                current += char
-                escaped = False
-            elif char == "\\":
-                escaped = True
-            elif char == ":":
-                fields.append(current)
-                current = ""
-            else:
-                current += char
-        fields.append(current)
-        return fields
-
-    @classmethod
-    def parse(cls, output):
-        """Turn nmcli's terse output into one entry per SSID, strongest first."""
-        seen = {}
-        for line in output.splitlines():
-            fields = cls._split(line)
-            if len(fields) < 4:
-                continue
-            active, ssid, signal, security = fields[:4]
-            if not ssid:
-                continue
-            try:
-                strength = int(signal)
-            except ValueError:
-                strength = 0
-            current = seen.get(ssid)
-            if current is None or strength > current[1]:
-                seen[ssid] = (ssid, strength, security, active)
-        return sorted(seen.values(), key=lambda entry: -entry[1])
-
-    def refresh(self):
-        """Scan and rebuild the page. Safe to call again (the Rescan button)."""
-        if self.busy:
-            return
-        self.busy = True
-
-        def done(rc, out):
-            self.busy = False
-            if rc != 0:
-                self.networks = []
-                self.error = "No Wi-Fi radio found"
-            else:
-                self.networks = self.parse(out)
-                self.error = None if self.networks else "No networks in range"
-            self.set_content(self._build())
-
-        run_async(["nmcli", "-t", "-f", self.FIELDS, "dev", "wifi", "list"], done)
-
-    # -------------------------------------------------------------- content
-
-    def _build(self):
-        outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        outer.append(Adw.HeaderBar())
-
-        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
-        content.set_margin_top(14)
-        content.set_margin_bottom(14)
-        content.set_margin_start(18)
-        content.set_margin_end(18)
-
-        if self.error:
-            status = self.error
-        elif self.networks:
-            status = "Choose a network"
-        else:
-            status = "Looking for networks…"
-        label = Gtk.Label(label=status)
-        label.add_css_class("dim-label")
-        label.set_halign(Gtk.Align.START)
-        content.append(label)
-
-        if self.networks:
-            title = Gtk.Label(label="Networks")
-            title.add_css_class("title-3")
-            title.set_halign(Gtk.Align.START)
-            content.append(title)
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-            for ssid, strength, security, active in self.networks:
-                box.append(self._row(ssid, strength, security, active))
-            content.append(box)
-
-        actions = Adw.PreferencesGroup(title="Actions")
-        row = Adw.ActionRow(title="Rescan", subtitle="Look for networks again")
-        button = Gtk.Button(label="Rescan")
-        button.set_valign(Gtk.Align.CENTER)
-        button.connect("clicked", lambda _b: self.refresh())
-        row.add_suffix(button)
-        actions.add(row)
-        row = Adw.ActionRow(title="Advanced",
-                            subtitle="nmtui - every NetworkManager setting")
-        button = Gtk.Button(label="Open")
-        button.set_valign(Gtk.Align.CENTER)
-        button.connect("clicked", lambda _b: spawn("nmtui", terminal=True))
-        row.add_suffix(button)
-        actions.add(row)
-        content.append(actions)
-
-        page = Gtk.ScrolledWindow()
-        page.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        page.set_child(content)
-        outer.append(page)
-        return outer
-
-    def _row(self, ssid, strength, security, active):
-        secured = security not in self.OPEN
-        bits = [f"{strength}% signal", "secured" if secured else "open"]
-        if active in ("yes", "true"):
-            bits.insert(0, "connected")
-
-        button = Gtk.Button()
-        button.add_css_class("shani-tile")
-        button.add_css_class("shani-listrow")
-        button.set_size_request(-1, 66)
-
-        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        row.set_margin_start(14)
-        icon = Gtk.Image.new_from_icon_name(
-            "dialog-password-symbolic" if secured else "network-wireless-symbolic")
-        icon.set_pixel_size(22)
-        row.append(icon)
-
-        texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        title = Gtk.Label(label=ssid)
-        title.add_css_class("heading")
-        title.set_halign(Gtk.Align.START)
-        texts.append(title)
-        subtitle = Gtk.Label(label=" · ".join(bits))
-        subtitle.add_css_class("dim-label")
-        subtitle.set_halign(Gtk.Align.START)
-        texts.append(subtitle)
-        row.append(texts)
-
-        button.set_child(row)
-        button.connect("clicked", lambda _b, s=ssid, sec=security: self.connect_to(s, sec))
-        return button
-
-    # ------------------------------------------------------------- connect
-
-    def connect_to(self, ssid, security):
-        if self.busy:
-            return
-        if security in self.OPEN:
-            self._do(["nmcli", "dev", "wifi", "connect", ssid])
-            return
-        dialog = Adw.MessageDialog(transient_for=self,
-                                   heading=f"Connect to {ssid}",
-                                   body="Enter the network password.")
-        entry = Gtk.PasswordEntry()
-        entry.set_placeholder_text("Password")
-        entry.set_show_peek_icon(True)
-        dialog.set_extra_child(entry)
-        dialog.add_response("cancel", "Cancel")
-        dialog.add_response("connect", "Connect")
-        dialog.set_default_response("connect")
-        dialog.set_response_appearance("connect", Adw.ResponseAppearance.SUGGESTED)
-
-        def responded(_d, response):
-            if response != "connect":
-                return
-            password = entry.get_text()
-            if not password:
-                return
-            # The password is an argument to nmcli, so it is visible in the
-            # process table for the moment it takes to connect. The
-            # alternative is NetworkManager's D-Bus API, which is a lot of
-            # machinery for a dialog that runs on the owner's own console.
-            self._do(["nmcli", "dev", "wifi", "connect", ssid,
-                      "password", password])
-
-        dialog.connect("response", responded)
-        dialog.present(self)
-
-    def _do(self, argv):
-        self.busy = True
-        run_async(argv, self._done)
-
-    def _done(self, rc, out):
-        self.busy = False
-        if rc == 0:
-            self.refresh()
-            return
-        detail = (out or "").strip().splitlines()
-        self.error = detail[-1] if detail else "Could not connect"
-        self.networks = []
-        self.set_content(self._build())
-
-
 class ControlWindow(Adw.ApplicationWindow):
     """The console's maintenance UI.
 
@@ -985,49 +860,52 @@ class ControlWindow(Adw.ApplicationWindow):
       * colour carries meaning, not decoration: the accent marks the primary
         action, the warning colour marks the update state and the destructive
         colour marks the reset. Nothing else is coloured;
-      * the columns follow the width, so the layout works on a phone-sized
-        window and on a television.
+      * a home, not a window: full screen in desktop mode, shelves of large
+        cards a controller moves between by position, the time and battery at
+        the top and what each button does at the bottom.
     """
 
     # (icon, name, one-line description, action, tone)
     # tone: None (neutral), "primary" (the accent), "danger" (destructive)
     SECTIONS = (
         ("Play", (
-            ("input-gaming", "Return to game mode", "Switch to Steam Big Picture",
+            ("input-gaming-symbolic", "Return to game mode", "Switch to Steam Big Picture",
              "switch_to_game_mode", "primary"),
-            ("software-update-available", "Updates", "Install the newest ShaniOS",
+            ("software-update-available-symbolic", "Updates", "Install the newest ShaniOS",
              "updates", None),
-            ("system-software-install", "Store", "Flatpak app store",
+            ("system-software-install-symbolic", "Store", "Flatpak app store",
              "store", None),
         )),
         ("System", (
-            ("network-workgroup", "Network", "Wi-Fi and Ethernet", "network", None),
-            ("audio-volume-high", "Audio", "Volume and devices", "audio", None),
-            ("bluetooth-active", "Bluetooth", "Controllers and audio", "bluetooth", None),
-            ("video-display", "Display", "Resolution and scale", "display", None),
-            ("speedometer", "Performance", "Power profile for gaming", "performance", None),
-            ("utilities-system-monitor", "System", "CPU, memory, processes", "monitor", None),
-            ("system-file-manager", "Files", "Browse the system", "files", None),
-            ("drive-harddisk", "Storage", "Disks and partitions", "storage", None),
-            ("text-x-generic", "Logs", "Boot and system logs", "logs", None),
-            ("web-browser", "Browser", "Firefox", "browser", None),
+            ("network-wireless-symbolic", "Network", "Wi-Fi and Ethernet", "network", None),
+            ("audio-volume-high-symbolic", "Audio", "Volume and devices", "audio", None),
+            ("bluetooth-active-symbolic", "Bluetooth", "Controllers and audio", "bluetooth", None),
+            ("video-display-symbolic", "Display", "Resolution and scale", "display", None),
+            ("power-profile-performance-symbolic", "Performance", "Power profile for gaming", "performance", None),
+            ("utilities-system-monitor-symbolic", "System", "CPU, memory, processes", "monitor", None),
+            ("folder-symbolic", "Files", "Browse the system", "files", None),
+            ("drive-harddisk-symbolic", "Storage", "Disks and partitions", "storage", None),
+            ("text-x-generic-symbolic", "Logs", "Boot and system logs", "logs", None),
+            ("web-browser-symbolic", "Browser", "Firefox", "browser", None),
         )),
         ("Gaming", (
-            ("input-gamepad", "Controllers", "Map a pad to keys and mouse", "antimicrox", None),
-            ("applications-graphics", "GPU control", "Fans, clocks, overclocking", "lact", None),
-            ("audio-headphones", "Audio effects", "Headset surround and EQ", "easyeffects", None),
-            ("applications-games", "Emulation", "RetroArch and its cores", "retroarch", None),
+            ("input-gaming-symbolic", "Controllers", "Map a pad to keys and mouse", "antimicrox", None),
+            ("applications-engineering-symbolic", "GPU control", "Fans, clocks, overclocking", "lact", None),
+            ("audio-headphones-symbolic", "Audio effects", "Headset surround and EQ", "easyeffects", None),
+            ("applications-games-symbolic", "Emulation", "RetroArch and its cores", "retroarch", None),
         )),
         # Kodi is the media center AND the Jellyfin client: the optional *arr
         # stack runs a Jellyfin server, and Kodi's add-on is how a console
         # talks to it.
         ("Media", (
-            ("video-x-generic", "Kodi", "Movies, TV and music", "kodi", None),
-            ("audio-x-generic", "Music", "Spotify", "spotify", None),
-            ("folder-download", "Downloads", "Torrents and transfers", "qbittorrent", None),
+            ("video-x-generic-symbolic", "Kodi", "Movies, TV and music", "kodi", None),
+            ("audio-x-generic-symbolic", "Music", "Spotify", "spotify", None),
+            ("folder-download-symbolic", "Downloads", "Torrents and transfers", "qbittorrent", None),
         )),
         ("Maintain", (
-            ("edit-delete", "Factory reset", "Erase this machine", "reset", "danger"),
+            ("dialog-password-symbolic", "Password", "For updates, reset and the lock",
+             "password", None),
+            ("edit-delete-symbolic", "Factory reset", "Erase this machine", "reset", "danger"),
         )),
     )
 
@@ -1035,10 +913,6 @@ class ControlWindow(Adw.ApplicationWindow):
     # reads as data and the plumbing lives in one place.
     COMMANDS = {
         "store": "flatpak run io.github.kolunmi.Bazaar",
-        "network": "nmtui",
-        "audio": "pavucontrol",
-        "bluetooth": "blueman",
-        "display": "wdisplays",
         "monitor": "flatpak run io.missioncenter.MissionCenter",
         "files": "thunar",
         "storage": "gnome-disk-utility",
@@ -1053,223 +927,387 @@ class ControlWindow(Adw.ApplicationWindow):
         "qbittorrent": "flatpak run org.qbittorrent.qBittorrent",
     }
 
-    # A tile is never narrower than this, so the columns follow the width.
-    TILE_WIDTH = 260
+    # Settings with a native panel (usr/lib/shani-desktop-gamescope/panels.py).
+    PANELS = {
+        "network": panels.NetworkPanel,
+        "bluetooth": panels.BluetoothPanel,
+        "audio": panels.AudioPanel,
+        "display": panels.DisplayPanel,
+    }
+
+    # The power shelf: (icon, name, description, action, tone). "power:" runs
+    # the command through power_action; the rest are _run's own actions.
+    POWER = (
+        ("weather-clear-night-symbolic", "Sleep", "Suspend; any button wakes it", "power:systemctl suspend", None),
+        ("system-lock-screen-symbolic", "Lock", "Ask for the password", "power:swaylock", None),
+        ("system-reboot-symbolic", "Restart", "Start again", "power:systemctl reboot", None),
+        ("system-shutdown-symbolic", "Power off", "Turn the console off", "power:systemctl poweroff", "danger"),
+        ("media-playback-pause-symbolic", "Hibernate", "Save everything and power off",
+         "power:systemctl hibernate", None),
+        ("application-x-firmware-symbolic", "Firmware setup", "Restart into the UEFI",
+         "power:systemctl reboot --firmware-setup", None),
+        ("system-log-out-symbolic", "Log out", "Back to the start of the session", "logout", None),
+    )
 
     def __init__(self, app):
         super().__init__(application=app, title="Shani Console")
-        self.set_default_size(1160, 820)
+        self.set_default_size(1280, 800)
         Adw.StyleManager.get_default().set_color_scheme(Adw.ColorScheme.PREFER_DARK)
-        self.add_css_class("shani-glass")
+        self.add_css_class("shani-home")
+        # the controller moves between shelves by where things are on screen
+        # (gamepad.Navigator), the way a console's home does; and B never
+        # closes the home itself, only what is open over it
+        self.shelves = True
+        self.home = not FROM_STEAM
+        self.cards = {}
         self.overlay = Adw.ToastOverlay()
         self.set_content(self.overlay)
-        self.columns = 0
-        self.content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=24)
-        self.content.set_margin_top(28)
-        self.content.set_margin_bottom(28)
-        self.content.set_margin_start(28)
-        self.content.set_margin_end(28)
-        self.page = Gtk.ScrolledWindow()
+
+        root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        root.append(self._top_bar())
+        self.banner = self._password_banner()
+        self.banner.set_margin_start(48)
+        self.banner.set_margin_end(48)
+        self.banner.set_margin_bottom(8)
+        root.append(self.banner)
+        self.content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.content.set_margin_bottom(24)
+        self.page = Gtk.ScrolledWindow(vexpand=True)
         self.page.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.page.set_child(self.content)
-        self.overlay.set_child(self.page)
+        root.append(self.page)
+        root.append(self._hint_bar())
+        self.overlay.set_child(root)
         self.rebuild()
-        self.nav = GamepadNav(self) if HAVE_EVDEV else None
+        self.lock_button = self.cards["power:swaylock"]
+        self.hibernate_button = self.cards["power:systemctl hibernate"]
+        self.firmware_button = self.cards["power:systemctl reboot --firmware-setup"]
+        # Both stay insensitive until logind says the machine can do them; a
+        # locked account could never unlock swaylock, so Lock waits for a
+        # password (refresh_password).
+        for card in (self.lock_button, self.hibernate_button, self.firmware_button):
+            card.set_sensitive(False)
+        self.lock_button.set_tooltip_text("Set a password first (Password)")
+        # The controller: D-pad/stick move, A activates (and types into text
+        # fields with the on-screen keyboard), B closes the front dialog.
+        self.nav = gamepad.Navigator(self)
+        gamepad.watch(self.nav.press)
+        # a TV remote (keys: arrows, OK, Back, Home) drives it the same way
+        self.remote = gamepad.remote_keys(self)
+        self.has_password = False
         self.probe_logind()
         self.refresh_status()
-        # GTK4 has no "size-allocate" signal, no size-allocate vfunc and no
-        # readable width property, so the layout's width is polled. It is one
-        # integer comparison twice a second, and the only thing a width change
-        # does is rebuild the grid.
-        self._width_poll = GLib.timeout_add(400, self._poll_width)
+        self.refresh_password()
+        self._tick()
+        self._clock = GLib.timeout_add_seconds(15, self._tick)
+        # a new app from Bazaar shows on the Apps shelf as soon as it lands
+        self._app_monitor = Gio.AppInfoMonitor.get()
+        self._app_monitor.connect("changed", lambda _m: GLib.idle_add(self._apps_changed))
+        # Desktop mode's home: the whole screen, like the console's game mode;
+        # apps open on the next workspace and the Guide button brings this back
+        if os.environ.get("SWAYSOCK") and not FROM_STEAM:
+            self.fullscreen()
+        GLib.idle_add(self._focus_first)
 
     # ------------------------------------------------------------- layout
 
-    def _poll_width(self):
-        """Follow the width: the columns are the content width over the
-        tile's minimum width, so the layout is the same on a phone-sized
-        window and on a television."""
-        width = self.content.get_width()
-        if width > 0:
-            columns = max(2, min(5, int(width // self.TILE_WIDTH)))
-            if columns != self.columns:
-                self.columns = columns
-                self.rebuild()
-        return True
-
     def rebuild(self):
-        for child in list(self.content.get_children()) if hasattr(self.content, "get_children") else []:
-            pass
-        while True:
-            child = self.content.get_first_child()
-            if child is None:
-                break
+        """The shelves: one per section, then power."""
+        self.cards = {}
+        while (child := self.content.get_first_child()) is not None:
             self.content.remove(child)
+        for i, (title, entries) in enumerate(self.sections()):
+            self.content.append(self._shelf(title, entries, big=i == 0))
+            if i == 0:
+                # always there (even empty), so a first install has a place
+                self.apps_shelf = self._shelf("Apps", self._apps())
+                self.apps_shelf.set_visible(bool(self._apps()))
+                self.content.append(self.apps_shelf)
+        self.content.append(self._shelf("Power", self.POWER))
 
-        self.content.append(self._header())
+    def _apps_changed(self, _monitor=None):
+        """An app was installed or removed (Bazaar, flatpak): the Apps shelf
+        is made again in place, the rest of the home keeps its state."""
+        for action in [a for a in self.cards if a.startswith("app:")]:
+            self.cards.pop(action)
+        apps = self._apps()
+        fresh = self._shelf("Apps", apps)
+        fresh.set_visible(bool(apps))
+        self.content.insert_child_after(fresh, self.apps_shelf)
+        self.content.remove(self.apps_shelf)
+        self.apps_shelf = fresh
+        return False
 
-        for title, entries in self.SECTIONS:
-            self.content.append(self._section(title, entries))
+    # the console's own entries and helpers, which have tiles of their own
+    NOT_APPS = ("dev.shani.gamescope-control", "shani-gamescope-control", "return-to-gamemode",
+                "foot-server", "footclient")
 
-        self.content.append(self._power_bar())
+    def _apps(self):
+        """Every installed app (Flatpak), A-Z, as cards with its own icon: a
+        console's library, for what desktop mode is for."""
+        apps = []
+        for info in Gio.AppInfo.get_all():
+            if not info.should_show():
+                continue
+            # the owner's apps: Flatpaks (the store's, the image's), not the
+            # host's own tools and settings dialogs - those have tiles
+            path = info.get_filename() if hasattr(info, "get_filename") else ""
+            if "/flatpak/exports/" not in (path or ""):
+                continue
+            app_id = info.get_id() or ""
+            if any(app_id.startswith(n) for n in self.NOT_APPS):
+                continue
+            apps.append((info.get_icon() or "application-x-executable-symbolic",
+                         info.get_display_name(), info.get_description() or "",
+                         f"app:{app_id}", None))
+        apps.sort(key=lambda a: a[1].casefold())
+        return tuple(apps)
 
-    def _header(self):
-        header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
+    def focus_candidates(self):
+        """What the controller moves between (gamepad.move_by_position): the
+        update chip, the banner's button while it shows, and every card."""
+        extra = [self.status_button]
+        if self.banner.get_visible():
+            extra.append(self.banner_button)
+        return extra + list(self.cards.values())
 
-        titles = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        title = Gtk.Label(label="Shani Console")
-        title.add_css_class("title-1")
-        title.set_halign(Gtk.Align.START)
-        subtitle = Gtk.Label(label="Maintenance desktop")
-        subtitle.add_css_class("dim-label")
-        subtitle.set_halign(Gtk.Align.START)
-        titles.append(title)
-        titles.append(subtitle)
-        header.append(titles)
+    def _focus_first(self):
+        first = next(iter(self.cards.values()), None)
+        if first is not None:
+            first.grab_focus()
+        return False
 
-        spacer = Gtk.Box()
-        spacer.set_hexpand(True)
-        header.append(spacer)
+    def _top_bar(self):
+        bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=18)
+        bar.add_css_class("shani-topbar")
+
+        mark = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        name = Gtk.Label(label="SHANI")
+        name.add_css_class("shani-wordmark")
+        kind = Gtk.Label(label="Console")
+        kind.add_css_class("shani-wordmark-sub")
+        kind.set_valign(Gtk.Align.BASELINE_CENTER if hasattr(Gtk.Align, "BASELINE_CENTER") else Gtk.Align.CENTER)
+        mark.append(name)
+        mark.append(kind)
+        bar.append(mark)
+
+        spacer = Gtk.Box(hexpand=True)
+        bar.append(spacer)
 
         self.status_chip = Gtk.Label(label="Checking for updates…")
-        self.status_chip.add_css_class("shani-chip-label")
-        self.status_chip.add_css_class("shani-chip-quiet")
-        header.append(self.status_chip)
-        return header
+        chip_button = Gtk.Button(child=self.status_chip)
+        chip_button.add_css_class("shani-chip-label")
+        chip_button.set_valign(Gtk.Align.CENTER)
+        chip_button.set_tooltip_text("Open Updates")
+        chip_button.connect("clicked", lambda _b: self.open_updates())
+        self.status_button = chip_button
+        bar.append(chip_button)
 
-    def _section(self, title, entries):
-        """A titled group of tiles.
+        self.battery = Gtk.Label()
+        self.battery.add_css_class("shani-topbar-item")
+        self.battery.set_visible(False)
+        bar.append(self.battery)
 
-        Sections, not one long grid: the console's actions are not all equal,
+        self.clock = Gtk.Label()
+        self.clock.add_css_class("shani-clock")
+        bar.append(self.clock)
+        return bar
+
+    def _tick(self):
+        """The clock and the battery, as the top of a console's screen has."""
+        self.clock.set_label(GLib.DateTime.new_now_local().format("%H:%M"))
+        level = None
+        try:
+            for supply in sorted(os.listdir("/sys/class/power_supply")):
+                base = f"/sys/class/power_supply/{supply}"
+                with open(f"{base}/type") as fh:
+                    if fh.read().strip() != "Battery":
+                        continue
+                with open(f"{base}/capacity") as fh:
+                    level = int(fh.read().strip())
+                break
+        except (OSError, ValueError):
+            level = None
+        self.battery.set_visible(level is not None)
+        if level is not None:
+            self.battery.set_label(f"{level}%")
+        return True
+
+    # what the bottom bar says, for the input last used: a remote's keys or
+    # a controller's buttons
+    HINTS = {
+        "remote": (("OK", "Select"), ("Back", "Back"), ("Home", "Home")),
+        "pad": (("A", "Select"), ("B", "Back"), ("R", "Pointer"), ("RT", "Click")),
+        "pad-steam": (("A", "Select"), ("B", "Back")),
+    }
+
+    def _hint_bar(self):
+        """What the buttons do here, always on screen."""
+        bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=22)
+        bar.add_css_class("shani-hintbar")
+        where = Gtk.Label(label="B: back to the game" if FROM_STEAM else
+                          "Home or Guide button: back here from anywhere", xalign=0, hexpand=True)
+        where.add_css_class("shani-hint-dim")
+        bar.append(where)
+        self.hints = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=22)
+        bar.append(self.hints)
+        self.hint_mode = None
+        self.on_input("pad")
+        return bar
+
+    def on_input(self, kind):
+        """The last input was a remote's keys or a controller: the hints say
+        that device's names for things (gamepad.remote_keys / Navigator)."""
+        if kind == "pad" and FROM_STEAM:
+            kind = "pad-steam"     # in game mode Steam has the pointer
+        if kind == self.hint_mode:
+            return
+        self.hint_mode = kind
+        while (child := self.hints.get_first_child()) is not None:
+            self.hints.remove(child)
+        for glyph, text in self.HINTS[kind]:
+            hint = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+            badge = Gtk.Label(label=glyph)
+            badge.add_css_class("shani-glyph")
+            hint.append(badge)
+            hint.append(Gtk.Label(label=text))
+            self.hints.append(hint)
+
+    def _password_banner(self):
+        """The one nudge the console gives: without a password, updates,
+        factory reset and the lock screen cannot be authorised. Hidden until
+        refresh_password says the console has none."""
+        frame = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+        frame.add_css_class("shani-banner")
+        icon = Gtk.Image.new_from_icon_name("dialog-password-symbolic")
+        icon.set_pixel_size(24)
+        icon.set_valign(Gtk.Align.CENTER)
+        frame.append(icon)
+        text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        text.set_hexpand(True)
+        text.set_valign(Gtk.Align.CENTER)
+        title = Gtk.Label(label="Protect this console", xalign=0)
+        title.add_css_class("heading")
+        body = Gtk.Label(label="Set a password to install updates, reset or lock the "
+                               "screen. Steam still starts without one.",
+                         xalign=0, wrap=True)
+        body.add_css_class("dim-label")
+        text.append(title)
+        text.append(body)
+        frame.append(text)
+        button = Gtk.Button(label="Set password")
+        button.add_css_class("pill")
+        button.add_css_class("suggested-action")
+        button.set_valign(Gtk.Align.CENTER)
+        button.connect("clicked", lambda _b: self.open_password())
+        self.banner_button = button
+        frame.append(button)
+        frame.set_visible(False)
+        return frame
+
+    def _shelf(self, title, entries, big=False):
+        """A titled row of cards that scrolls sideways under the controller.
+
+        Shelves, not one long grid: the console's actions are not all equal,
         and someone looking for "GPU control" should not have to scan past
-        file managers and logs to find it.
+        file managers and logs to find it. The first shelf's cards are larger:
+        it holds the one primary action.
         """
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-
-        label = Gtk.Label(label=title)
-        label.add_css_class("title-3")
-        label.set_halign(Gtk.Align.START)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        label = Gtk.Label(label=title, xalign=0)
+        label.add_css_class("shani-shelf-title")
         box.append(label)
 
-        grid = Gtk.Grid(column_spacing=16, row_spacing=16)
-        grid.set_row_homogeneous(True)
-        grid.set_column_homogeneous(True)
-        columns = self._columns_for(len(entries))
-        for i, entry in enumerate(entries):
-            grid.attach(self._tile(*entry), i % columns, i // columns, 1, 1)
-        box.append(grid)
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=18)
+        row.add_css_class("shani-shelf-row")
+        for entry in entries:
+            row.append(self._card(*entry, big=big))
+        scroller = Gtk.ScrolledWindow()
+        # no scrollbar: the focused card is scrolled into view
+        scroller.set_policy(Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.NEVER)
+        scroller.set_propagate_natural_height(True)
+        scroller.set_child(row)
+        box.append(scroller)
         return box
 
-    def _columns_for(self, count):
-        """How many columns a section of this many tiles gets.
-
-        The window's own column count, never more than the section has tiles:
-        a three-tile section is three tiles wide, not three tiles and an
-        empty slot. The last row of a section may be short — that is how every
-        desktop grid behaves, and forcing an even split would make the tiles
-        twice as wide as they need to be.
-        """
-        limit = self.columns or 3
-        return max(1, min(limit, count))
-
-    def _tile(self, icon, name, sub, action, tone):
+    def _card(self, icon, name, sub, action, tone, big=False):
         btn = Gtk.Button()
-        btn.add_css_class("shani-tile")
+        btn.add_css_class("shani-card")
+        if big:
+            btn.add_css_class("shani-card-big")
         if tone == "primary":
-            btn.add_css_class("shani-tile-primary")
+            btn.add_css_class("shani-card-primary")
         elif tone == "danger":
-            btn.add_css_class("shani-tile-danger")
-        btn.set_size_request(-1, 128)
+            btn.add_css_class("shani-card-danger")
 
-        column = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-
-        chip = Gtk.Box()
-        chip.add_css_class("shani-chip")
-        # A vertical box stretches its children across the cross axis, so the
-        # chip has to be told to keep its natural size and sit in the middle.
-        chip.set_halign(Gtk.Align.CENTER)
-        img = Gtk.Image.new_from_icon_name(icon)
-        img.set_pixel_size(26)
-        chip.append(img)
-        column.append(chip)
+        column = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        column.set_valign(Gtk.Align.CENTER)
+        if isinstance(icon, Gio.Icon):
+            img = Gtk.Image.new_from_gicon(icon)       # an app's own, coloured icon
+        else:
+            img = Gtk.Image.new_from_icon_name(icon)
+        img.set_pixel_size(56 if big else 44)
+        img.add_css_class("shani-card-icon")
+        column.append(img)
 
         title = Gtk.Label(label=name)
-        title.add_css_class("heading")
+        title.add_css_class("shani-card-title")
         title.set_justify(Gtk.Justification.CENTER)
         column.append(title)
 
         description = Gtk.Label(label=sub)
-        description.add_css_class("dim-label")
+        description.add_css_class("shani-card-sub")
         description.set_wrap(True)
+        description.set_lines(2)
+        description.set_ellipsize(3)  # Pango.EllipsizeMode.END: two lines at most
+        description.set_max_width_chars(24)
         description.set_justify(Gtk.Justification.CENTER)
         column.append(description)
 
         btn.set_child(column)
         btn.connect("clicked", lambda _b, a=action: self._run(a))
+        self.cards[action] = btn
         return btn
 
+    def sections(self):
+        """SECTIONS, with game mode's first tiles when Steam opened this."""
+        if not FROM_STEAM:
+            return self.SECTIONS
+        (title, entries), *rest = self.SECTIONS
+        return ((title, GAME_MODE_TILES + entries[1:]), *rest)
+
     def _run(self, action):
-        if action == "switch_to_game_mode":
+        if action.startswith("app:"):
+            info = Gio.DesktopAppInfo.new(action[len("app:"):])
+            if info is not None:
+                try:
+                    info.launch([], None)
+                except GLib.Error as exc:
+                    self.toast(exc.message)
+        elif action.startswith("power:"):
+            self.power_action(action[len("power:"):])
+        elif action == "logout":
+            spawn("swaymsg exit")
+        elif action == "switch_to_game_mode":
             self.switch_to_game_mode()
+        elif action == "close":
+            self.get_application().quit()
+        elif action == "switch_to_desktop":
+            self.switch_to_desktop()
         elif action == "updates":
             self.open_updates()
         elif action == "performance":
             self.open_performance()
         elif action == "reset":
             self.open_reset()
-        elif action == "network":
-            self.open_wifi()
+        elif action == "password":
+            self.open_password()
+        elif action in self.PANELS:
+            self.PANELS[action](self).present()
         else:
             command = self.COMMANDS.get(action)
             if command:
-                spawn(command, terminal=command in ("nmtui", "journalctl -b"))
-
-    # ------------------------------------------------------------ power bar
-
-    def _power_bar(self):
-        """Every power state a console owner expects, in one row.
-
-        Flat buttons, grouped: sleep and lock on the left, the two that end
-        the session in the middle, the ones that leave the desktop on the
-        right. The destructive pair is the only coloured thing in the row.
-        """
-        bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        bar.set_halign(Gtk.Align.CENTER)
-
-        self.hibernate_button = self._power_button(bar, "Hibernate",
-                                                  "systemctl hibernate")
-        self.firmware_button = self._power_button(bar, "UEFI setup",
-                                                  "systemctl reboot --firmware-setup")
-        # Both stay insensitive until logind says the machine can do them.
-        self.hibernate_button.set_sensitive(False)
-        self.firmware_button.set_sensitive(False)
-        self._power_button(bar, "Sleep", "systemctl suspend")
-        self._power_button(bar, "Lock", "swaylock")
-
-        bar.append(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL))
-        self._power_button(bar, "Power off", "systemctl poweroff")
-        self._power_button(bar, "Reboot", "systemctl reboot")
-        bar.append(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL))
-
-        logout = Gtk.Button(label="Log out")
-        logout.add_css_class("flat")
-        logout.connect("clicked", lambda _b: spawn("swaymsg exit"))
-        bar.append(logout)
-
-        close = Gtk.Button(label="Close")
-        close.add_css_class("flat")
-        close.connect("clicked", lambda _b: self.close())
-        bar.append(close)
-        return bar
-
-    def _power_button(self, parent, label, cmd):
-        btn = Gtk.Button(label=label)
-        btn.add_css_class("flat")
-        if label in ("Power off", "Reboot"):
-            btn.add_css_class("destructive-action")
-        btn.connect("clicked", lambda _b, c=cmd: self.power_action(c))
-        parent.append(btn)
-        return btn
+                spawn(command, terminal=command == "journalctl -b")
 
     def toast(self, text):
         self.overlay.add_toast(Adw.Toast.new(text))
@@ -1279,14 +1317,27 @@ class ControlWindow(Adw.ApplicationWindow):
     def open_updates(self):
         UpdatesWindow(self).present()
 
+    def open_password(self):
+        PasswordWindow(self).present()
+
+    def refresh_password(self):
+        """Ask whether the console has a password; Lock depends on it."""
+
+        def done(rc, out):
+            has = rc == 0 and (out or "").strip() == "set"
+            self.has_password = has
+            self.banner.set_visible(not has)
+            self.lock_button.set_sensitive(has)
+            self.lock_button.set_tooltip_text(None if has else
+                                              "Set a password first (Password)")
+
+        run_async(["pkexec", CONSOLE_PASSWORD, "--status"], done)
+
     def open_reset(self):
         ResetWindow(self).present()
 
     def open_performance(self):
         PerformanceWindow(self).present()
-
-    def open_wifi(self):
-        WifiWindow(self.get_application(), parent=self).present()
 
     def power_action(self, cmd):
         """Run a power action and say what happened.
@@ -1329,6 +1380,17 @@ class ControlWindow(Adw.ApplicationWindow):
                 self.toast(problem)
 
         run_async(["pkexec", SESSION_SELECT, "steam"], done)
+
+    def switch_to_desktop(self):
+        """From game mode: the desktop session, the same way back as there is
+        forward (gamescope-session-select restarts greetd into sway)."""
+
+        def done(rc, out):
+            problem = pkexec_message(rc, out)
+            if problem is not None:
+                self.toast(problem)
+
+        run_async(["pkexec", SESSION_SELECT, "desktop"], done)
 
     def probe_logind(self):
         """Ask logind what it can actually do.
@@ -1373,14 +1435,14 @@ class ControlWindow(Adw.ApplicationWindow):
             except json.JSONDecodeError:
                 self.status_chip.set_text("Status unavailable")
                 return
-            self.status_chip.remove_css_class("shani-chip-alert")
+            self.status_button.remove_css_class("shani-chip-alert")
             if st.get("update_available"):
                 latest = (st.get("remote") or {}).get("latest") or "a new image"
                 self.status_chip.set_text(f"Update available — {latest}")
-                self.status_chip.add_css_class("shani-chip-alert")
+                self.status_button.add_css_class("shani-chip-alert")
             elif st.get("reboot_needed"):
                 self.status_chip.set_text("Restart pending")
-                self.status_chip.add_css_class("shani-chip-alert")
+                self.status_button.add_css_class("shani-chip-alert")
             else:
                 self.status_chip.set_text("Up to date")
 
@@ -1388,27 +1450,42 @@ class ControlWindow(Adw.ApplicationWindow):
 
 
 class ControlApp(Adw.Application):
+    """`shani-gamescope-control [--open ACTION]`: ACTION is a tile's action
+    (network, bluetooth, audio, display, updates, password, ...), opened over
+    the Control Center — what waybar's status icons use."""
+
     def __init__(self):
-        super().__init__(application_id="dev.shani.gamescope-control")
-        # Gtk.Application parses argv before do_activate runs and rejects
-        # anything it does not know, so --wifi has to be registered here -
-        # otherwise the process dies with "Unknown option --wifi" and no
-        # window at all.
-        self.add_main_option("wifi", 0, GLib.OptionFlags.NONE,
-                             GLib.OptionArg.NONE,
-                             "Open the Wi-Fi dialog on its own", None)
+        super().__init__(application_id="dev.shani.gamescope-control",
+                         flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.add_main_option("open", 0, GLib.OptionFlags.NONE, GLib.OptionArg.STRING,
+                             "Open a page (network, bluetooth, audio, display, ...)", "ACTION")
+        # what an older Waybar config launches: the same as --open network
+        self.add_main_option("wifi", 0, GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
+                             "Open the network page", None)
+        self.window = None
+
+    def do_command_line(self, command_line):
+        options = command_line.get_options_dict().end().unpack()
+        self.activate()
+        if options.get("wifi") and not options.get("open"):
+            options["open"] = "network"
+        if options.get("open"):
+            action = options["open"]
+            GLib.idle_add(lambda: self.window._run(action) and False)
+        return 0
 
     def do_startup(self):
         install_glass_css()
         Adw.Application.do_startup(self)
 
     def do_activate(self):
-        if "--wifi" in sys.argv:
-            # `shani-gamescope-control --wifi`: the dialog on its own, which
-            # is what the panel's network chip and the Network tile launch.
-            WifiWindow(self).present()
-            return
-        ControlWindow(self).present()
+        if self.window is None:
+            self.window = ControlWindow(self)
+        # desktop mode: the home lives on the first workspace; activating it
+        # (the Guide button, Super+Esc, Waybar) brings that workspace up
+        if os.environ.get("SWAYSOCK") and not FROM_STEAM:
+            subprocess.Popen(["swaymsg", "-q", "workspace", "number", "1"])
+        self.window.present()
 
 
 if __name__ == "__main__":

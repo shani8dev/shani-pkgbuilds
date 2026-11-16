@@ -1,0 +1,210 @@
+#!/usr/bin/python3
+# SPDX-License-Identifier: GPL-3.0-only
+"""A pointer for desktop mode, from the controller.
+
+The right stick moves the mouse pointer (faster the further it goes), RT or a
+click of the right stick is the left button, LT the right button. Desktop mode
+is sway: without this, a console with only a controller could not reach
+anything that is not keyboard-navigable (a web page, a file manager's icons,
+a game launcher's window). The Control Center drives itself with the d-pad and
+A/B (gamepad.py) and never reads the right stick or the triggers, so the two
+never act on the same press.
+
+The Guide button brings up the console's home (the Control Center), from
+whatever is on screen - Steam's own button does the same in game mode.
+
+The pointer is a virtual mouse made through /dev/uinput, which game-devices-udev
+(shani-peripherals) gives the person at the seat - the same node Steam uses.
+While Steam runs in desktop mode it has its own desktop controls for the pad,
+so this stays still then (two pointers fighting over one stick).
+
+Sway starts it (exec in 90-shani-gamescope.conf). Every controller is read,
+never grabbed; one plugged in later is picked up.
+"""
+
+import os
+import select
+import subprocess
+import sys
+import threading
+import time
+
+DEAD, TOP_SPEED, FRAME = 0.15, 1500.0, 1 / 60
+BTN_LEFT, BTN_RIGHT = 0x110, 0x111
+RIGHT_STICK = (0x03, 0x04)                 # ABS_RX, ABS_RY
+TRIGGERS = {0x02: BTN_RIGHT, 0x05: BTN_LEFT}   # ABS_Z = LT, ABS_RZ = RT
+TRIGGER_KEYS = {0x138: BTN_RIGHT, 0x139: BTN_LEFT, 0x13e: BTN_LEFT}   # LT, RT, right-stick click
+BTN_MODE = 0x13c                           # the Guide / home button
+
+
+def stick_speed(x):
+    """Stick travel -> pixels a second: squared past the dead zone, so aiming
+    near the centre is fine and the edge crosses a television quickly."""
+    a = abs(x)
+    if a <= DEAD:
+        return 0.0
+    v = ((a - DEAD) / (1 - DEAD)) ** 2 * TOP_SPEED
+    return v if x > 0 else -v
+
+
+class Driver:
+    """Pad events in, pointer motion and buttons out (move(dx, dy), button(code, down))."""
+
+    def __init__(self, move, button, now=time.monotonic, home=lambda: None):
+        self.move, self.button, self.now, self.home = move, button, now, home
+        self.aim = {}                      # (device, axis) -> -1 … 1
+        self.carry = [0.0, 0.0]
+        self.last = None
+        self.held = {}                     # source -> button held down
+        self.paused = False
+
+    def _click(self, source, code, down):
+        if down and source not in self.held and not self.paused:
+            self.held[source] = code
+            self.button(code, True)
+        elif not down and source in self.held:
+            self.button(self.held.pop(source), False)
+
+    def event(self, dev, typ, code, value, rng=None, right_stick=True):
+        """right_stick: the device has ABS_RX/RY. Without them ABS_Z/RZ are its
+        right stick (DirectInput pads), not triggers."""
+        if typ == 1 and code == BTN_MODE and value == 1 and not self.paused:
+            self.home()                    # the Guide button: the console's home
+        elif typ == 1 and code in TRIGGER_KEYS and value in (0, 1):
+            self._click((dev, "key", code), TRIGGER_KEYS[code], value == 1)
+        elif typ == 3 and code in RIGHT_STICK:
+            lo, hi = rng or (-32768, 32767)
+            self.aim[(dev, code)] = (value - lo) / (hi - lo) * 2 - 1 if hi > lo else 0.0
+        elif typ == 3 and code in TRIGGERS and right_stick:
+            lo, hi = rng or (0, 255)
+            x = (value - lo) / (hi - lo) if hi > lo else 0.0
+            held = (dev, "abs", code) in self.held
+            if x >= 0.5 or (held and x > 0.3):
+                self._click((dev, "abs", code), TRIGGERS[code], True)
+            elif held:
+                self._click((dev, "abs", code), None, False)
+
+    def forget(self, dev):
+        """A controller went: its stick stops, its buttons let go."""
+        for key in [k for k in self.aim if k[0] == dev]:
+            self.aim.pop(key)
+        for source in [s for s in self.held if s[0] == dev]:
+            self.button(self.held.pop(source), False)
+
+    def pause(self, on):
+        self.paused = on
+        if on:
+            for source in list(self.held):
+                self.button(self.held.pop(source), False)
+
+    def tick(self):
+        """Move for the time since the last tick; seconds until the next (None: at rest)."""
+        x = sum(v for (_, a), v in self.aim.items() if a == 0x03)
+        y = sum(v for (_, a), v in self.aim.items() if a == 0x04)
+        x, y = max(-1.0, min(1.0, x)), max(-1.0, min(1.0, y))
+        t = self.now()
+        if self.paused or (abs(x) <= DEAD and abs(y) <= DEAD):
+            self.last = None
+            self.carry = [0.0, 0.0]
+            return None
+        dt = min(t - self.last, 0.1) if self.last is not None else FRAME
+        self.last = t
+        self.carry[0] += stick_speed(x) * dt
+        self.carry[1] += stick_speed(y) * dt
+        dx, dy = int(self.carry[0]), int(self.carry[1])
+        if dx or dy:
+            self.carry[0] -= dx
+            self.carry[1] -= dy
+            self.move(dx, dy)
+        return FRAME
+
+
+def main():
+    import evdev
+    from evdev import ecodes
+
+    try:
+        ui = evdev.UInput({ecodes.EV_KEY: [BTN_LEFT, BTN_RIGHT], ecodes.EV_REL: [ecodes.REL_X, ecodes.REL_Y]},
+                          name="Shani controller pointer", bustype=ecodes.BUS_VIRTUAL)
+    except (OSError, evdev.UInputError) as exc:
+        print(f"pad-pointer: no /dev/uinput ({exc}); no controller pointer", file=sys.stderr)
+        return 0
+
+    def move(dx, dy):
+        ui.write(ecodes.EV_REL, ecodes.REL_X, dx)
+        ui.write(ecodes.EV_REL, ecodes.REL_Y, dy)
+        ui.syn()
+
+    def button(code, down):
+        ui.write(ecodes.EV_KEY, code, 1 if down else 0)
+        ui.syn()
+
+    def home():
+        subprocess.Popen(["shani-gamescope-control"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    driver = Driver(move, button, home=home)
+    pads = {}                              # fd -> (device, {axis: (lo, hi)}, has right stick)
+
+    def is_pad(d):
+        keys = d.capabilities().get(ecodes.EV_KEY, [])
+        return d.name != "Shani controller pointer" and (ecodes.BTN_SOUTH in keys or ecodes.BTN_A in keys)
+
+    def scan():
+        known = {p[0].path for p in pads.values()}
+        for path in evdev.list_devices():
+            if path in known:
+                continue
+            try:
+                d = evdev.InputDevice(path)
+            except OSError:
+                continue
+            if not is_pad(d):
+                d.close()
+                continue
+            ranges = {}
+            for code in (0x02, 0x03, 0x04, 0x05):
+                try:
+                    info = d.absinfo(code)
+                    ranges[code] = (info.min, info.max)
+                except (OSError, KeyError, TypeError):
+                    pass
+            pads[d.fd] = (d, ranges, 0x03 in ranges)
+
+    steam = threading.Event()
+
+    def watch_steam():
+        # Steam's own desktop controls drive the pad while it runs
+        while True:
+            running = subprocess.run(["pgrep", "-u", str(os.getuid()), "-x", "steam"],
+                                     capture_output=True).returncode == 0
+            if running:
+                steam.set()
+            else:
+                steam.clear()
+            time.sleep(3)
+
+    threading.Thread(target=watch_steam, daemon=True).start()
+    next_scan = 0.0
+    while True:
+        now = time.monotonic()
+        if now >= next_scan:
+            scan()
+            next_scan = now + 3
+        if steam.is_set() != driver.paused:
+            driver.pause(steam.is_set())
+        wait = driver.tick()
+        wait = min(wait if wait is not None else 3.0, max(0.05, next_scan - now))
+        ready, _, _ = select.select(list(pads), [], [], wait)
+        for fd in ready:
+            d, ranges, rs = pads[fd]
+            try:
+                for ev in d.read():
+                    driver.event(fd, ev.type, ev.code, ev.value, ranges.get(ev.code), rs)
+            except OSError:               # unplugged
+                driver.forget(fd)
+                pads.pop(fd)
+                d.close()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

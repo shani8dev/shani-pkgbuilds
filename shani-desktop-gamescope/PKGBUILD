@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-gamescope
 pkgver=1.0
-pkgrel=15
+pkgrel=16
 pkgdesc="ShaniOS gaming console: gamescope + Steam Big Picture, with a sway maintenance desktop and the Shani Control Center"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-gamescope"
@@ -71,7 +71,9 @@ depends=(
 	libnotify
 	wf-recorder
 	syncthing
+	# on-screen keyboard (shani-osk; dconf reads the owner's choice)
 	squeekboard
+	dconf
 	swappy
 	kanshi
 	# --- Look and feel ---
@@ -127,8 +129,13 @@ package() {
     # config and its systemd drop-in, the two session units that create the
     # console user and seed its home from /etc/skel, the sway/waybar/mako/
     # fuzzel/swaylock configuration, the Control Center and the screenshot
-    # helper, the console's sudoers grant, and the desktop entry and the
-    # Wayland session file that name them.
+    # helper, the console-password helper and its boot prompt, the native
+    # settings panels, the controller support and its on-screen keyboard,
+    # desktop mode's keyboard toggle (shani-osk) and controller pointer
+    # (pad-pointer), the Steam library hook with its launcher's reaper, and
+    # the desktop entry and the Wayland session file that name them.
     cp -r "$startdir/etc" "$pkgdir/" 2>/dev/null || true
     cp -r "$startdir/usr" "$pkgdir/" 2>/dev/null || true
+    # bytecode from a local run of the Python helpers never ships
+    find "$pkgdir" -name __pycache__ -type d -prune -exec rm -rf {} +
 }

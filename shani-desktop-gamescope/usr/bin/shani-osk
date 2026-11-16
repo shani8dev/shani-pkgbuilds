@@ -1,0 +1,37 @@
+#!/bin/sh
+# Desktop mode's on-screen keyboard (squeekboard; sway starts it).
+#
+#   shani-osk toggle   show or hide it (Waybar's keyboard button, Super+K)
+#   shani-osk auto     at session start: on a touchscreen machine (handhelds),
+#                      let it pop up by itself on text fields. Only when the
+#                      owner never chose either way: their choice is kept.
+#
+# squeekboard's own controls: screen-keyboard-enabled (GNOME's a11y setting)
+# makes it follow text fields; SetVisible on sm.puri.OSK0 forces it up or
+# down until the next text field takes focus.
+set -u
+
+
+case "${1:-}" in
+toggle)
+	if [ "$(busctl --user get-property sm.puri.OSK0 /sm/puri/OSK0 sm.puri.OSK0 Visible 2>/dev/null)" = "b true" ]; then
+		busctl --user call sm.puri.OSK0 /sm/puri/OSK0 sm.puri.OSK0 SetVisible b false
+	else
+		busctl --user call sm.puri.OSK0 /sm/puri/OSK0 sm.puri.OSK0 SetVisible b true
+	fi
+	;;
+auto)
+	key=/org/gnome/desktop/a11y/applications/screen-keyboard-enabled
+	[ -n "$(dconf read "$key" 2>/dev/null)" ] && exit 0
+	for dev in /dev/input/event*; do
+		if udevadm info -q property -n "$dev" 2>/dev/null | grep -qx 'ID_INPUT_TOUCHSCREEN=1'; then
+			dconf write "$key" true
+			exit 0
+		fi
+	done
+	;;
+*)
+	echo "usage: shani-osk toggle|auto" >&2
+	exit 2
+	;;
+esac

@@ -5,11 +5,33 @@
   "spacing": 8,
   "modules-left": ["sway/workspaces", "sway/mode"],
   "modules-center": ["clock"],
-  "modules-right": ["backlight", "pulseaudio", "network", "battery", "custom/weather", "custom/session", "custom/power", "tray"],
+  "modules-right": ["backlight", "pulseaudio", "bluetooth", "network", "battery", "custom/weather", "custom/osk", "custom/session", "custom/power", "tray"],
   "backlight": {
     "format": "☀ {percent}%",
     "on-scroll-up": "brightnessctl set +5%",
     "on-scroll-down": "brightnessctl set 5%-"
+  },
+  // The status icons open the Control Center's native panels.
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-icons": {"default": ["󰕿", "󰖀", "󰕾"], "headphone": "󰋋"},
+    "on-click": "shani-gamescope-control --open audio"
+  },
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format-connected": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "shani-gamescope-control --open bluetooth"
+  },
+  "network": {
+    "format-wifi": "󰖩 {essid}",
+    "format-ethernet": "󰈀 Wired",
+    "format-disconnected": "󰖪 Offline",
+    "tooltip-format": "{ifname} {ipaddr}",
+    "on-click": "shani-gamescope-control --open network"
   },
   "custom/weather": {
     "exec": "curl -s 'wttr.in/?format=%c+%t' 2>/dev/null || echo ''",
@@ -21,21 +43,20 @@
     "tooltip": false,
     "on-click": "shani-gamescope-control"
   },
-  "network": {
-    "format": "󰤨 {essid}",
-    "format-disconnected": "<span foreground='#f7768e'>󰤭 Offline</span>",
-    "format-linked": "󰤨 {ifname}",
-    "tooltip-format": "{ifname}\n{ipaddr}/{cidr}\n{signalStrength}% {essid}",
-    "on-click": "shani-gamescope-control --wifi"
-  },
   "clock": {
     "format": "{:%H:%M}",
     "format-alt": "{:%Y-%m-%d %H:%M:%S}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>"
   },
+  // The on-screen keyboard (squeekboard), for touchscreens and pads.
+  "custom/osk": {
+    "format": "󰌌",
+    "tooltip-format": "On-screen keyboard (Super+K)",
+    "on-click": "shani-osk toggle"
+  },
   "custom/session": {
     "format": "󰒉 Game mode",
     "tooltip": false,
-    "on-click": "pkexec gamescope-session-select steam"
+    "on-click": "pkexec /usr/bin/gamescope-session-select steam"
   }
 }
