@@ -26,3 +26,9 @@ export STEAM_ENABLE_VOLUME_HANDLER=1
 # Steam input method modules (Steam virtual keyboard).
 export QT_IM_MODULE=steam
 export GTK_IM_MODULE=Steam
+# Pre-launch hooks: executables in pre-launch.d run (in name order) before
+# Steam starts, while it cannot be rewriting its own files. Desktop packages
+# ship them (shani-desktop-gamescope adds the console's apps to the library).
+for hook in /usr/lib/gamescope-session-plus/pre-launch.d/*; do
+    [[ -x "$hook" ]] && "$hook" || true
+done

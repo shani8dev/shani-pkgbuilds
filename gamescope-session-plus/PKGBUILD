@@ -7,7 +7,7 @@
 # ~/.config/environment.d) and drops the SteamOS-specific bits.
 pkgname=gamescope-session-plus
 pkgver=1.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Portable gamescope session framework (ShaniOS flavour)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/gamescope-session-plus"
