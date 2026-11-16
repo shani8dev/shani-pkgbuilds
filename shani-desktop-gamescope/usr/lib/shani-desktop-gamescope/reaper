@@ -1,0 +1,27 @@
+#!/bin/sh
+# Usage: reaper SteamLaunch AppId=N -- COMMAND [ARG...]
+#
+# Keeps a game-mode launch from the Steam library visible. gamescope decides
+# which window belongs to the app Steam is showing by walking the window's
+# process tree up to a process named "reaper" and reading "SteamLaunch
+# AppId=N" from its arguments (gamescope src/Utils/Process.cpp,
+# GetAppIdFromReaper) - Steam's own reaper is that process for everything
+# Steam starts itself. Steam here is a Flatpak, so the console's library
+# entries start their app on the host through flatpak-spawn, outside that
+# tree; and `flatpak run` puts the app in its own systemd scope, so the other
+# route (an app-steam-appN scope) is closed too. This stands in Steam's
+# reaper's place: same name, same arguments, the app's parent until it exits.
+# The launcher steam-shortcuts writes into Steam's data directory calls it.
+while [ $# -gt 0 ] && [ "$1" != "--" ]; do shift; done
+[ "$1" = "--" ] && shift
+[ $# -gt 0 ] || { echo "usage: reaper SteamLaunch AppId=N -- COMMAND..." >&2; exit 2; }
+"$@" &
+child=$!
+# Steam stops a game by signalling what it started (flatpak-spawn --watch-bus
+# ends this when Steam's side goes): pass it on
+trap 'kill -TERM "$child" 2>/dev/null' TERM INT HUP
+wait "$child"
+status=$?
+# a trapped signal interrupts the first wait: wait for the real exit
+kill -0 "$child" 2>/dev/null && { wait "$child"; status=$?; }
+exit "$status"

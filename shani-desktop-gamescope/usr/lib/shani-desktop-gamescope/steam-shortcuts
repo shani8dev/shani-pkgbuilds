@@ -1,0 +1,373 @@
+#!/usr/bin/python3
+"""Put the console's other apps into Steam's library.
+
+Game mode is Steam, so an app that is not in Steam's library is out of reach
+there: Heroic, Lutris, RetroArch, Kodi and the rest would only be usable from
+desktop mode. This runs before Steam starts (gamescope-session-plus's
+pre-launch hook) and adds every installed app from APPS below to each Steam
+account's non-Steam shortcuts.
+
+* Steam must not be running: it rewrites shortcuts.vdf on exit. The hook runs
+  before Steam starts, and this refuses to touch a file while Steam runs.
+* An app is added once per account. If the owner removes it from the
+  library, it stays removed (the state file remembers what was added).
+* Steam here is a Flatpak, which cannot start another Flatpak by itself, so
+  the shortcut goes through flatpak-spawn --host and Steam is given the one
+  permission that needs (talking to org.freedesktop.Flatpak), as a per-user
+  override. Whatever it starts runs as the console user, like Steam itself.
+* flatpak-spawn --host passes the host command only the variables given with
+  --env, and the session takes DISPLAY out of the user manager's environment,
+  so a bare `flatpak-spawn --host flatpak run ID` would start the app with no
+  display at all. Each shortcut therefore runs LAUNCHER (written into Steam's
+  own data directory, the one place both sides see at the same path), which
+  hands the host the display and game id Steam gave this launch.
+* Each entry gets library artwork made from the app's own icon (a capsule,
+  a wide banner and a hero, on a background in the icon's colour), so it is
+  not a grey placeholder next to Steam's games. Art the owner set - from
+  SteamGridDB or anywhere - is never replaced.
+* Apps the owner installs (Bazaar, flatpak) join the library too: the apps
+  present the first time this ran are the console's own set (the image's),
+  and anything installed after that is the owner's choice, so it gets an
+  entry at the next start of game mode. Names come from the app's metadata.
+* Two more entries are not Flatpaks: the Control Center (updates, Wi-Fi,
+  Bluetooth, the password - all driven with the controller) and Desktop Mode,
+  since Steam's own "Switch to Desktop" has nothing it can call here.
+"""
+
+import json
+import os
+import struct
+import subprocess
+import sys
+import zlib
+
+STEAM_ID = "com.valvesoftware.Steam"
+STEAM_ROOT = os.path.expanduser(f"~/.var/app/{STEAM_ID}/.local/share/Steam")
+STATE = os.path.expanduser("~/.local/state/shani-console/steam-shortcuts.json")
+
+# (Flatpak ID, the name in the library). Launchers, emulators, streaming and
+# media: things a person picks up a controller for.
+APPS = (
+    ("com.heroicgameslauncher.hgl", "Heroic Games Launcher"),
+    ("net.lutris.Lutris", "Lutris"),
+    ("com.usebottles.bottles", "Bottles"),
+    ("org.libretro.RetroArch", "RetroArch"),
+    ("com.moonlight_stream.Moonlight", "Moonlight"),
+    ("tv.kodi.Kodi", "Kodi"),
+    ("org.jellyfin.JellyfinDesktop", "Jellyfin"),
+    ("com.stremio.Stremio", "Stremio"),
+    ("com.spotify.Client", "Spotify"),
+    ("org.mozilla.firefox", "Firefox"),
+    ("io.github.kolunmi.Bazaar", "App Store"),
+)
+# Never an entry: Steam itself, and the console's plumbing
+NEVER = {STEAM_ID}
+
+LAUNCHER = os.path.join(os.path.expanduser(f"~/.var/app/{STEAM_ID}"), "data", "shani-console", "launch")
+EXE = f'"{LAUNCHER}"'
+
+# Entries that are the console's own, not Flatpaks: (launcher argument, name)
+CONSOLE = (
+    ("control-center", "Control Center"),
+    ("desktop", "Desktop Mode"),
+)
+# their icons (Papirus ships with the console; hicolor's as a fallback)
+CONSOLE_ICONS = {"control-center": ("preferences-system", "applications-system"),
+                 "desktop": ("user-desktop", "computer")}
+ICON_ROOTS = ("/var/lib/flatpak/exports/share/icons", os.path.expanduser("~/.local/share/flatpak/exports/share/icons"),
+              "/usr/share/icons")
+# Steam's custom artwork in userdata/<account>/config/grid: name suffix, size
+ART = (("p", 600, 900), ("", 920, 430), ("_hero", 1920, 620))
+
+LAUNCHER_SCRIPT = """#!/bin/bash
+# Written by shani-desktop-gamescope's steam-shortcuts; runs INSIDE Steam's
+# sandbox. flatpak-spawn --host forwards only --env values, so the display and
+# game id Steam gave this launch are handed over by name; and the host command
+# runs under the console's reaper, which gamescope needs to see as the app's
+# ancestor to show its window (see /usr/lib/shani-desktop-gamescope/reaper).
+case "$1" in
+  control-center) set -- env SHANI_FROM_STEAM=1 GDK_BACKEND=x11 shani-gamescope-control ;;
+  desktop) set -- pkexec /usr/bin/gamescope-session-select desktop ;;
+  *) set -- flatpak run "$1" ;;
+esac
+# A library shortcut's game id is its app id shifted up 32 bits, past signed
+# 64-bit (the app id has its top bit set): bash wraps and the mask brings the
+# id back (dash would clamp it - hence bash, which Steam's runtime has).
+appid=0
+case "${SteamGameId:-}" in
+  ''|*[!0-9]*) ;;
+  *) appid=$(( (SteamGameId >> 32) & 0xFFFFFFFF )); [ "$appid" -gt 0 ] || appid=$SteamGameId ;;
+esac
+exec /usr/bin/flatpak-spawn --host --watch-bus \\
+  --env=DISPLAY="$DISPLAY" \\
+  --env=XAUTHORITY="${XAUTHORITY:-}" \\
+  --env=SteamGameId="${SteamGameId:-}" \\
+  --env=SteamAppId="${SteamAppId:-}" \\
+  /usr/lib/shani-desktop-gamescope/reaper SteamLaunch "AppId=$appid" -- "$@"
+"""
+
+
+# ------------------------------------------------------- binary VDF (shortcuts)
+
+def _read_string(data, i):
+    end = data.index(b"\x00", i)
+    return data[i:end].decode("utf-8", "replace"), end + 1
+
+
+def _read_map(data, i):
+    result = {}
+    while True:
+        kind = data[i]
+        i += 1
+        if kind == 0x08:
+            return result, i
+        key, i = _read_string(data, i)
+        if kind == 0x00:
+            result[key], i = _read_map(data, i)
+        elif kind == 0x01:
+            result[key], i = _read_string(data, i)
+        elif kind == 0x02:
+            result[key] = struct.unpack_from("<I", data, i)[0]
+            i += 4
+        else:
+            raise ValueError(f"unknown VDF field type {kind:#x}")
+
+
+def _write_map(mapping):
+    out = bytearray()
+    for key, value in mapping.items():
+        name = key.encode() + b"\x00"
+        if isinstance(value, dict):
+            out += b"\x00" + name + _write_map(value)
+        elif isinstance(value, int):
+            out += b"\x02" + name + struct.pack("<I", value & 0xFFFFFFFF)
+        else:
+            out += b"\x01" + name + str(value).encode() + b"\x00"
+    return bytes(out + b"\x08")
+
+
+def load_shortcuts(path):
+    try:
+        with open(path, "rb") as fh:
+            data = fh.read()
+    except FileNotFoundError:
+        return {}
+    if not data:
+        return {}
+    root, _ = _read_map(data, 0)
+    return root.get("shortcuts", {})
+
+
+def save_shortcuts(path, shortcuts):
+    # the root map: {"shortcuts": {...}} and its own end byte, nothing after
+    data = _write_map({"shortcuts": shortcuts})
+    tmp = path + ".shani-tmp"
+    with open(tmp, "wb") as fh:
+        fh.write(data)
+    os.replace(tmp, path)
+
+
+def write_launcher():
+    os.makedirs(os.path.dirname(LAUNCHER), exist_ok=True)
+    tmp = LAUNCHER + ".shani-tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write(LAUNCHER_SCRIPT)
+    os.chmod(tmp, 0o755)
+    os.replace(tmp, LAUNCHER)
+
+
+def find_icon(names):
+    """The largest icon file for any of names: Flatpak's exported icons, then
+    the system's (Papirus, hicolor)."""
+    for name in names:
+        for root in ICON_ROOTS:
+            for theme in ("hicolor", "Papirus"):
+                for size in ("scalable", "512x512", "256x256", "128x128", "64x64"):
+                    for ext in ("svg", "png"):
+                        path = os.path.join(root, theme, size, "apps", f"{name}.{ext}")
+                        if os.path.isfile(path):
+                            return path
+    return None
+
+
+def make_art(grid, appid, icon):
+    """Capsule, banner and hero for one entry, from its icon; files the owner
+    already has for that app id are left alone. Returns the names written."""
+    try:
+        import gi
+        gi.require_version("GdkPixbuf", "2.0")
+        from gi.repository import GdkPixbuf, GLib
+    except (ImportError, ValueError):
+        return []
+    try:
+        sample = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon, 48, 48, True)
+    except Exception:
+        return []
+    # the icon's own colour: its pixels averaged, weighted by how opaque they are
+    px, n, stride = sample.get_pixels(), sample.get_n_channels(), sample.get_rowstride()
+    tot = [0.0, 0.0, 0.0]
+    weight = 0.0
+    for y in range(sample.get_height()):
+        for x in range(sample.get_width()):
+            i = y * stride + x * n
+            a = px[i + 3] / 255 if n == 4 else 1.0
+            for c in range(3):
+                tot[c] += px[i + c] * a
+            weight += a
+    colour = [t / weight if weight else 90 for t in tot]
+    os.makedirs(grid, exist_ok=True)
+    written = []
+    for suffix, width, height in ART:
+        path = os.path.join(grid, f"{appid}{suffix}.png")
+        if any(os.path.exists(os.path.join(grid, f"{appid}{suffix}.{ext}")) for ext in ("png", "jpg", "jpeg", "webp")):
+            continue
+        # a dark vertical gradient in that colour: 45% at the top to 15%
+        rows = bytearray()
+        for y in range(height):
+            k = 0.45 - 0.30 * y / max(1, height - 1)
+            rows += bytes(int(min(255, c * k + 12)) for c in colour) * width
+        canvas = GdkPixbuf.Pixbuf.new_from_bytes(GLib.Bytes.new(bytes(rows)), GdkPixbuf.Colorspace.RGB,
+                                                 False, 8, width, height, width * 3).copy()
+        size = int(min(width, height) * (0.5 if suffix == "p" else 0.6))
+        try:
+            art = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon, size, size, True)
+        except Exception:
+            return written
+        x, y = (width - art.get_width()) // 2, (height - art.get_height()) // 2
+        art.composite(canvas, x, y, art.get_width(), art.get_height(), x, y, 1, 1,
+                      GdkPixbuf.InterpType.BILINEAR, 255)
+        canvas.savev(path, "png", [], [])
+        written.append(os.path.basename(path))
+    return written
+
+
+def shortcut(target, name, flatpak=True):
+    appid = zlib.crc32((EXE + name).encode()) | 0x80000000
+    return {
+        "appid": appid,
+        "AppName": name,
+        "Exe": EXE,
+        "StartDir": f'"{os.path.dirname(LAUNCHER)}/"',
+        "icon": "",
+        "ShortcutPath": "",
+        "LaunchOptions": target,
+        "IsHidden": 0,
+        "AllowDesktopConfig": 1,
+        "AllowOverlay": 1,
+        "OpenVR": 0,
+        "Devkit": 0,
+        "DevkitGameID": "",
+        "DevkitOverrideAppID": 0,
+        "LastPlayTime": 0,
+        "FlatpakAppID": target if flatpak else "",
+        "tags": {},
+    }
+
+
+# --------------------------------------------------------------------- main
+
+def installed_flatpaks():
+    """{app id: name} of every installed Flatpak app (system and user)."""
+    try:
+        out = subprocess.run(["flatpak", "list", "--app", "--columns=application,name"],
+                             text=True, capture_output=True, timeout=30).stdout
+    except (OSError, subprocess.SubprocessError):
+        return {}
+    apps = {}
+    for line in out.splitlines():
+        fid, _, name = line.partition("\t")
+        if fid.strip():
+            apps[fid.strip()] = name.strip() or fid.strip()
+    return apps
+
+
+def steam_running():
+    return subprocess.run(["pgrep", "-u", str(os.getuid()), "-x", "steam"],
+                          capture_output=True).returncode == 0
+
+
+def load_state():
+    try:
+        with open(STATE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def save_state(state):
+    os.makedirs(os.path.dirname(STATE), exist_ok=True)
+    with open(STATE, "w", encoding="utf-8") as fh:
+        json.dump(state, fh, indent=1)
+
+
+def main():
+    if steam_running():
+        print("steam-shortcuts: Steam is running; leaving its shortcuts alone", file=sys.stderr)
+        return 0
+    installed = installed_flatpaks()
+    state = load_state()
+    # the console's own set: what was installed the first time this ran,
+    # whether or not anyone had signed in to Steam yet
+    if "baseline" not in state and installed:
+        state["baseline"] = sorted(installed)
+        save_state(state)
+    if not os.path.isdir(os.path.join(STEAM_ROOT, "userdata")):
+        return 0  # nobody has signed in to Steam yet
+    known = {fid for fid, _ in APPS}
+    owner = sorted((fid, name) for fid, name in installed.items()
+                   if fid not in state.get("baseline", []) and fid not in known and fid not in NEVER)
+    wanted = [(fid, name, True) for fid, name in APPS if fid in installed]
+    wanted += [(fid, name, True) for fid, name in owner]
+    wanted += [(target, name, False) for target, name in CONSOLE]
+    write_launcher()
+
+    for account in sorted(os.listdir(os.path.join(STEAM_ROOT, "userdata"))):
+        if not account.isdigit() or account == "0":
+            continue
+        config = os.path.join(STEAM_ROOT, "userdata", account, "config")
+        path = os.path.join(config, "shortcuts.vdf")
+        try:
+            shortcuts = load_shortcuts(path)
+        except (ValueError, IndexError, struct.error) as exc:
+            print(f"steam-shortcuts: {path} unreadable ({exc}); not touching it", file=sys.stderr)
+            continue
+        done = set(state.get(account, []))
+        present = {s.get("FlatpakAppID") or "" for s in shortcuts.values()}
+        present |= {s.get("LaunchOptions", "").rsplit(" ", 1)[-1] for s in shortcuts.values()}
+        added = []
+        for fid, name, flatpak in wanted:
+            if fid in done or fid in present:
+                done.add(fid)
+                continue
+            index = max((int(k) for k in shortcuts if k.isdigit()), default=-1) + 1
+            shortcuts[str(index)] = shortcut(fid, name, flatpak)
+            added.append(fid)
+            done.add(fid)
+        # artwork for every entry of ours, new or not (an owner may have
+        # deleted a file to get ours back; one they set is never touched)
+        grid = os.path.join(config, "grid")
+        for entry in shortcuts.values():
+            target = entry.get("LaunchOptions", "")
+            if entry.get("Exe") != EXE or not target:
+                continue
+            names = CONSOLE_ICONS.get(target, (target,))
+            icon = find_icon(names)
+            if icon:
+                make_art(grid, entry["appid"] & 0xFFFFFFFF, icon)
+        if added:
+            os.makedirs(config, exist_ok=True)
+            save_shortcuts(path, shortcuts)
+            print(f"steam-shortcuts: account {account}: added {', '.join(added)}")
+        state[account] = sorted(done)
+
+    save_state(state)
+
+    # The one permission the shortcuts need (see the module docstring).
+    subprocess.run(["flatpak", "override", "--user",
+                    "--talk-name=org.freedesktop.Flatpak", STEAM_ID],
+                   capture_output=True)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

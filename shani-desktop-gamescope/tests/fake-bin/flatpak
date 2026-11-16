@@ -1,0 +1,10 @@
+#!/bin/sh
+case "$1" in
+  # id<TAB>name, like `flatpak list --app --columns=application,name`; apps the
+  # owner "installed later" are added to $HOME/installed-later
+  list) printf 'com.heroicgameslauncher.hgl\tHeroic Games Launcher\norg.libretro.RetroArch\tRetroArch\ntv.kodi.Kodi\tKodi\norg.gnome.Loupe\tImage Viewer\ncom.valvesoftware.Steam\tSteam\n'
+        cat "$HOME/installed-later" 2>/dev/null;;
+  override) echo "$@" >> "$HOME/override.log";;
+  # an app that stays up a moment: its pid and display for the tests
+  run) echo "$$ $DISPLAY" > /tmp/app.pid; exec sleep 4;;
+esac
