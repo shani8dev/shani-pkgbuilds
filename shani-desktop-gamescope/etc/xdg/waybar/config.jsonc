@@ -29,7 +29,7 @@
   "network": {
     "format-wifi": "󰖩 {essid}",
     "format-ethernet": "󰈀 Wired",
-    "format-disconnected": "󰖪 Offline",
+    "format-disconnected": "<span foreground='#f7768e'>󰖪 Offline</span>",
     "tooltip-format": "{ifname} {ipaddr}",
     "on-click": "shani-gamescope-control --open network"
   },

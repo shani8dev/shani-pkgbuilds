@@ -140,6 +140,7 @@ class NetworkPanel(Panel):
         refresh = Gtk.Button(icon_name="view-refresh-symbolic", tooltip_text="Scan again")
         refresh.connect("clicked", lambda _b: self.scan())
         self.header.pack_end(refresh)
+        self.actions_group = self._actions()
         self.scan()
         self.refresh()
         self.every(3, self._tick)
@@ -240,6 +241,34 @@ class NetworkPanel(Panel):
             self.page.remove(self.wifi_group)
         self.wifi_group = group
         self.page.add(group)
+        # the actions stay last, under the list a rescan rebuilds
+        self.page.remove(self.actions_group)
+        self.page.add(self.actions_group)
+
+    def _actions(self):
+        """Rescan as a row (where the d-pad goes, not only the header's icon)
+        and an escape hatch for what a list of networks cannot do - a hidden
+        network, enterprise Wi-Fi, a static address: nmtui, every
+        NetworkManager setting. (Both from the console's first Wi-Fi page.)"""
+        group = Adw.PreferencesGroup(title="More")
+        rescan = Adw.ActionRow(title="Scan again", subtitle="Look for networks again", activatable=True)
+        rescan.add_prefix(Gtk.Image.new_from_icon_name("view-refresh-symbolic"))
+        rescan.connect("activated", lambda _r: (self.scan(), self.toast("Looking for networks…")))
+        group.add(rescan)
+        advanced = Adw.ActionRow(title="Advanced",
+                                 subtitle="Hidden networks, enterprise Wi-Fi, fixed addresses (nmtui)",
+                                 activatable=True)
+        advanced.add_prefix(Gtk.Image.new_from_icon_name("preferences-system-symbolic"))
+        advanced.connect("activated", lambda _r: self._advanced())
+        group.add(advanced)
+        self.page.add(group)
+        return group
+
+    def _advanced(self):
+        try:
+            subprocess.Popen(["foot", "-e", "nmtui"])
+        except OSError as exc:
+            self.toast(f"Could not open nmtui: {exc.strerror}")
 
     def _network_row(self, network, saved):
         if network["active"]:
