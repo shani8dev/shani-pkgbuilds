@@ -205,6 +205,9 @@ binds {
     // clipboard history on Super+V, where Windows has it
     Mod+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
     Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "terminal"; }
+    Mod+Shift+Grave hotkey-overlay-title="AI console" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "ai"; }
+    Mod+Shift+Space hotkey-overlay-title="Floating / scrolling workspace" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "workspaceLayout"; }
+    Mod+I hotkey-overlay-title="Next input method" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "inputMethod"; }
     Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     // the terminal chosen in Settings > Default apps (xdg-terminal-exec reads
     // ~/.config/niri-xdg-terminals.list, which the shell writes, then the system one)
