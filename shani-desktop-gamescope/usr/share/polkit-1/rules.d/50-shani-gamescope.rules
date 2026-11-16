@@ -9,8 +9,9 @@
 //   * login1 suspend / hibernate / poweroff / reboot -> YES for an active local
 //     session, which is why the Control Center's power row needs no password.
 //
-// This file adds the one thing that is the console's own and nothing else:
-// switching the session back to Steam.
+// This file adds the two things that are the console's own and nothing else:
+// switching the session back to Steam, and setting the console user's FIRST
+// password.
 //
 // There is deliberately NO .policy action annotating this program with
 // org.freedesktop.policykit.exec.path. An exec.path annotation makes pkexec
@@ -28,6 +29,24 @@
 polkit.addRule(function(action, subject) {
     if (action.id == "org.freedesktop.policykit.exec" &&
         action.lookup("program") == "/usr/bin/gamescope-session-select" &&
+        subject.active == true && subject.local == true) {
+        return polkit.Result.YES;
+    }
+});
+
+// ── Console password: status and "ask me at the next boot" ─────────────────
+// The console account is created with a locked password (it logs in through
+// greetd's initial_session). The session may only read whether a password
+// exists and REQUEST the boot-time prompt; the password itself is typed at
+// boot, before any user process runs (gamescope-console-password.service).
+// The command line is matched exactly, so `--boot` is never reachable here.
+polkit.addRule(function(action, subject) {
+    var helper = "/usr/lib/shani-desktop-gamescope/console-password";
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        action.lookup("program") == helper &&
+        (action.lookup("command_line") == helper + " --status" ||
+         action.lookup("command_line") == helper + " --request") &&
+        subject.user == "gamescope" &&
         subject.active == true && subject.local == true) {
         return polkit.Result.YES;
     }

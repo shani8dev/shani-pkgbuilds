@@ -1,5 +1,10 @@
-# Idempotent gamescope user creation (passwordless — greetd's initial_session
-# does not prompt, and the login PAM stack allows an empty password).
+# Idempotent gamescope user creation. greetd's initial_session logs the
+# account in without a password, so the account's password stays LOCKED until
+# the owner sets one (Control Center -> Password). An EMPTY password would be
+# root for anything running as the console user: the account is in wheel and
+# system-auth accepts an empty password (nullok), so `sudo` would just work.
+# An empty password left by an older version is locked once; a password the
+# owner set is never touched.
 # The home lives on the persistent @home subvolume (mounted at /home), not a
 # tmpfs: Steam's login, library and Flatpak data must survive reboots, like
 # SteamOS's /home/deck.
@@ -16,7 +21,7 @@ ExecStart=/bin/bash -c 'id gamescope >/dev/null 2>&1 || useradd -c "Gaming sessi
 ExecStart=/usr/bin/usermod -d /home/gamescope -g users -s /bin/bash gamescope
 ExecStart=/usr/bin/usermod -aG input,video,render,audio,storage,network,wheel gamescope
 ExecStart=/usr/bin/install -d -o gamescope -g users /home/gamescope
-ExecStart=/usr/bin/passwd -d gamescope
+ExecStart=/bin/bash -c '[ "$$(passwd -S gamescope | cut -d" " -f2)" != NP ] || usermod -p "!" gamescope'
 RemainAfterExit=yes
 [Install]
 WantedBy=sysinit.target

@@ -41,6 +41,8 @@ post_upgrade() {
     # enabled into sysinit.target rather than by a normal Wants=.
     systemctl enable gamescope-session-user.service || true
     systemctl enable gamescope-session-config.service || true
+    # The boot-time console password prompt (only runs when requested).
+    systemctl enable gamescope-console-password.service || true
     # Gamer-relevant system services: the performance profile (TDP) and
     # hybrid GPU switching (shared with the niri desktop's package).
     systemctl enable power-profiles-daemon.service || true

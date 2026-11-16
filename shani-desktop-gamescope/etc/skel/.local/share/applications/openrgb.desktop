@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=RGB Lighting
-Comment=OpenRGB - control keyboard, mouse and case lighting
-Exec=flatpak run org.openrgb.OpenRGB
-Icon=input-gaming
-Terminal=false
-Categories=Settings;HardwareSettings;
-Keywords=rgb;lighting;keyboard;mouse;openrgb;

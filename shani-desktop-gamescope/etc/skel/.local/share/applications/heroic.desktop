@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Heroic Games Launcher
-Comment=Epic/GOG/Amazon games launcher
-Exec=flatpak run com.heroicgameslauncher.hgl
-Icon=com.heroicgameslauncher.hgl
-Terminal=false
-Categories=Game;
-Keywords=game;heroic;epic;gog;amazon;
