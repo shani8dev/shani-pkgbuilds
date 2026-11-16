@@ -235,6 +235,13 @@ binds {
     XF86Tools          { spawn "qs" "-c" "shani" "ipc" "call" "shani" "settings"; }
     XF86Calculator     { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "="; }
     XF86Search         { spawn "qs" "-c" "shani" "ipc" "call" "shani" "toggleLauncher"; }
+    // a TV remote's own keys (Bluetooth/USB remotes, air mice): Home - the
+    // launcher; Back - one level back in the shell, else the app's back;
+    // Menu - the focused thing's menu; Keyboard - type from the remote
+    XF86HomePage { spawn "qs" "-c" "shani" "ipc" "call" "shani" "remoteHome"; }
+    XF86Back     { spawn "qs" "-c" "shani" "ipc" "call" "shani" "remoteBack"; }
+    XF86MenuKB   { spawn "qs" "-c" "shani" "ipc" "call" "shani" "remoteMenu"; }
+    XF86Keyboard { spawn "qs" "-c" "shani" "ipc" "call" "shani" "remoteKeyboard"; }
     XF86ScreenSaver    allow-when-locked=true { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     XF86Mail           { spawn "xdg-open" "mailto:"; }
     XF86WWW            { spawn "sh" "-c" "\"${SHANI_LAUNCH_TOOL:-/usr/lib/shani-shell/launch-app.py}\" \"$(xdg-settings get default-web-browser)\""; }
