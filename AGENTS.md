@@ -222,6 +222,94 @@ rather than writing in a generic format.
 
 ## Audit-verified known issues (confirmed present)
 
+- **shani-desktop-gamescope 1.0-10 (2026-11-16): the console user was
+  passwordless root - FIXED, proven in a container with the image's own
+  system-auth.** `gamescope-session-user.service` put `gamescope` in `wheel`
+  and ran `passwd -d` on every boot; with `system-auth`'s `nullok` and
+  `%wheel ALL`, `echo | sudo -S id -u` printed 0, so anything running as the
+  console user (a game, a browser exploit) was root. The account is now
+  created LOCKED (greetd's `initial_session` needs no password), an old empty
+  password is locked once, and one the owner set is never touched. The first
+  password is typed only at boot, before any user process exists
+  (`gamescope-console-password.service` -> `systemd-ask-password`); the session
+  can only REQUEST that prompt (`console-password --request`, polkit YES with
+  the command line matched exactly, so `--boot` is unreachable through pkexec).
+  Lock (button and Super+Shift+L) waits for a password, because a locked
+  account could never unlock swaylock. `return-to-gamemode.desktop` and waybar
+  used `foot -e sudo`; now pkexec (the console's own YES rule).
+  Tests: `shani-desktop-gamescope/tests/run.sh` - `password` (21 checks, with a
+  negative control proving the old behaviour was root), `shortcuts` (the
+  non-Steam library entries, read back by the independent `vdf` parser - it
+  caught a trailing byte that Steam would have rejected), `panels` (native
+  Network/Bluetooth/Audio/Display; Bluetooth driven against a fake BlueZ).
+  The Control Center's "narrow sudoers grant" never existed; the comments
+  claiming it are gone.
+  **Typing without a keyboard (same pkgrel):** squeekboard was a dependency
+  nothing started. Desktop mode now runs it (`exec squeekboard`), Waybar's
+  keyboard button / Super+K toggle it (`shani-osk toggle`, D-Bus `SetVisible`),
+  and `shani-osk auto` turns pop-up-on-text-field on for touchscreen machines
+  only while the owner never chose (dconf key unset). The Control Center's
+  controller code moved to `gamepad.py`: the D-pad as hat axes (Xbox pads -
+  the old reader saw buttons only, so their D-pad did nothing), the stick,
+  hot-plugged pads, B closing the front *dialog* (it closed the whole panel),
+  and A on a text field opening an on-screen keyboard driven by the pad - the
+  Wi-Fi password and the RESET word were untypeable with a controller only.
+  Desktop mode also gets a controller pointer (`pad-pointer`, started by sway):
+  right stick moves, RT/R3 left-click, LT right-click, through a uinput mouse
+  (game-devices-udev's uaccess rule; python-evdev's UInput); it stays still
+  while Steam runs (Steam has its own desktop controls). ABS_Z/RZ count as
+  triggers only on a pad that also has ABS_RX - DirectInput pads use Z/RZ as
+  the right stick. Never test it against the host's /dev/uinput: a live pointer.
+  **Steam library shortcuts had no display (found 2026-11-16, before release):**
+  `flatpak-spawn --host` forwards ONLY `--env` values, and gamescope-session-plus
+  unsets DISPLAY in the user manager, so `flatpak-spawn --host flatpak run ID`
+  started every app with no display. Shortcuts now run a launcher written into
+  `~/.var/app/com.valvesoftware.Steam/data/shani-console/launch` (the path both
+  sides see) that passes DISPLAY/XAUTHORITY/SteamGameId by name. Two non-Flatpak
+  entries were added: Control Center (opened with SHANI_FROM_STEAM=1: "Back to
+  the game" closes it, "Desktop mode" is a tile) and Desktop Mode - Flatpak
+  Steam's own "Switch to Desktop" can call no host helper, so before this a
+  pad-only console had no way from game mode to desktop mode.
+  gamescope gives a window its Steam app id from the STEAM_GAME property, an
+  `app-steam-appN-PID.scope` cgroup, or a parent process named `reaper` with
+  `SteamLaunch AppId=N` in its arguments (src/Utils/Process.cpp). A host
+  launch through flatpak-spawn has none, and `flatpak run` moves the app into
+  its own scope - so the launcher runs it under
+  /usr/lib/shani-desktop-gamescope/reaper with the id from SteamGameId (a
+  shortcut's id << 32: past signed 64-bit, so bash with a 0xFFFFFFFF mask -
+  dash clamps it). `run.sh shortcuts` walks real processes with a port of
+  gamescope's lookup, with a no-reaper negative control. Library artwork
+  (capsule/banner/hero) is made from each app's exported icon, never over
+  art the owner set. Real hardware has not run it yet.
+  **Desktop mode is a ten-foot home now:** the Control Center starts with
+  sway, full screen on workspace 1 (shelves of large cards, clock/battery,
+  controller hints; the Guide button - pad-pointer - or Super+Esc brings it
+  back), and every other app is moved to workspace 2 by `for_window` (a
+  PCRE negative lookahead keeps the home and polkit's prompt on 1; checked
+  in headless sway by `run.sh osk`). The Apps shelf lists Flatpaks and
+  follows installs live (Gio.AppInfoMonitor); fuzzel's XDG_DATA_DIRS now has
+  the per-user Flatpak exports; steam-shortcuts also adds every app the owner
+  installs after the first run (baseline = what the image had) and Bazaar.
+  **A TV remote drives it like an Android TV** (`gamepad.remote_keys`, on the
+  home and every panel/window): arrows move (by position on the home and the
+  on-screen keyboard; GTK's own arrows elsewhere), OK activates, Back/Escape
+  closes what is in front but never the home, OK on an EMPTY text field opens
+  the on-screen keyboard (typed text + Enter still submit), the Home key
+  (sway XF86HomePage) brings the home back, and the hints show OK/Back/Home
+  or A/B for whichever was used last. Tested with real keys (wtype through
+  niri) in `run.sh panels`; a re-presented window does not get the keyboard
+  in niri, so the test opens a fresh one - checks that pass whatever the key
+  did are written to prove the key arrived (the hint mode flips).
+  **gamepad.Navigator never moved focus with the D-pad** (it asked the
+  focused widget, which only searches inside itself); it moves through the
+  window now, and the home moves by position (GTK will not leave a
+  sideways-scrolling shelf for the one below). Caught by driving the real
+  home in `run.sh panels`, which also fails on a traceback in any app log -
+  a rewrite that dropped `_run`/`sections` once rendered as a blank screen.
+  Tests: `run.sh pointer`, `run.sh panels` (17 controller checks) and `run.sh osk` (headless sway:
+  the packaged sway carries cap_sys_nice, which rootless podman refuses to
+  exec - the test runs a copy).
+
 - **shani-desktop-niri 1.0-14 (2026-11-15): greetd never started on a fresh
   install - FIXED, proven on a real installed slot.** greetd 0.10.3 runs the
   greeter through `shani-greetd` too, with no sign-in but a `pam_setcred`,
