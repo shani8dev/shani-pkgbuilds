@@ -153,8 +153,8 @@ layer-rule {
 window-rule {
     match app-id="^org\\.quickshell$" title="^Settings$"
     open-floating true
-    default-column-width { fixed 1040; }
-    default-window-height { fixed 760; }
+    // no fixed size: the window asks for 1040 x 800, never more than its screen
+    // (Modules/Settings/SettingsWindow; a phone's is ~412 wide)
 }
 
 // the shell's small apps (Common/AppWindow): floating at their own size, like
