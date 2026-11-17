@@ -1,0 +1,25 @@
+#!/bin/sh
+# guest-reset UID - the guest account's home made new: before its session starts
+# and after it ends (user-runtime-dir@.service.d/50-shani-guest.conf), so a
+# lesson on a classroom board, or a visitor on a shared computer, leaves nothing
+# for the next one - and a power cut mid-session is wiped at the next start.
+#
+# Only the account named in /etc/shani/guest - written by Settings > Users >
+# Guest (shani-shell's shani-admin.py), never by hand - and only when the UID
+# systemd passes is that account's: any other user's start and stop is a no-op.
+set -u
+marker=${SHANI_GUEST_MARKER:-/etc/shani/guest}
+[ -r "$marker" ] || exit 0
+name=$(head -n1 "$marker" | tr -cd 'a-z0-9_-')
+[ -n "$name" ] || exit 0
+uid=$(id -u "$name" 2>/dev/null) || exit 0
+[ "$uid" = "${1:-}" ] || exit 0
+home=$(getent passwd "$name" | cut -d: -f6)
+# a home of its own under /home, nothing else (never /, /home itself, a symlink)
+case "$home" in /home/?*) ;; *) exit 0 ;; esac
+[ -L "$home" ] && exit 0
+rm -rf --one-file-system -- "$home"
+mkdir -p -- "$home"
+cp -a /etc/skel/. "$home"/
+chown -R "$name:" "$home"
+chmod 700 "$home"
