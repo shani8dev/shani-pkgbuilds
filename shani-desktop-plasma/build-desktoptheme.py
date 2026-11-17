@@ -21,6 +21,7 @@ Layout written:
 
 Without a path it clones UPSTREAM at the pinned COMMIT into a temp dir.
 """
+
 from __future__ import annotations
 
 import gzip
@@ -119,15 +120,25 @@ def frost(theme_dir: str) -> None:
             svg = gzip.decompress(f.read()).decode("utf-8")
         if kind == "background":
             # only the scheme-coloured fill pieces (0.6), never the shadows
-            svg, n = re.subn(r'(class="ColorScheme-Background"\s+opacity=")(?:0\.6|\.6)"',
-                             rf'\g<1>{FROST}"', svg)
+            svg, n = re.subn(
+                r'(class="ColorScheme-Background"\s+opacity=")(?:0\.6|\.6)"',
+                rf'\g<1>{FROST}"',
+                svg,
+            )
         else:
             i = svg.index('id="ClockFace"')
             head, tail = svg[:i], svg[i:]
-            tail, n = re.subn(r"opacity:1;fill:currentColor", f"opacity:{FROST};fill:currentColor", tail, count=1)
+            tail, n = re.subn(
+                r"opacity:1;fill:currentColor",
+                f"opacity:{FROST};fill:currentColor",
+                tail,
+                count=1,
+            )
             svg = head + tail
         if n == 0:
-            raise SystemExit(f"frost: nothing matched in {rel} - upstream artwork changed?")
+            raise SystemExit(
+                f"frost: nothing matched in {rel} - upstream artwork changed?"
+            )
         with open(path, "wb") as f:
             f.write(gzip.compress(svg.encode("utf-8"), mtime=0))
 
@@ -152,19 +163,42 @@ def build(upstream: str) -> None:
         copy_tree(os.path.join(trans, d), os.path.join(saturn, d))
     copy_tree(solid, os.path.join(saturn, "solid"))
     frost(saturn)
-    shutil.copyfile(os.path.join(upstream, "LICENSE.md"), os.path.join(saturn, "LICENSE.md"))
+    shutil.copyfile(
+        os.path.join(upstream, "LICENSE.md"), os.path.join(saturn, "LICENSE.md")
+    )
+    # Saturn-Dark ships real copies (not symlinks): KSvg/KPackage reads the
+    # files at build time, and symlinks leaked into the installed tree once.
     for entry in (*ART, "solid", "LICENSE.md"):
-        os.symlink(os.path.join("..", "Saturn", entry), os.path.join(dark, entry))
+        src = os.path.join(saturn, entry)
+        dst = os.path.join(dark, entry)
+        if os.path.isdir(src):
+            shutil.copytree(src, dst)
+        else:
+            shutil.copyfile(src, dst)
 
     for theme, name, scheme, desc in (
-        (saturn, "Saturn", "Saturn", "Saturn light Plasma style: rounded, blurred, translucent (Utterly-Round)"),
-        (dark, "Saturn Dark", "SaturnDark", "Saturn dark Plasma style: rounded, blurred, translucent (Utterly-Round)"),
+        (
+            saturn,
+            "Saturn",
+            "Saturn",
+            "Saturn light Plasma style: rounded, blurred, translucent (Utterly-Round)",
+        ),
+        (
+            dark,
+            "Saturn Dark",
+            "SaturnDark",
+            "Saturn dark Plasma style: rounded, blurred, translucent (Utterly-Round)",
+        ),
     ):
-        write(os.path.join(theme, "metadata.json"),
-              json.dumps(metadata(os.path.basename(theme), name, desc), indent=4) + "\n")
+        write(
+            os.path.join(theme, "metadata.json"),
+            json.dumps(metadata(os.path.basename(theme), name, desc), indent=4) + "\n",
+        )
         write(os.path.join(theme, "plasmarc"), PLASMARC)
-        shutil.copyfile(os.path.join(HERE, "usr/share/color-schemes", f"{scheme}.colors"),
-                        os.path.join(theme, "colors"))
+        shutil.copyfile(
+            os.path.join(HERE, "usr/share/color-schemes", f"{scheme}.colors"),
+            os.path.join(theme, "colors"),
+        )
         print(f"built {os.path.relpath(theme, HERE)}")
 
 
