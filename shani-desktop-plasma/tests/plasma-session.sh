@@ -1,14 +1,24 @@
 #!/bin/bash
-# Real-render check of this package's theming: boots kwin_x11 + plasmashell
+# Real-render check of this package's theming: boots kwin + plasmashell
 # on Xvfb with a fresh home seeded from etc/skel (+ the chosen look-and-feel's
 # defaults applied by lookandfeeltool), then screenshots the shell, Dolphin,
 # Konsole, Yakuake, the lock screen, GTK 3/4 apps and Kvantum's gallery.
 # Run INSIDE an Arch container with this package directory at /pkg and:
-#   plasma-desktop plasma-workspace kwin-x11 kvantum kde-gtk-config breeze-gtk
+#   plasma-desktop plasma-workspace kwin kvantum kde-gtk-config breeze-gtk
 #   dolphin konsole yakuake fish gtk3-demos gtk4-demos wmctrl
 #   xorg-server-xvfb xdotool imagemagick
 # Missing package dependencies give false readings (without kde-gtk-config
 # GTK apps look unthemed) - install what the PKGBUILD depends on.
+#
+# Plasma >=6.8 dropped the separate kwin-x11 package (X11 is built into
+# kwin_wayland), so the compositor is launched via whichever of kwin_x11 /
+# kwin_wayland exists. NOTE: plasmashell 6.8.3 segfaults on the X11/Xvfb path
+# in a headless container (KConfigGroup null deref) even with stock Breeze -
+# proven not theme-related - so on 6.8 the plasmashell-only shots (calendar,
+# launcher, desktop baseline) need a real/Wayland session; the app-surface
+# shots (dolphin, konsole, gtk3/4, yakuake, kvantum, lockscreen) and the
+# `plasmashell theme warnings` / `yakuake shell resolution` checks still run
+# and are the theme signal.
 #
 #   [SCREEN=1920x1080] tests/plasma-session.sh [Saturn-Dark|Saturn|Saturn-Twilight] [out-dir]
 #
@@ -70,7 +80,9 @@ if [ -n "${DECO:-}" ]; then
   kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key library org.kde.kwin.aurorae
   kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "__aurorae__svg__$DECO"
 fi
-  kwin_x11 --replace >"$OUT/kwin-$LNF.log" 2>&1 &
+  # kwin_x11 in <=6.7; kwin_wayland (X11 built in) in >=6.8
+  KWIN_BIN=$(command -v kwin_x11 || command -v kwin_wayland)
+  "$KWIN_BIN" --replace >"$OUT/kwin-$LNF.log" 2>&1 &
   sleep 4
   plasmashell >"$OUT/plasmashell-$LNF.log" 2>&1 &
 sleep 20
@@ -147,7 +159,7 @@ QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} kvantumpreview >/dev/null 2>&1 &
 sleep 6
 import -window root "$OUT/$LNF$TAG-kvantum.png"
 echo "plasmarc=$(kreadconfig6 --file plasmarc --group Theme --key name) kvantum=$(kreadconfig6 --file Kvantum/kvantum.kvconfig --group General --key theme) scheme=$(kreadconfig6 --file kdeglobals --group General --key ColorScheme)"
-pkill kvantumpreview; pkill plasmashell; pkill kwin_x11
+pkill kvantumpreview; pkill plasmashell; pkill -x kwin_wayland; pkill -x kwin_x11 2>/dev/null; true
 IN
 GTK_THEME_NAME="${GTK_THEME_NAME:-}" DECO="${DECO:-}" APP_STYLE="${APP_STYLE:-}" KV_THEME="${KV_THEME:-}" dbus-run-session -- bash "$XDG_RUNTIME_DIR/session.sh" "$LNF" "$OUT" "$TAG"
 for s in desktop calendar launcher dolphin maximized konsole lockscreen gtk3 gtk4 yakuake kvantum; do
