@@ -1,0 +1,7 @@
+Upstream Kvantum themes used by build-kvantum.py:
+
+    https://github.com/vinceliuice/MacTahoe-kde
+    commit cbf6a1f (Kvantum/MacTahoe/MacTahoe{,Dark}.kvconfig, LGPL-3.0)
+
+Only the .kvconfig inputs are vendored; the recoloured SVGs already live in
+usr/share/Kvantum/. Regenerate with `python3 build-kvantum.py`.
