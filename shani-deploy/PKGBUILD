@@ -55,6 +55,9 @@ depends=(
     # nodes are S_IMMUTABLE unless allowlisted (ed8b0de), and rm alone returns
     # EPERM. Without this the deploy's clearing is a guaranteed no-op.
     'e2fsprogs'
+    # shani-etc-changes (System Changes in Shani Cassini) is Python: JSON and
+    # path checks that bash would get wrong.
+    'python'
 )
 source=("git+https://github.com/shani8dev/$pkgname.git#commit=$_commit")
 # A git+ source pinned to a commit: makepkg ignores checksums for VCS
