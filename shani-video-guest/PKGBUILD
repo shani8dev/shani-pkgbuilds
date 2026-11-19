@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-video-guest
 pkgver=1.2
-pkgrel=4
+pkgrel=5
 pkgdesc="Video Guest drivers and related packages for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-video-guest"
@@ -16,10 +16,19 @@ optdepends=(
     'xf86-input-vmmouse: VMware mouse'
 )
 license=('GPL-3.0-only')
-source=('shani-video-guest.target')
-sha256sums=('SKIP')
+source=('shani-video-guest.target' '10-shani-vm-oracle.conf' '10-shani-vm-vmware.conf' '10-shani-vm-any.conf')
+sha256sums=('9e1a8b43b9dc4538d70c176f850cdeedcc6145cbb31c7acc8fdb150556644e5a' '22134ce261de9a53cf0ec444358d20e741c1f75edf5c6c477f354c6f660bee1b' 'd1b70660fb57b07cfbaca87aa5520508756ce91805af40244637e6ff80c17fe0' 'd2675427937055b03db25fd73338b4ebd2a561035c5f71dc126ed64bfe14f514')
 install="$pkgname.install"
 package() {
 	cd "$srcdir" || exit
 	install -Dm644 shani-video-guest.target "$pkgdir"/usr/lib/systemd/system/shani-video-guest.target
+	# The desktop autostart entries (VBoxClient-all, vmware-user, spice-vdagent)
+	# run in every session on real hardware unless gated; systemd turns them into
+	# app-<desktop id>@autostart.service, '-' escaped as \x2d. The SPICE socket
+	# would otherwise listen everywhere and wake its daemon for that agent.
+	local u="$pkgdir/usr/lib/systemd/user"
+	install -Dm644 10-shani-vm-oracle.conf "$u/app-vboxclient@autostart.service.d/10-shani-vm.conf"
+	install -Dm644 10-shani-vm-vmware.conf "$u/app-vmware\x2duser@autostart.service.d/10-shani-vm.conf"
+	install -Dm644 10-shani-vm-any.conf "$u/app-spice\x2dvdagent@autostart.service.d/10-shani-vm.conf"
+	install -Dm644 10-shani-vm-any.conf "$pkgdir/usr/lib/systemd/system/spice-vdagentd.socket.d/10-shani-vm.conf"
 }
