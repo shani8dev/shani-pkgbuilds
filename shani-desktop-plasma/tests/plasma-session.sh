@@ -79,6 +79,9 @@ LNF=$1 OUT=$2 TAG=$3 PKG=$4
 # leaving every look on the skel's Saturn-Dark. Apply the look's own config
 # defaults directly, the same keys those tools would write.
 python3 "$PKG/tests/apply-lnf-defaults.py" "$LNF" "$HOME" "$PKG"
+# The look's defaults enable time-of-day auto switching; in a container that
+# silently flips a dark look back to light mid-run. Pin the requested look.
+kwriteconfig6 --file kdeglobals --group KDE --key AutomaticLookAndFeel false
 # KV_THEME=<name> swaps just the Kvantum theme (e.g. an upstream one, to tell
 # a Saturn regression from upstream design); APP_STYLE=<style> runs the apps
 # under another widget style (default kvantum), to isolate Kvantum
@@ -106,7 +109,11 @@ if [ -n "${DECO:-}" ]; then
 fi
 # everything below is a Wayland client of the kwin we just started
 export QT_QPA_PLATFORM=wayland
-kwin_wayland >"$OUT/kwin-$LNF.log" 2>&1 &
+# KWin's virtual framebuffer backend gives plasmashell a real output to bind
+# its layer-shell panels/popups to. Without --virtual KWin only has a
+# placeholder output: the shell is alive and its containments exist, but it
+# paints nothing (every screenshot is black, except plain app windows).
+kwin_wayland --virtual --width 1920 --height 1080 >"$OUT/kwin-$LNF.log" 2>&1 &
 for i in $(seq 1 10); do
   sleep 1
   wl=$(ls "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null | head -1)
@@ -148,8 +155,12 @@ echo "kwin-compositing=$(qdbus6 org.kde.KWin /KWin org.kde.KWin.supportInformati
 shot desktop
 # the compositor's output size (kwin_wayland's virtual default is 1920x1080)
 read -r W H < <(identify -format '%w %h' "$OUT/$LNF$TAG-desktop.png")
-# calendar popup: pointer to the panel clock and click
-"$OUT/fakeinput" click $((W / 2)) 15 >/dev/null 2>&1
+# calendar popup: pointer to the panel clock and click. NOTE: on KWin 6.8's
+# virtual output fake input can move the pointer (dock launches work) but the
+# clock only shows a hover tooltip, never the calendar popup - this shot
+# legitimately FAILs the subject-visible check in the container. Do not lower
+# the threshold to make it pass; the missing popup is the finding.
+"$OUT/fakeinput" click $((W / 2)) 8 >/dev/null 2>&1
 sleep 3; shot calendar
 "$OUT/fakeinput" key ff1b >/dev/null 2>&1; sleep 1   # Escape closes the popup
 qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.activateLauncherMenu >/dev/null 2>&1; sleep 3; shot launcher
@@ -227,8 +238,8 @@ sleep 6; shot lockscreen; pkill -f kscreenlocker_greet
 echo "gtk3-colors=$(grep -m2 -oE '@define-color theme_bg_color_[a-z]+ #[0-9a-f]+' $HOME/.config/gtk-3.0/colors.css 2>/dev/null | tr '\n' ' ') gtk4-colors=$( [ -e $HOME/.config/gtk-4.0/colors.css ] && grep -m1 -oE '@define-color theme_bg_color_[a-z]+ #[0-9a-f]+' $HOME/.config/gtk-4.0/colors.css || echo MISSING)"
 gtk3-widget-factory >/dev/null 2>&1 &
 sleep 5; shot gtk3; pkill -f gtk3-widget-factory
-gtk4-widget-factory >/dev/null 2>&1 &
-sleep 5; shot gtk4; pkill -f gtk4-widget-factory
+gtk4-widget-factory >"$OUT/gtk4-$LNF.log" 2>&1 &
+sleep 15; shot gtk4; pkill -f gtk4-widget-factory
 # Yakuake: drop it down with two tabs (skin + the shani terminal profile)
 QT_STYLE_OVERRIDE=${APP_STYLE:-kvantum} yakuake >"$OUT/yakuake-$LNF.log" 2>&1 &
 sleep 5
