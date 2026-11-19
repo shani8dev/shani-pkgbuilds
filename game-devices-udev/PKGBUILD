@@ -1,8 +1,8 @@
 # Maintainer: Fabian Bornschein <fabiscafe@archlinux.org>
 
 pkgname=game-devices-udev
-pkgver=1.0
-pkgrel=2
+pkgver=1.1
+pkgrel=1
 pkgdesc="Udev rules for controllers"
 url='https://codeberg.org/fabiscafe/game-devices-udev'
 arch=('any')
@@ -14,9 +14,8 @@ makedepends=(
 )
 provides=('nintendo-udev')
 install="install"
-# Pinned to the commit tag 1.0 actually points at (resolved via
-# `git ls-remote --tags` — the annotated tag object dereferences to this
-# commit), not the tag itself: a tag can be force-moved upstream without
+# Pinned to a commit (tag 1.1 plus upstream's NEWS fix right after it,
+# f0c821e - signed by the key below, checked 2026-11-19), not the tag itself: a tag can be force-moved upstream without
 # this PKGBUILD ever changing, which check-skip-checksums.sh correctly
 # flags for a bare `#tag=` git+ source. `?signed` restores real GPG
 # verification on top of that same immutable commit pin — makepkg verifies

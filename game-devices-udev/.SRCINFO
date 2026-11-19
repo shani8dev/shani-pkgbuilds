@@ -1,6 +1,6 @@
 pkgbase = game-devices-udev
 	pkgdesc = Udev rules for controllers
-	pkgver = 1.0
+	pkgver = 1.1
 	pkgrel = 1
 	url = https://codeberg.org/fabiscafe/game-devices-udev
 	install = install
@@ -10,7 +10,7 @@ pkgbase = game-devices-udev
 	makedepends = meson
 	depends = udev
 	provides = nintendo-udev
-	source = git+https://codeberg.org/fabiscafe/game-devices-udev.git?signed#commit=aaaf684043b33a330630335a3782b02ecf87a52e
+	source = git+https://codeberg.org/fabiscafe/game-devices-udev.git?signed#commit=f0c821eb3f1c3e87f3a6b2d9a5400905f32f84c8
 	source = uinput.conf
 	validpgpkeys = 6E58E886A8E07538A2485FAED6A4F386B4881229
 	b2sums = SKIP

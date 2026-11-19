@@ -1,7 +1,7 @@
 pkgbase = shani-link
 	pkgdesc = Shani Link - the phone line, phone and watch for ShaniOS desktops
 	pkgver = 0.1.0
-	pkgrel = 4
+	pkgrel = 11
 	url = https://github.com/shani8dev/shani-link
 	install = shani-link.install
 	arch = any
@@ -15,6 +15,8 @@ pkgbase = shani-link
 	depends = bluez-utils
 	depends = gtk4
 	depends = libadwaita
+	optdepends = qrencode: share a contact as a QR code
+	optdepends = modemmanager: calls through a mobile modem built into the laptop
 	optdepends = ffmpeg: the landline video call, and the watch camera button
 	optdepends = android-tools: an Android phone over adb (pairing, screen)
 	optdepends = scrcpy: an Android phone screen in a window
@@ -24,7 +26,9 @@ pkgbase = shani-link
 	optdepends = kdeconnect: the phone link through KDE Connect (built in otherwise)
 	optdepends = bluez-obex: receiving files a phone shares over Bluetooth
 	optdepends = gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)
-	source = git+https://github.com/shani8dev/shani-link.git#commit=8884bd0a327da2d3e90c564fd7955118297de7da
+	optdepends = libpulse: Bluetooth calls - routing the call audio (pactl)
+	optdepends = gjs: ring or ping a phone paired through GSConnect
+	source = git+https://github.com/shani8dev/shani-link.git#commit=422120086459ec2f00e2a5e0853429345b3da8f3
 	sha256sums = SKIP
 
 pkgname = shani-link

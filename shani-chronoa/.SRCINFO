@@ -1,7 +1,7 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 63
+	pkgrel = 80
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
@@ -9,7 +9,6 @@ pkgbase = shani-chronoa
 	depends = shani-link
 	depends = python
 	depends = gtk4-layer-shell
-	depends = wl-clipboard
 	depends = xdg-utils
 	depends = python-gobject
 	depends = glib2
@@ -26,6 +25,9 @@ pkgbase = shani-chronoa
 	depends = tesseract
 	depends = tesseract-data-eng
 	depends = whisper-cpp
+	depends = shani-piper-tts
+	depends = shani-piper-voice
+	depends = shani-whisper-model
 	depends = llama-cpp
 	depends = ggml-vulkan
 	depends = espeak-ng
@@ -92,10 +94,18 @@ pkgbase = shani-chronoa
 	optdepends = avahi: discover_hosts - devices that announce themselves by name (avahi-browse)
 	optdepends = iproute2: check_internet and neighbour_table - the route and the ARP cache (ip neigh)
 	optdepends = fwupd: firmware_updates - which firmware this machine is running (fwupdmgr get-devices)
+	optdepends = rhvoice: RHVoice voices for read aloud (RHVoice-test)
+	optdepends = fontconfig: list_fonts (fc-list)
+	optdepends = gstreamer: screen grabs through the portal stream (gst-launch-1.0)
+	optdepends = fuse3: user_driver - user-space drivers mounted without root (fusermount3)
+	optdepends = dkms: driver_dev - build and load an out-of-tree driver
+	optdepends = make: driver_dev - build a driver from its source
+	optdepends = qemu-system-x86: vm - start a virtual machine
+	optdepends = yt-dlp: recordings - fetch a talk or video to transcribe
 	provides = gnome-shell-extension-shani-circle-to-search
 	conflicts = gnome-shell-extension-shani-circle-to-search
 	replaces = gnome-shell-extension-shani-circle-to-search
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=c1329451e9079b5df315b01f4db09713f9a5aa37
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=6020542024f6c21a53049a3c4b9f856b70cbc644
 	sha256sums = SKIP
 
 pkgname = shani-chronoa

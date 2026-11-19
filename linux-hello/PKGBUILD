@@ -9,7 +9,7 @@
 # enroll a face for any user name asked - anyone could add their face as root.
 # Now only root or that same user may; the PAM module builds its request with serde.
 pkgname=linux-hello
-pkgver=0.1.0.r1.g9d911f9
+pkgver=0.1.1.r1.g9d911f9
 pkgrel=1
 pkgdesc="Face sign-in with an IR camera (Windows Hello style): daemon, PAM module, enrolment app"
 arch=('x86_64')
