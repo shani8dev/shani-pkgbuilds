@@ -251,6 +251,12 @@ post_upgrade() {
 	systemctl enable systemd-timesyncd
 	systemctl enable ananicy-cpp
 	systemctl enable irqbalance
+	# System extensions (systemd-sysext): images or folders in
+	# /var/lib/extensions (bound from /data/varlib/extensions, so they survive
+	# updates and the volatile /var) are merged over /usr at every boot. The
+	# image's os-release has ID=arch and no VERSION_ID/SYSEXT_LEVEL, so an
+	# extension declaring ID=arch keeps merging across ShaniOS updates.
+	systemctl enable systemd-sysext.service
 	# sched-ext loader (scx-tools): enable only if installed; the default
 	# scheduler is scx_lavd (see /etc/scx_loader/config.toml).
 	command -v scx_loader >/dev/null 2>&1 && systemctl enable scx_loader.service 2>/dev/null || true
