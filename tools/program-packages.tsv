@@ -23,6 +23,7 @@ bluetoothctl	bluez-utils
 boltctl	bolt
 bootctl	systemd
 brightnessctl	brightnessctl
+bsdcat	libarchive
 bsdtar	libarchive
 btrfs	btrfs-progs
 busctl	systemd
@@ -36,6 +37,7 @@ chpasswd	shadow
 chunk	
 cliphist	cliphist
 compsize	compsize
+config	
 convert	imagemagick
 coredumpctl	systemd
 cp	coreutils
@@ -61,6 +63,7 @@ espeak-ng	espeak-ng
 ethtool	ethtool
 fc-cache	fontconfig
 fc-list	fontconfig
+fc-query	fontconfig
 fcitx5	fcitx5
 fcitx5-configtool	fcitx5
 fcitx5-remote	fcitx5
@@ -92,11 +95,13 @@ glxinfo	mesa-utils
 gnome-control-center	gnome-control-center
 gnome-screenshot	gnome-screenshot
 gobuster	gobuster
+gocryptfs	gocryptfs
 gpasswd	shadow
 gpg	gnupg
 gpspipe	gpsd
 grep	grep
 grim	grim
+gs	ghostscript
 gsettings	glib2
 gst-launch	
 gst-launch-1.0	gstreamer
@@ -185,6 +190,7 @@ nologin	util-linux
 notify-send	libnotify
 nproc	coreutils
 nvidia-smi	nvidia-utils
+od	coreutils
 ollama	ollama
 openssl	openssl
 orca	orca
@@ -263,6 +269,7 @@ sort	coreutils
 soundstretch	soundtouch
 sox	sox
 spd-say	speech-dispatcher
+sshfs	sshfs
 stat	coreutils
 stop	
 swappy	swappy
@@ -332,3 +339,4 @@ ydotool	ydotool
 ykman	yubikey-manager
 yt-dlp	yt-dlp
 zbarimg	zbar
+zstd	zstd
