@@ -1,0 +1,9 @@
+#!/bin/sh
+# pam_exec, in /etc/pam.d/shani-greetd before the fingerprint, the face and the
+# security key: does this account have a session open already (its
+# /run/user/<uid>, which logind keeps while any session of it lives)? If not,
+# this is the first sign-in since a restart (or since it last signed out), and
+# only the password unlocks the keyring (oo7) - so the stack jumps to it.
+# Ananta OS's rule for its face sign-in, here for every way in but the password.
+uid=$(id -u -- "$PAM_USER" 2>/dev/null) || exit 1
+[ -d "/run/user/$uid" ]

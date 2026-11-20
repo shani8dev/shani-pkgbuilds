@@ -1,7 +1,10 @@
 #%PAM-1.0
 # greetd's sign-in for the niri desktop (/etc/greetd/shani-niri.toml names this
-# service): greetd's own stack, plus GNOME Keyring — unlocked with the login
-# password (and created at the first login), so apps never ask for it again.
+# service): greetd's own stack, plus the keyring (oo7, the Secret Service) —
+# unlocked with the login password (and created at the first login), so apps
+# never ask for it again. pam_oo7 keeps the password from auth to the session,
+# then hands it to oo7-daemon over its socket; on a password change it
+# re-encrypts the keyring with the new one.
 auth       required     pam_securetty.so
 auth       requisite    pam_nologin.so
 # Fingerprint, only when asked for at the greeter ("Use fingerprint", or Enter on
@@ -17,6 +20,12 @@ auth       requisite    pam_nologin.so
 # So IGNORE continues (ignore=ignore), a missing fprintd is skipped
 # (module_unknown=ignore), and the stop is pam_exec /usr/bin/false - it fails
 # a sign-in exactly as pam_deny did and is ignored by setcred.
+# The password first after a restart: with no session of this account open yet
+# (greeter-signed-in), the fingerprint, the face and the key are jumped over
+# (default=5: the five lines below) onto the password, which also unlocks the
+# keyring - a finger or a face cannot, so every app would ask for it. In
+# setcred pam_exec answers IGNORE: ignore=ignore continues, as above.
+auth       [success=ignore ignore=ignore default=5]  pam_exec.so quiet /usr/lib/shani-desktop-niri/greeter-signed-in
 auth       [success=ignore ignore=ignore default=2]  pam_exec.so quiet /usr/lib/shani-desktop-niri/greeter-fingerprint
 -auth      [success=done module_unknown=ignore ignore=ignore default=die]  pam_fprintd.so max-tries=3 timeout=20
 auth       requisite    pam_exec.so quiet /usr/bin/false
@@ -29,9 +38,9 @@ auth       requisite    pam_exec.so quiet /usr/bin/false
 # pam_fprintd and the false stop, onto pam_linux_hello) is unchanged.
 -auth      sufficient   pam_u2f.so cue [cue_prompt=Touch your security key] nouserok
 auth       include      system-local-login
-auth       optional     pam_gnome_keyring.so
+auth       optional     pam_oo7.so
 account    include      system-local-login
 password   include      system-local-login
-password   optional     pam_gnome_keyring.so use_authtok
+password   optional     pam_oo7.so
 session    include      system-local-login
-session    optional     pam_gnome_keyring.so auto_start
+session    optional     pam_oo7.so auto_start
