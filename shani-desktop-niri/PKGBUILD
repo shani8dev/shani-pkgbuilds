@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=20
+pkgrel=22
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -18,8 +18,11 @@ depends=(
 	imagemagick
 	# --- login: greetd runs a bare niri hosting shani-shell's Quickshell greeter ---
 	greetd
-	# --- portals: niri-portals.conf asks for gnome first, gtk as fallback ---
-	xdg-desktop-portal-gnome
+	# --- portals: niri-portals.conf names each interface ---
+	# gtk for Access and Notification (what a sandboxed app's permission prompt
+	# and portal notifications go through). xdg-desktop-portal-gnome is gone:
+	# its Settings/Wallpaper/Screenshot backends are never selected under niri
+	# (UseIn=gnome) and the shell writes gsettings itself.
 	xdg-desktop-portal-gtk
 	# ScreenCast for a wlroots-style compositor: gnome's backend needs mutter,
 	# and gtk's has no ScreenCast at all, so a browser's "share screen" had
