@@ -3,8 +3,22 @@ post_install() {
 }
 
 post_upgrade() {
+	# The previous package pre-enabled arpwatch@eth0.service. On a machine with no
+	# eth0 that unit can never bind, and being enabled it fails on every boot - so
+	# drop the symlink we created then. Only when the interface is really absent:
+	# on a machine that has eth0, an enable is left alone, whoever made it.
+	[ -e /sys/class/net/eth0 ] || systemctl disable arpwatch@eth0.service 2>/dev/null || true
+
 	systemctl enable vnstat.service
-	# Arch ships only the arpwatch@.service template (no plain arpwatch.service);
-	# eth0 matches the documented default in docs/networking/arpwatch.md.
-	systemctl enable arpwatch@eth0.service
+	# arpwatch is deliberately NOT enabled here. Arch ships only the
+	# arpwatch@.service template, so the interface is the instance name, and the
+	# interface is a property of the machine that boots the image - not of the
+	# host the image was built on. Any instance picked at install time would be
+	# the build host's (or, in a chroot with no network, none), and on a machine
+	# whose NIC is enp*/wlp* a hardcoded arpwatch@eth0 has nothing to watch:
+	# arpwatch exits 1 and, being enabled, fails on every boot.
+	#
+	# So the person enables it for the interface they want, once:
+	#   systemctl enable --now arpwatch@$(ip route show default | awk '{print $5}')
+	# (docs/networking/arpwatch.md)
 }
