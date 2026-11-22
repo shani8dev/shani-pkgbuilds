@@ -162,6 +162,13 @@ package() {
     # run through pkexec under shani-desktop-niri's polkit rules.
     install -d "$pkgdir/usr/lib/$pkgname"
     install -m755 -t "$pkgdir/usr/lib/$pkgname" bridge/*.py
+    # the phone backends (bridge/shani_link): shani-link's Python package with
+    # its GTK window left out, so the shell's Calls, Messages and Contacts apps
+    # own the backends and shani-link becomes optional. bridge/shani_link/README.md
+    # says how to re-sync it.
+    cp -r bridge/shani_link "$pkgdir/usr/lib/$pkgname/shani_link"
+    find "$pkgdir/usr/lib/$pkgname/shani_link" -type d -exec chmod 755 {} +
+    find "$pkgdir/usr/lib/$pkgname/shani_link" -type f -exec chmod 644 {} +
     # "What's new" after an update: the notification's "See everything"
     install -Dm644 data/whats-new.md "$pkgdir/usr/share/shani/whats-new.md"
     # the file-chooser portal backend (bridge/portal.py): a Flatpak's Open/Save
