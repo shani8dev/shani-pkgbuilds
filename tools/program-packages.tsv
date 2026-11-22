@@ -350,3 +350,4 @@ ssh-keygen	openssh
 sync	coreutils
 wipefs	util-linux
 notify-send	libnotify
+secret-tool	libsecret

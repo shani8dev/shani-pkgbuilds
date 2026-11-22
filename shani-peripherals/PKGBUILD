@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-peripherals
 pkgver=1.0
-pkgrel=13
+pkgrel=14
 pkgdesc="peripheral devices and tools for Shani OS"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-peripherals"
@@ -87,6 +87,13 @@ depends=(
 	# manages handhelds' built-in pads only unless "manage all controllers" is
 	# switched on, so a plain USB or Bluetooth pad on a desktop is left alone.
 	inputplumber
+)
+# Drawing tablets: libwacom ships the database Settings > Keyboard & input reads
+# (libwacom-list-local-devices) to name the connected tablet. It is already
+# pulled in by libinput, which niri requires, so this is a record rather than a
+# requirement — but it keeps the feature honest if that chain ever changes.
+optdepends=(
+    'libwacom: drawing tablets - shows which tablet is connected'
 )
 license=('GPL-3.0-only')
 install="$pkgname.install"

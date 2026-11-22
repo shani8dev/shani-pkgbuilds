@@ -20,6 +20,8 @@ depends=(
     'ttf-dejavu'
     # Chronoa/Lens/recorder notices
     'libnotify'
+    # Mail reads the account password from the secret service (secret-tool)
+    'libsecret'
     # the screen keyboard types through the virtual-keyboard protocol, and
     # takes its layouts from xkb (libxkbcommon via ctypes, xkeyboard-config)
     'wtype'
