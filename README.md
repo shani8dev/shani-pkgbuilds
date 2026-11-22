@@ -158,12 +158,8 @@ profile-agnostic config should live.
 ## Known gaps & design rules
 
 **Still open (confirmed, not yet fixed):**
-- `shani-settings/PKGBUILD:4-5` — `pkgrel` was never reset after the
-  last `pkgver` bump (currently `pkgver=0.0.5`, `pkgrel=41` — matches the
-  live PKGBUILD; the AGENTS.md copy of this note was stale at 40).
-- `brlaser-debug`/`splix-debug` produce a broken build-id symlink
-  (`namcap`: "E: Symlink ... points to non-existing
-  ../../../cups/filter/rastertobrlaser"). Cosmetic (debug package only).
+_(none currently outstanding — the earlier `pkgrel` reset and `-debug`
+build-id symlink items were re-audited and resolved/closed.)_
 
 **Design rules:**
 - A `git+` source is not automatically "pinned" — prefer `#commit=`
@@ -173,9 +169,8 @@ profile-agnostic config should live.
   checksum was only ever captured once by hand — prefer `https://`
   wherever upstream supports it, especially for anything in the
   Secure-Boot-adjacent trust chain.
-- `run_in_container.sh` detects the container runtime and applies
-  `--userns=keep-id` for Podman automatically — don't assume Docker
-  semantics when debugging a build.
+- `run_in_container.sh` detects docker/podman and switches the binary,
+  but does not pass `--userns=keep-id` (nor does `make_pkg.sh`).
 
 ## Troubleshooting
 

@@ -6,8 +6,8 @@
 # package").
 pkgname=hunspell-ta_in
 pkgver=1.0
-_commit=4f1df64b2e8e14751aa7c2205d170ca016071315
-pkgrel=1
+_commit=c0865a85eb67dc377f2cf8e8fe2c4fa9e53f0dcb
+pkgrel=2
 pkgdesc="Tamil hunspell dictionary"
 arch=('any')
 url="https://github.com/LibreOffice/dictionaries/tree/master/ta_IN"
