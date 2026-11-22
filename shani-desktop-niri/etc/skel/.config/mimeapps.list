@@ -2,12 +2,12 @@
 # apps come first where they handle the type - Text Editor, Media Player, Image
 # Viewer, Document Viewer, Archives (dev.shani.*, written by `shani app --write-desktop`) -
 # with the Flatpak after it, so it is the fallback and is under "Open with":
-# OnlyOffice, Vivaldi, Calendar and Fragments
-# keep their types. Folders open in the shell's Files (Nautilus under "Open
-# with": it stays, the file-chooser portal needs it); every archive libarchive
-# reads opens in Archives (File Roller is no longer installed).
+# OnlyOffice and Vivaldi
+# keep their types. Folders open in the shell's Files (also the Open/Save dialog
+# of sandboxed apps: no Nautilus); every archive libarchive reads opens in
+# Archives (File Roller is no longer installed).
 [Default Applications]
-inode/directory=dev.shani.Files.desktop;org.gnome.Nautilus.desktop;
+inode/directory=dev.shani.Files.desktop;
 # ---------------------------------------------------------------------
 # Text Files (Default: the shell's own Text Editor - dev.shani.TextEditor)
 # ---------------------------------------------------------------------
@@ -38,11 +38,11 @@ application/x-texinfo=dev.shani.TextEditor.desktop;
 
 
 # ---------------------------------------------------------------------
-# Calendar (Default: Gnome Calendar)
+# Calendar (Default: the shell's Calendar - .ics invitations are added to it)
 # ---------------------------------------------------------------------
-text/calendar=org.gnome.Calendar.desktop;
-application/x-vcalendar=org.gnome.Calendar.desktop;
-application/x-extension-ics=org.gnome.Calendar.desktop;
+text/calendar=dev.shani.Calendar.desktop;
+application/x-vcalendar=dev.shani.Calendar.desktop;
+application/x-extension-ics=dev.shani.Calendar.desktop;
 
 
 # ---------------------------------------------------------------------
@@ -86,9 +86,11 @@ application/manifest+json=com.vivaldi.Vivaldi.desktop;
 # ---------------------------------------------------------------------
 # Torrent Files (Default: Fragments)
 # ---------------------------------------------------------------------
-application/x-bittorrent=de.haeckerfelix.Fragments.desktop;
-x-scheme-handler/magnet=de.haeckerfelix.Fragments.desktop;
-x-scheme-handler/dht=de.haeckerfelix.Fragments.desktop;
+application/vnd.flatpak.ref=dev.shani.Software.desktop;
+application/vnd.flatpak.repo=dev.shani.Software.desktop;
+application/x-bittorrent=org.qbittorrent.qBittorrent.desktop;
+x-scheme-handler/magnet=org.qbittorrent.qBittorrent.desktop;
+x-scheme-handler/dht=org.qbittorrent.qBittorrent.desktop;
 
 
 # ---------------------------------------------------------------------

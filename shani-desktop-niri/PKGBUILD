@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=19
+pkgrel=20
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -21,6 +21,11 @@ depends=(
 	# --- portals: niri-portals.conf asks for gnome first, gtk as fallback ---
 	xdg-desktop-portal-gnome
 	xdg-desktop-portal-gtk
+	# ScreenCast for a wlroots-style compositor: gnome's backend needs mutter,
+	# and gtk's has no ScreenCast at all, so a browser's "share screen" had
+	# nothing to talk to under niri. portal-wlr speaks zwlr-screencopy, which
+	# niri implements; niri-portals.conf names it for ScreenCast.
+	xdg-desktop-portal-wlr
 	# the keyring (Secret Service): oo7, not gnome-keyring - Rust, no GNOME libraries,
 	# moves existing gnome-keyring keyrings over itself, and can unlock from a
 	# systemd credential (its unit's ImportCredential=). PAM: etc/pam.d/shani-greetd;
@@ -42,13 +47,13 @@ depends=(
 	shani-input-fcitx5
 	# --- the apps and services GNOME's metapackage brings natively, which the
 	#     niri desktop otherwise lacks (the rest are Flatpaks, flatpak-packages.txt) ---
-	# files: nautilus is the file-chooser portal's (xdg-desktop-portal-gnome needs
-	# it); the shell's own Files opens folders, Quick Look previews (not sushi),
+	# files: the shell's own Files opens folders, and is the Open/Save dialog of
+	# sandboxed apps too (shani-shell's file-chooser portal, chosen in
+	# niri-portals.conf - so no nautilus); Quick Look previews (not sushi),
 	# Archives opens archives (not file-roller) and Disk Usage (not baobab) -
 	# etc/skel/.config/mimeapps.list makes them the defaults. gvfs: trash,
 	# phones, shares, cameras. Files also writes and formats USB drives and opens
 	# disk images (udisks2, which gvfs brings - not gnome-disk-utility)
-	nautilus
 	gvfs
 	gvfs-mtp
 	gvfs-smb
@@ -60,12 +65,15 @@ depends=(
 	ffmpegthumbnailer
 	gst-thumbnailers
 	webp-pixbuf-loader
-	# software updates for apps (Flatpak); devices' firmware (fwupd) is Shani
-	# Cassini's Firmware page, which the shell's Updates opens (not gnome-firmware)
-	gnome-software
+	# apps (Flatpak) are found, installed and updated in the shell's Software
+	# (Flathub, leftovers, AppImages - not gnome-software); devices' firmware
+	# (fwupd) is Shani Cassini's Firmware page, which the shell's Updates opens
 	# printers are added in the shell's Settings > Printers (driverless, CUPS's
 	# lpadmin -m everywhere), not system-config-printer
 	xdg-user-dirs-gtk
+	# torrents: qBittorrent - plain Qt 6 (no KDE frameworks), sharing the Qt the
+	# shell already loads; not the Fragments Flatpak (GTK, the GNOME runtime)
+	qbittorrent
 	# calendars Chronoa reads (eds_calendar), spelling, high-contrast themes
 	evolution-data-server
 	hunspell-en_us

@@ -43,6 +43,13 @@ depends=(
     # Document Viewer: e-books, comics and XPS made PDFs, and PDF forms filled
     # in - all by PyMuPDF (bridge/pdfform.py), which carries MuPDF itself
     'python-pymupdf'
+    # the Disks app formats, encrypts and writes devices (wipefs, cryptsetup,
+    # dd, sync); coreutils and util-linux are in base but named so the
+    # dependency check sees them; poppler's pdfseparate splits a PDF
+    'cryptsetup'
+    'poppler'
+    # the SSH host manager generates and uses keys (ssh-keygen, ssh)
+    'openssh'
 )
 optdepends=(
     # the Island and the conversation panel are clients of dev.shani.chronoa.Agent
@@ -96,12 +103,16 @@ optdepends=(
     'ghostscript: shrink a PDF to fit a size limit, and PostScript in the Document Viewer'
     'switcheroo-control: start an app on the other graphics card'
     'xdg-terminal-exec: open terminal apps in the terminal you chose'
+    'podman: the Containers app (your containers and images)'
+    'distrobox: toolboxes in the Containers app'
     'malcontent: parental controls - the launcher and dock leave out apps a standard account may not run'
     'djvulibre: DjVu documents in the Document Viewer (ddjvu)'
     'at-spi2-core: the menus of each app (File, Edit ...) in the window menu, read from its accessibility tree'
     'swappy: mark up a screenshot before saving it'
     'zenity: the snippet and compress tiles ask with a dialog'
     'smbclient: Settings > Sharing lists the folders shared on the network (net usershare)'
+    'age: clipboard history encrypted at rest (age-encryption.org); without it the history is kept in the session keyring'
+    # check-deps: unlisted age-encryption.org donenotify-send - the scanner mis-reads the clipboard's "needs age (age-encryption.org)" notice and Models' concatenated "...done"+"notify-send" as program names; age and notify-send are both declared
 )
 makedepends=('git')
 install=$pkgname.install
@@ -146,6 +157,12 @@ package() {
     install -m755 -t "$pkgdir/usr/lib/$pkgname" bridge/*.py
     # "What's new" after an update: the notification's "See everything"
     install -Dm644 data/whats-new.md "$pkgdir/usr/share/shani/whats-new.md"
+    # the file-chooser portal backend (bridge/portal.py): a Flatpak's Open/Save
+    # dialog is the shell's own picker; D-Bus starts it on first use, and
+    # shani-desktop-niri's niri-portals.conf chooses it for FileChooser
+    install -Dm644 data/portal/shani.portal "$pkgdir/usr/share/xdg-desktop-portal/portals/shani.portal"
+    install -Dm644 data/portal/org.freedesktop.impl.portal.desktop.shani.service \
+        "$pkgdir/usr/share/dbus-1/services/org.freedesktop.impl.portal.desktop.shani.service"
     # patch the service file to use the renamed launcher (avoids a file
     # conflict with shani-chronoa, which also ships /usr/bin/shani-chronoa-bridge)
     sed -i 's/shani-chronoa-bridge/shani-shell-chronoa-bridge/g' \

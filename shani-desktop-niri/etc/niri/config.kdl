@@ -312,6 +312,10 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+C { center-column; }
     Mod+Shift+V hotkey-overlay-title="Float or tile the window" { toggle-window-floating; }
+    Mod+Ctrl+V hotkey-overlay-title="Between floating and tiled windows" { switch-focus-between-floating-and-tiling; }
+    // heights a window steps through (the shell's preset-window-heights), and back to its own
+    Mod+Shift+R hotkey-overlay-title="Window height: a third, half, two thirds" { switch-preset-window-height; }
+    Mod+Ctrl+R { reset-window-height; }
     // select text in any app, then: proofread, rewrite, shorter, translate... (Chronoa writes it)
     Mod+Shift+W hotkey-overlay-title="Writing tools" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "writingTools"; }
     Mod+W { toggle-column-tabbed-display; }

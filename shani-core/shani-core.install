@@ -41,6 +41,10 @@ post_upgrade() {
 	systemctl enable snapd.socket
 	systemctl enable nix-daemon.socket
 	systemctl enable podman.socket
+	# every person's own (rootless) Podman API socket, Docker-compatible: IDEs and
+	# dev containers find it at $XDG_RUNTIME_DIR/podman/podman.sock (DOCKER_HOST);
+	# socket-activated, so it costs nothing until something connects
+	systemctl --global enable podman.socket
 	systemctl enable waydroid-container.service
 	systemctl enable lxd.socket
 	systemctl enable lxcfs.service

@@ -340,3 +340,13 @@ ykman	yubikey-manager
 yt-dlp	yt-dlp
 zbarimg	zbar
 zstd	zstd
+age	age
+cryptsetup	cryptsetup
+dd	coreutils
+dirname	coreutils
+pdfseparate	poppler
+ssh	openssh
+ssh-keygen	openssh
+sync	coreutils
+wipefs	util-linux
+notify-send	libnotify
