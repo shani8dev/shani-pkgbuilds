@@ -89,6 +89,9 @@ environment {
     QT_QPA_PLATFORMTHEME "gtk3"
     // Qt apps' titlebars: qt6-wayland's own Adwaita one (Qt 6.8+), not Qt's default
     QT_WAYLAND_DECORATION "adwaita"
+    // Java apps under xwayland-satellite otherwise open a blank window
+    // (ArchWiki/Niri troubleshooting): skip the reparenting check
+    _JAVA_AWT_WM_NONREPARENTING "1"
 }
 
 // clipboard history for the launcher's "c" mode, and a clipboard that
@@ -269,6 +272,13 @@ binds {
     Mod+Ctrl+J     { move-window-down; }
     Mod+Ctrl+K     { move-window-up; }
     Mod+Ctrl+L     { move-column-right; }
+
+    // Slate-style edge snapping: Super+Alt+Arrow snaps the focused window
+    // to a half (left/right) or full (up/down) column.
+    Mod+Alt+Left   { set-column-width 50%; move-column-to-side left; }
+    Mod+Alt+Right  { set-column-width 50%; move-column-to-side right; }
+    Mod+Alt+Up     { set-column-width 100%; }
+    Mod+Alt+Down   { set-column-width 50%; }
 
     Mod+Shift+Left  { focus-monitor-left; }
     Mod+Shift+Right { focus-monitor-right; }

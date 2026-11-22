@@ -351,3 +351,4 @@ sync	coreutils
 wipefs	util-linux
 notify-send	libnotify
 secret-tool	libsecret
+base64	coreutils

@@ -12,6 +12,7 @@ depends=(
     'quickshell'
     'python'
     'python-gobject'
+    'python-dbus'        # appmenu.py + appmenu-registrar.py (global menu over D-Bus)
     'glib2'
     # every icon is an Adwaita symbolic icon, recoloured (shell.qml's IconTheme pragma)
     'adwaita-icon-theme'
@@ -56,6 +57,8 @@ depends=(
 optdepends=(
     # the Island and the conversation panel are clients of dev.shani.chronoa.Agent
     'shani-chronoa: the assistant behind the Island, the panel and Lens; its speech model for voice typing'
+    # the Media Player's codec line: size, codec and bitrate under the title
+    'mediainfo: what a video or song is made of, under its title in the Media Player'
     # blur needs ext-background-effect-v1 or a layer-rule; niri has both
     'niri: the compositor the shell is built and tested on'
     'networkmanager: Wi-Fi, hotspot and VPN tiles'
@@ -186,4 +189,22 @@ SH
 
     install -Dm644 -t "$pkgdir/usr/lib/systemd/user" \
         data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service
+
+    # AppMenu registrar: own com.canonical.AppMenu.Registrar so Qt/LibreOffice
+    # export their menus at startup; appmenu.py reads the registrations.
+    install -Dm755 bridge/appmenu-registrar.py "$pkgdir/usr/lib/$pkgname/appmenu-registrar.py"
+    cat > "$pkgdir/usr/lib/systemd/user/shani-appmenu-registrar.service" <<'UNIT'
+[Unit]
+Description=Shani app menu registrar (global menu over D-Bus)
+After=dbus.socket
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/lib/shani-shell/appmenu-registrar.py
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target
+UNIT
 }
