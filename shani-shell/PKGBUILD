@@ -87,6 +87,8 @@ optdepends=(
     'polkit: the authentication agent'
     'udisks2: removable drives in the sidebar (mount, eject), disk images opened as drives, USB drives written and formatted'
     'sshfs: ssh:// addresses in Files > Connect to server'
+    'picocom: serial-port connections in Terminal'
+    'smartmontools: disk health and self-tests in Disks'
     'gocryptfs: encrypted folders in Files'
     'gnupg: files and folders locked with a password in Files'
     'rclone: cloud drives (Google Drive, OneDrive, Dropbox, Nextcloud...) in Files'

@@ -352,3 +352,6 @@ wipefs	util-linux
 notify-send	libnotify
 secret-tool	libsecret
 base64	coreutils
+chown	coreutils
+picocom	picocom
+renice	util-linux
