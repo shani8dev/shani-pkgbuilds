@@ -51,6 +51,8 @@ depends=(
     # dependency check sees them; poppler's pdfseparate splits a PDF
     'cryptsetup'
     'poppler'
+    # Disks' read-only fsck -n / badblocks -n scans and e2label relabel
+    'e2fsprogs'
     # the SSH host manager generates and uses keys (ssh-keygen, ssh)
     'openssh'
 )

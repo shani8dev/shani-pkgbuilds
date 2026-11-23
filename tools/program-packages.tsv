@@ -14,6 +14,7 @@ arpwatch	arpwatch
 auditctl	audit
 avahi-browse	avahi
 awk	gawk
+badblocks	e2fsprogs
 balooctl6	baloo
 bands	
 bandwhich	bandwhich
@@ -78,6 +79,7 @@ firewall-cmd	firewalld
 flatpak	flatpak
 fprintd-enroll	fprintd
 fprintd-list	fprintd
+fsck	e2fsprogs
 fuser	psmisc
 fusermount	fuse2
 fusermount3	fuse3
