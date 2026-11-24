@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=40
+pkgrel=41
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -93,6 +93,8 @@ optdepends=(
     'smartmontools: disk health and self-tests in Disks'
     'sudo: validate and install sudoers drop-ins in Settings > Security'
     'apparmor: AppArmor profile status and enforce/complain in Settings > Security'
+    'audit: auditd toggle in Settings > Security'
+    'cups-browsed: discover network printers (toggle in Settings > Printers)'
     'gocryptfs: encrypted folders in Files'
     'gnupg: files and folders locked with a password in Files'
     'rclone: cloud drives (Google Drive, OneDrive, Dropbox, Nextcloud...) in Files'
