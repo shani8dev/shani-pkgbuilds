@@ -126,6 +126,7 @@ optdepends=(
     'smbclient: Settings > Sharing lists the folders shared on the network (net usershare)'
     'age: clipboard history encrypted at rest (age-encryption.org); without it the history is kept in the session keyring'
     # check-deps: unlisted age-encryption.org donenotify-send - the scanner mis-reads the clipboard's "needs age (age-encryption.org)" notice and Models' concatenated "...done"+"notify-send" as program names; age and notify-send are both declared
+    # check-deps: unlisted ch crop cw px sy - Python variables in Camera.qml's embedded image-processing heredoc, not external programs
 )
 makedepends=('git')
 install=$pkgname.install
