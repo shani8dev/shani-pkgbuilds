@@ -93,7 +93,7 @@ optdepends=(
     'smartmontools: disk health and self-tests in Disks'
     'sudo: validate and install sudoers drop-ins in Settings > Security'
     'apparmor: AppArmor profile status and enforce/complain in Settings > Security'
-    'audit: auditd toggle in Settings > Security'
+    'audit: auditd toggle and predefined audit profiles in Settings > Security'
     'cups-browsed: discover network printers (toggle in Settings > Printers)'
     'gocryptfs: encrypted folders in Files'
     'gnupg: files and folders locked with a password in Files'
