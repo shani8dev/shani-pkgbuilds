@@ -362,3 +362,4 @@ augenrules	audit
 sshd	openssh
 sysctl	procps-ng
 visudo	sudo
+paste	coreutils
