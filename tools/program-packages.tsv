@@ -363,3 +363,4 @@ sshd	openssh
 sysctl	procps-ng
 visudo	sudo
 paste	coreutils
+qmllint	qt6-declarative-tools
