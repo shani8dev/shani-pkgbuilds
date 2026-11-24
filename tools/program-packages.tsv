@@ -357,3 +357,8 @@ base64	coreutils
 chown	coreutils
 picocom	picocom
 renice	util-linux
+aa-status	apparmor
+augenrules	audit
+sshd	openssh
+sysctl	procps-ng
+visudo	sudo
