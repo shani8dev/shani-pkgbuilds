@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=41
+pkgrel=42
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -126,8 +126,10 @@ optdepends=(
     'smbclient: Settings > Sharing lists the folders shared on the network (net usershare)'
     'age: clipboard history encrypted at rest (age-encryption.org); without it the history is kept in the session keyring'
     'qt6-declarative-tools: qmllint syntax check in Studio'
+    'pdftk: encrypt/sign PDFs in the Document Signer'
     # check-deps: unlisted age-encryption.org donenotify-send - the scanner mis-reads the clipboard's "needs age (age-encryption.org)" notice and Models' concatenated "...done"+"notify-send" as program names; age and notify-send are both declared
     # check-deps: unlisted ch crop cw px sy - Python variables in Camera.qml's embedded image-processing heredoc, not external programs
+    # check-deps: unlisted line - a Python loop variable in PdfSigner.qml's embedded outline parser, not a program
 )
 makedepends=('git')
 install=$pkgname.install

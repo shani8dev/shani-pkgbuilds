@@ -364,3 +364,5 @@ sysctl	procps-ng
 visudo	sudo
 paste	coreutils
 qmllint	qt6-declarative-tools
+pdfsig	poppler
+pdftk	pdftk
