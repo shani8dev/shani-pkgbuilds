@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=22
+pkgrel=23
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -77,7 +77,8 @@ depends=(
 	# torrents: qBittorrent - plain Qt 6 (no KDE frameworks), sharing the Qt the
 	# shell already loads; not the Fragments Flatpak (GTK, the GNOME runtime)
 	qbittorrent
-	# calendars Chronoa reads (eds_calendar), spelling, high-contrast themes
+	# calendars Chronoa reads (eds_calendar), spelling and the screen
+	# keyboard's word prediction, high-contrast themes
 	evolution-data-server
 	hunspell-en_us
 	gnome-themes-extra
@@ -115,6 +116,7 @@ depends=(
 	zbar
 	udisks2
 	unicode-emoji
+	noto-fonts-emoji            # emoji in colour: the launcher and the keyboard's emoji panel
 	wl-mirror
 	# launcher: fast file and content search, PDF previews
 	poppler

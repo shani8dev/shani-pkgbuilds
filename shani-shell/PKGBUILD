@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=42
+pkgrel=43
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -98,7 +98,9 @@ optdepends=(
     'gocryptfs: encrypted folders in Files'
     'gnupg: files and folders locked with a password in Files'
     'rclone: cloud drives (Google Drive, OneDrive, Dropbox, Nextcloud...) in Files'
-    'unicode-emoji: emoji in the launcher (":")'
+    'unicode-emoji: emoji in the launcher (":") and the screen keyboard'"'"'s emoji panel'
+    'noto-fonts-emoji: emoji drawn in colour (the launcher, the screen keyboard)'
+    'hunspell-en_us: word prediction and autocorrect on the screen keyboard (add hunspell-<lang> for other languages)'
     'fcitx5: input methods (Devanagari phonetic and more) shown in the bar'
     'wl-mirror: mirroring a screen from the Display tile'
     'shani-deploy: update status in the sidebar'

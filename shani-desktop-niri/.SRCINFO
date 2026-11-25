@@ -1,7 +1,7 @@
 pkgbase = shani-desktop-niri
 	pkgdesc = Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter
 	pkgver = 1.0
-	pkgrel = 19
+	pkgrel = 23
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri
 	install = shani-desktop-niri.install
 	arch = any
@@ -60,6 +60,7 @@ pkgbase = shani-desktop-niri
 	depends = zbar
 	depends = udisks2
 	depends = unicode-emoji
+	depends = noto-fonts-emoji
 	depends = wl-mirror
 	depends = poppler
 	depends = satty
