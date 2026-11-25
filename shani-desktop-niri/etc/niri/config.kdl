@@ -209,8 +209,12 @@ binds {
     Mod+V hotkey-overlay-title="Clipboard history" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "launcher" "c "; }
     Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "terminal"; }
     Mod+Shift+Grave hotkey-overlay-title="AI console" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "scratchpad" "ai"; }
+    // the window layout palette, where Windows has its snap layouts
+    Mod+Z hotkey-overlay-title="Window layout" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "windowLayoutsToggle"; }
     Mod+Shift+Space hotkey-overlay-title="Floating / scrolling workspace" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "workspaceLayout"; }
-    Mod+I hotkey-overlay-title="Next input method" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "inputMethod"; }
+    // Settings where Windows has it; the next input method beside it
+    Mod+I hotkey-overlay-title="Settings" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "settings"; }
+    Mod+Shift+I hotkey-overlay-title="Next input method" { spawn "qs" "-c" "shani" "ipc" "call" "shani" "inputMethod"; }
     Mod+L hotkey-overlay-title="Lock" allow-when-locked=false { spawn "qs" "-c" "shani" "ipc" "call" "shani" "lock"; }
     // the terminal chosen in Settings > Default apps (xdg-terminal-exec reads
     // ~/.config/niri-xdg-terminals.list, which the shell writes, then the system one)
