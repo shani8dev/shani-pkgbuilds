@@ -9,6 +9,11 @@
 [Default Applications]
 inode/directory=dev.shani.Files.desktop;
 # ---------------------------------------------------------------------
+# KeePass vaults (Default: KeePassXC, the Flatpak in the niri image)
+# ---------------------------------------------------------------------
+application/x-keepass2=org.keepassxc.KeePassXC.desktop;
+
+# ---------------------------------------------------------------------
 # Text Files (Default: the shell's own Text Editor - dev.shani.TextEditor)
 # ---------------------------------------------------------------------
 text/plain=dev.shani.TextEditor.desktop;
