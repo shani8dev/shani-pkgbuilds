@@ -30,6 +30,7 @@ map"): run --refresh in an Arch container to add it.
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -311,7 +312,8 @@ def on_image() -> set:
     return out
 
 
-IGNORE = shutil.ignore_patterns(
+_IGNORE_NAMES = shutil.ignore_patterns(
+    ".codegraph",
     ".git",
     "venv",
     ".venv",
@@ -329,6 +331,21 @@ IGNORE = shutil.ignore_patterns(
     "android",
     "*.gguf",
 )
+
+
+def IGNORE(directory, names):
+    """The names above, plus sockets and pipes: a tool's socket in the
+    checkout (.codegraph/daemon.sock) made copytree fail the whole check."""
+    import stat as _stat
+    skip = set(_IGNORE_NAMES(directory, names))
+    for name in names:
+        try:
+            mode = os.lstat(os.path.join(directory, name)).st_mode
+        except OSError:
+            continue
+        if _stat.S_ISSOCK(mode) or _stat.S_ISFIFO(mode):
+            skip.add(name)
+    return skip
 
 
 def stage(repo: Path, pkgbuild: Path, tmp: Path) -> Path:

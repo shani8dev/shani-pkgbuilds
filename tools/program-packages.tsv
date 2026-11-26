@@ -220,6 +220,7 @@ pkill	procps-ng
 plocate	plocate
 png	
 podman	podman
+podlet	podlet
 powerprofilesctl	power-profiles-daemon
 print	
 ps	procps-ng

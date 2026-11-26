@@ -123,6 +123,7 @@ optdepends=(
     'xdg-terminal-exec: open terminal apps in the terminal you chose'
     'podman: the Containers app (your containers and images)'
     'distrobox: toolboxes in the Containers app'
+    'podlet: turn a compose file into units that start with the computer (Containers)'
     'malcontent: parental controls - the launcher and dock leave out apps a standard account may not run'
     'djvulibre: DjVu documents in the Document Viewer (ddjvu)'
     'at-spi2-core: the menus of each app (File, Edit ...) in the window menu, read from its accessibility tree'
