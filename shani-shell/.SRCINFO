@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 44
+	pkgrel = 45
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any

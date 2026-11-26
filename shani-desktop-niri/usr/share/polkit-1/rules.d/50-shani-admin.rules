@@ -5,7 +5,7 @@
 //               passwords — an administrator's credential (AUTH_ADMIN), as for
 //               org.freedesktop.accounts.user-administration
 //   autologin,  a drop-in each, undone by deleting it — the person's own
-//   power-keys, password (AUTH_SELF), as for shani-cassini-save
+//   power-keys, password (AUTH_SELF), as for the shell's own settings saves
 //   battery-limit
 // Wheel members in an active local session only; anyone else gets polkit's
 // default for pkexec (an administrator's password).
