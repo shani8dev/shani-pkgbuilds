@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=49
+pkgrel=50
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -139,7 +139,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=90b191ac740d89f96ffa6510dff894c00062f0d2")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=60ad8fdfa50d71cd0aaf4411aecf3061f514cff4")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 
