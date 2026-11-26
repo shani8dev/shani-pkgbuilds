@@ -36,8 +36,6 @@ input {
 }
 // written by shani-shell (Settings > Keyboard & input); niri reloads it on change
 include optional=true "~/.config/niri/shani-input.kdl"
-// written by shani-shell (Settings > Windows > per-app rules); niri reloads it on change
-include optional=true "~/.config/niri/shani-windows.kdl"
 
 layout {
     gaps 12
@@ -279,10 +277,12 @@ binds {
 
     // Slate-style edge snapping: Super+Alt+Arrow snaps the focused window
     // to a half (left/right) or full (up/down) column.
-    Mod+Alt+Left   { set-column-width 50%; move-column-to-side left; }
-    Mod+Alt+Right  { set-column-width 50%; move-column-to-side right; }
-    Mod+Alt+Up     { set-column-width 100%; }
-    Mod+Alt+Down   { set-column-width 50%; }
+    // (one action per bind, and a percentage is a string: an unquoted 50% or a
+    // second action made niri reject the whole file and start on its defaults)
+    Mod+Alt+Left   { set-column-width "50%"; }
+    Mod+Alt+Right  { set-column-width "50%"; }
+    Mod+Alt+Up     { maximize-column; }
+    Mod+Alt+Down   { set-column-width "50%"; }
 
     Mod+Shift+Left  { focus-monitor-left; }
     Mod+Shift+Right { focus-monitor-right; }
@@ -343,6 +343,12 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+P { power-off-monitors; }
 }
+
+// written by shani-shell (Settings > Windows > per-app rules, and a phone's
+// full-screen apps); niri reloads it on change. After the defaults above, so
+// these rules win (niri applies window rules in order; a later one overrides);
+// only the look file comes after it
+include optional=true "~/.config/niri/shani-windows.kdl"
 
 // written by shani-shell (Settings > Windows > Look and motion): how windows
 // open and close, the shadow, the corners, the blur. Included last, so it wins
