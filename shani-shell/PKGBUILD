@@ -139,7 +139,7 @@ optdepends=(
 )
 makedepends=('git')
 install=$pkgname.install
-source=("git+https://github.com/shani8dev/shani-shell.git#commit=1e97ef426398565e3bcd9ad92ca5c1cd87a1ac36")
+source=("git+https://github.com/shani8dev/shani-shell.git#commit=92a6c08025ecc91a51d9eb0f02224073b17fa3e6")
 # git+ pinned to a commit: the pin is the integrity anchor for a VCS source.
 sha256sums=('SKIP')
 

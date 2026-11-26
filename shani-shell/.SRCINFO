@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 46
+	pkgrel = 47
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -106,7 +106,7 @@ pkgbase = shani-shell
 	optdepends = age: clipboard history encrypted at rest (age-encryption.org); without it the history is kept in the session keyring
 	optdepends = qt6-declarative-tools: qmllint syntax check in Studio
 	optdepends = pdftk: encrypt/sign PDFs in the Document Signer
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=1e97ef426398565e3bcd9ad92ca5c1cd87a1ac36
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=92a6c08025ecc91a51d9eb0f02224073b17fa3e6
 	sha256sums = SKIP
 
 pkgname = shani-shell
