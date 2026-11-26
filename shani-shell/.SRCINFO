@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 45
+	pkgrel = 46
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -87,7 +87,7 @@ pkgbase = shani-shell
 	optdepends = swappy: mark up a screenshot before saving it
 	optdepends = zenity: the snippet and compress tiles ask with a dialog
 	optdepends = smbclient: Settings > Sharing lists the folders shared on the network (net usershare)
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=191f057b568b327c2abb5752f5c801f41f825b0b
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=1e97ef426398565e3bcd9ad92ca5c1cd87a1ac36
 	sha256sums = SKIP
 
 pkgname = shani-shell
