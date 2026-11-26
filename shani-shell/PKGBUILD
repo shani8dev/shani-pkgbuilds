@@ -3,7 +3,7 @@
 
 pkgname=shani-shell
 pkgver=0.1.0
-pkgrel=46
+pkgrel=47
 pkgdesc="Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup"
 arch=('any')
 url="https://github.com/shani8dev/shani-shell"
@@ -212,7 +212,13 @@ SH
     python3 bin/shani app --write-desktop "$pkgdir/usr/share/applications"
 
     install -Dm644 -t "$pkgdir/usr/lib/systemd/user" \
-        data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service
+        data/systemd/shani-shell.service data/systemd/shani-chronoa-bridge.service \
+        data/systemd/shani-phone.service
+    # the phone service (calls, texts, the landline): started on the first
+    # call to dev.shani.Shell.Phone - without these the shell's calls reach nothing
+    install -Dm755 bin/shani-phone "$pkgdir/usr/bin/shani-phone"
+    install -Dm644 data/dbus/dev.shani.Shell.Phone.service \
+        "$pkgdir/usr/share/dbus-1/services/dev.shani.Shell.Phone.service"
 
     # AppMenu registrar: own com.canonical.AppMenu.Registrar so Qt/LibreOffice
     # export their menus at startup; appmenu.py reads the registrations.
