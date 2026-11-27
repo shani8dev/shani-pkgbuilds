@@ -1,7 +1,7 @@
 pkgbase = shani-shell
 	pkgdesc = Shani shell - the AI desktop shell: bar, Chronoa Island, sidebar, dock, launcher, Lens, lock screen, polkit agent, greetd greeter and first-boot setup
 	pkgver = 0.1.0
-	pkgrel = 52
+	pkgrel = 53
 	url = https://github.com/shani8dev/shani-shell
 	install = shani-shell.install
 	arch = any
@@ -114,7 +114,7 @@ pkgbase = shani-shell
 	optdepends = libpulse: volume and recording controls (pactl)
 	optdepends = qrencode: QR codes in the share panel and Settings
 	optdepends = sane: the Scanner app (scanimage)
-	source = git+https://github.com/shani8dev/shani-shell.git#commit=fe7b3fc2f2b8adc7e468cc7833e42b06174fadbc
+	source = git+https://github.com/shani8dev/shani-shell.git#commit=ebe82d05b6daf094501a62c1e7b79971028035fb
 	sha256sums = SKIP
 
 pkgname = shani-shell
