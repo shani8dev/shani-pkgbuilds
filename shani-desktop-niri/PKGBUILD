@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-desktop-niri
 pkgver=1.0
-pkgrel=25
+pkgrel=26
 pkgdesc="Shani OS AI desktop: niri + shani-shell (Chronoa Island, sidebar, dock, Lens) with a Quickshell greeter"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-desktop-niri"
@@ -68,20 +68,13 @@ depends=(
 	ffmpegthumbnailer
 	gst-thumbnailers
 	webp-pixbuf-loader
-	# apps (Flatpak) are found, installed and updated in the shell's Software
-	# (Flathub, leftovers, AppImages - not gnome-software); devices' firmware
-	# (fwupd) is Shani Cassini's Firmware page, which the shell's Updates opens
-	# printers are added in the shell's Settings > Printers (driverless, CUPS's
-	# lpadmin -m everywhere), not system-config-printer
-	xdg-user-dirs-gtk
 	# torrents: qBittorrent - plain Qt 6 (no KDE frameworks), sharing the Qt the
 	# shell already loads; not the Fragments Flatpak (GTK, the GNOME runtime)
 	qbittorrent
-	# calendars Chronoa reads (eds_calendar), spelling and the screen
-	# keyboard's word prediction, high-contrast themes
+	# calendars Chronoa reads (eds_calendar), and the screen keyboard's
+	# word prediction
 	evolution-data-server
 	hunspell-en_us
-	gnome-themes-extra
 	# --- the shell's tiles and Lens; optional in shani-shell, standard here ---
 	# user pictures the login screen can read (Settings > Your account sets them)
 	accountsservice
