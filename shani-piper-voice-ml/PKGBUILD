@@ -5,13 +5,13 @@
 # match its pins exactly.
 pkgname=shani-piper-voice-ml
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="One Piper voice for ShaniOS: ml_IN-meera-medium (Malayalam)"
 arch=('any')
 url="https://huggingface.co/rhasspy/piper-voices"
 license=('MIT')
-source=("ml_IN-meera-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx"
-        "ml_IN-meera-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx.json")
+source=("ml_IN-meera-medium.onnx::https://huggingface.co/rhasspy/piper-voices/resolve/613b6e5ad36ddca4e70e171957291483dc244d9f/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx"
+        "ml_IN-meera-medium.onnx.json::https://huggingface.co/rhasspy/piper-voices/resolve/613b6e5ad36ddca4e70e171957291483dc244d9f/ml/ml_IN/meera/medium/ml_IN-meera-medium.onnx.json")
 sha256sums=('0c3e730f8294286694cac5d33f4c94d050ed8ea74c5fd6d0d492d38cb57b5102'
             'ad51935143f548d139a84c6ad1702b757cbceb52701167c0c1c98bebda7203e6')
 

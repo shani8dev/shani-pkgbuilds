@@ -1,7 +1,7 @@
 # Maintainer: Shrinivas Vishnu Kumbhar <shrinivas.v.kumbhar@gmail.com>
 pkgname=shani-deploy
 pkgver=0.0.1
-pkgrel=111
+pkgrel=112
 # NOT a5867ac, which is the config-validation commit. At a5867ac the bundled
 # scripts/shani-deploy.sh.sha256 is STALE: it records fbc1614f... while
 # shani-deploy.sh itself hashes to 202695f8..., because re-signing runs in CI
@@ -30,7 +30,7 @@ pkgrel=111
 # snapshot change in 109d81b), so script and .sha256/.asc always describe the
 # same script bytes: .sha256 records bb2a627d..., which is what
 # shani-deploy.sh hashes to at that commit.
-_commit='1c8641e0a525590788cf5ad13a8a86d32291b139'
+_commit='1b051d4e9bef3fcd6ca6c32591045db7db36ac21'
 pkgdesc="Safe transactional deployment system for Shani OS"
 url="https://github.com/shani8dev/shani-deploy"
 arch=('any')

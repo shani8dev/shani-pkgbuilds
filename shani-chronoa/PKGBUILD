@@ -8,7 +8,7 @@ pkgname=(
     shani-chronoa-tui
 )
 pkgver=0.1.0
-pkgrel=81
+pkgrel=82
 pkgdesc="Chronoa - the Shanios voice and text assistant (local-first)"
 arch=('any')
 url="https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa"
@@ -17,7 +17,7 @@ makedepends=('git')
 # The GTK split landed after 6020542: the engine, the GTK tree and the
 # terminal client now ship as three packages. Pin master so all three are
 # built from the same tree; a git+ source is its own integrity anchor.
-source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=7b2cdee7fd749dfd6cffa7e37e6aa1d7ed63c489")
+source=("git+https://github.com/shani8dev/shani-chronoa.git#commit=91c7bd08f8e7313f38f0fd54991b73ee2c70643e")
 sha256sums=('SKIP')
 
 # Three package() functions below; per-package arrays are set inside each one

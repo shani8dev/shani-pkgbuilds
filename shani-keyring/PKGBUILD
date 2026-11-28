@@ -2,7 +2,7 @@
 
 pkgname=shani-keyring
 pkgver=20241020
-pkgrel=5
+pkgrel=6
 pkgdesc='Shani PGP keyring'
 arch=('any')
 url='https://github.com/shani8dev/shani-keyring/'
@@ -16,16 +16,10 @@ license=('GPL-3.0-or-later')
 # (downstream phases then reported "error: shani: key ... is unknown").
 depends=('bash' 'gnupg')
 install=$pkgname.install
-source=('https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani.gpg'
-        'https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani-revoked'
-        'https://raw.githubusercontent.com/shani8dev/shani-keyring/main/shani-trusted')
-# These fetch from a mutable `main` branch — unlike a git+ VCS source pinned
-# to a commit, SKIP here would mean this trust-root package (it's what makes
-# the [shani] repo trusted system-wide) has no integrity check at all, and a
-# future rebuild would silently pick up whatever's on that branch at build
-# time. Pinned to the content as of 2026-08-21; bump these deliberately via
-# `updpkgsums` (with a pkgver/pkgrel bump) if the upstream keyring changes —
-# never restore SKIP.
+source=('https://raw.githubusercontent.com/shani8dev/shani-keyring/fb94d16f70ecd81c7e50ef2de8c07c2c3258ef1f/shani.gpg'
+        'https://raw.githubusercontent.com/shani8dev/shani-keyring/fb94d16f70ecd81c7e50ef2de8c07c2c3258ef1f/shani-revoked'
+        'https://raw.githubusercontent.com/shani8dev/shani-keyring/fb94d16f70ecd81c7e50ef2de8c07c2c3258ef1f/shani-trusted')
+# Keep both the immutable revision and the content checksums for this keyring.
 sha256sums=('e7fe040d2be0beb9ac53645276df0001eb997431cc4497c844c707af896a0e22'
             'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
             'fb4f108d4fe0209ac70a8f4aac11376ddfe6d2ff15fa96a8e7942620ab82f28d')

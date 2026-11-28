@@ -6,12 +6,12 @@
 # stt_provision.py MODELS["base-q5_1"] exactly.
 pkgname=shani-whisper-model
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Whisper base-q5_1 speech model for ShaniOS (offline STT)"
 arch=('any')
 url="https://huggingface.co/ggerganov/whisper.cpp"
 license=('MIT')
-source=("ggml-base-q5_1.bin::https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base-q5_1.bin")
+source=("ggml-base-q5_1.bin::https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-base-q5_1.bin")
 sha256sums=('422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898')
 
 package() {

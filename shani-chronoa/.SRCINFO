@@ -1,12 +1,12 @@
 pkgbase = shani-chronoa
 	pkgdesc = Chronoa - the Shanios voice and text assistant (local-first)
 	pkgver = 0.1.0
-	pkgrel = 81
+	pkgrel = 82
 	url = https://github.com/shani8dev/shani-pkgbuilds/tree/main/shani-chronoa
 	arch = any
 	license = GPL-3.0-only
 	makedepends = git
-	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=7b2cdee7fd749dfd6cffa7e37e6aa1d7ed63c489
+	source = git+https://github.com/shani8dev/shani-chronoa.git#commit=91c7bd08f8e7313f38f0fd54991b73ee2c70643e
 	sha256sums = SKIP
 
 pkgname = shani-chronoa-engine

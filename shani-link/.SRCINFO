@@ -1,7 +1,7 @@
 pkgbase = shani-link
 	pkgdesc = Shani Link - the phone line, phone and watch for ShaniOS desktops
 	pkgver = 0.1.0
-	pkgrel = 11
+	pkgrel = 12
 	url = https://github.com/shani8dev/shani-link
 	install = shani-link.install
 	arch = any
@@ -28,7 +28,7 @@ pkgbase = shani-link
 	optdepends = gst-plugins-good: showing this screen on the phone (with gst-plugins-bad)
 	optdepends = libpulse: Bluetooth calls - routing the call audio (pactl)
 	optdepends = gjs: ring or ping a phone paired through GSConnect
-	source = git+https://github.com/shani8dev/shani-link.git#commit=422120086459ec2f00e2a5e0853429345b3da8f3
+	source = git+https://github.com/shani8dev/shani-link.git#commit=71027fe448600f75cfe25ceb8d2077a31f6e8304
 	sha256sums = SKIP
 
 pkgname = shani-link
